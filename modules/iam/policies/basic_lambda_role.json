@@ -1,0 +1,44 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "cognito-identity:GetId",
+                "cognito-identity:SetPrincipalTagAttributeMap",
+                "cognito-identity:SetIdentityPoolRoles",
+                "cognito-identity:ListIdentityPools",
+                "cognito-identity:CreateIdentityPool",
+                "cognito-identity:UnlinkIdentity",
+                "cognito-identity:DeleteIdentities",
+                "cognito-idp:*",
+                "cognito-identity:GetOpenIdToken",
+                "cognito-identity:DescribeIdentity",
+                "cognito-identity:GetCredentialsForIdentity"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": [
+                "cognito-identity:*",
+                "logs:CreateLogGroup"
+            ],
+            "Resource": [
+                "arn:aws:logs:us-east-1:911809168925:*",
+                "arn:aws:cognito-identity:*:911809168925:identitypool/*"
+            ]
+        },
+        {
+            "Sid": "VisualEditor2",
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ],
+            "Resource": "arn:aws:logs:us-east-1:911809168925:log-group:/aws/lambda/test_cognitoCreateUser:*"
+        }
+    ]
+}

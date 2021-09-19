@@ -1,0 +1,8 @@
+auth.tf
+.terraform
+.terraform.lock.hcl
+node_modules
+release
+*.tfstate
+*.backup
+*.tfvars
