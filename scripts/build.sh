@@ -26,6 +26,7 @@ rm $file
 done
 cd ..
 
+# Prepare Service Lambda Layer Folder
 mkdir ./release/opt/
 for file in ./modules/services/code/*.js
 do
@@ -33,15 +34,19 @@ newfile="./release/opt/${file:t}"
 cp $file $newfile
 done
 
+# Remove All Test Files
 rm -r ./release/opt/*.test.js
 
+# Zip Service Lambda Layer
 cd ./release/opt
 zip ../opt.zip ./*.js
 cd ../..
 
+# Delete Temp Folder
 rm -rf ./release/opt
 
-cd ./aws
-terraform plan -var-file=variables.tfvars
-cd ..
+# Plan Terraform
+# cd ./aws
+# terraform plan -var-file=variables.tfvars
+# cd ..
 

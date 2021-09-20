@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "init": "mkdir ./modules/lambda/opt; rm -rf ./modules/lambda/opt/*.js; cp ./modules/services/code/*.js ./modules/lambda/opt",
     "test": "jest",
     "deploy": "zsh ./scripts/deploy.sh",
     "build": "zsh ./scripts/build.sh",
