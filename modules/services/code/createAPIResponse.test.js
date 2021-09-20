@@ -4,10 +4,10 @@ const errorRepository = require('./errorRepository');
 
 describe('Test createAPIResponse', () => {
     test('Test Ok call', async () => {
-        const mockBody = 'mockBody';
+        const mockBody = { message: 'mockBody' };
         const expectedAPIResponse = {
             isBase64Encoded: false,
-            body: mockBody,
+            body: JSON.stringify(mockBody),
             statusCode: 200
         }
 
@@ -17,10 +17,10 @@ describe('Test createAPIResponse', () => {
     });
 
     test('Test Ok call with specified statusCode', async () => {
-        const mockBody = 'mockBody';
+        const mockBody = { message: 'mockBody' };
         const expectedAPIResponse = {
             isBase64Encoded: false,
-            body: mockBody,
+            body: JSON.stringify(mockBody),
             statusCode: 201
         };
 
@@ -33,12 +33,12 @@ describe('Test createAPIResponse', () => {
         const mockError = errorRepository.createError(1000);
         const expectedAPIResponse = {
             isBase64Encoded: false,
-            body: {
+            body: JSON.stringify({
                 error: {
                     message: 'An error has occured during a lambda function execution runtime',
                     code: 1000
                 }
-            },
+            }),
             statusCode: 400
         };
 
@@ -51,12 +51,12 @@ describe('Test createAPIResponse', () => {
         const mockError = errorRepository.createError(1000);
         const expectedAPIResponse = {
             isBase64Encoded: false,
-            body: {
+            body: JSON.stringify({
                 error: {
                     message: 'An error has occured during a lambda function execution runtime',
                     code: 1000
                 }
-            },
+            }),
             statusCode: 500
         };
 

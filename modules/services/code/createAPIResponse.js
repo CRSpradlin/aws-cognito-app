@@ -3,7 +3,7 @@ const self = exports;
 self.Ok = (body, statusCode = 200) => {
     const response = {
         isBase64Encoded: false,
-        body,
+        body: JSON.stringify(body),
         statusCode
     }
 
@@ -21,7 +21,7 @@ self.Error = (error, statusCode = 400) => {
 
     const response = {
         isBase64Encoded: false,
-        body,
+        body: JSON.stringify(body),
         statusCode
     }
 
