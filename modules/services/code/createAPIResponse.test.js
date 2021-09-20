@@ -4,7 +4,7 @@ const errorRepository = require('./errorRepository');
 
 describe('Test createAPIResponse', () => {
     test('Test Ok call', async () => {
-        const mockBody = { message: 'mockBody' };
+        const mockBody = {message: 'mockBody'};
         const expectedAPIResponse = {
             isBase64Encoded: false,
             body: JSON.stringify(mockBody),
@@ -17,7 +17,7 @@ describe('Test createAPIResponse', () => {
     });
 
     test('Test Ok call with specified statusCode', async () => {
-        const mockBody = { message: 'mockBody' };
+        const mockBody = {message: 'mockBody'};
         const expectedAPIResponse = {
             isBase64Encoded: false,
             body: JSON.stringify(mockBody),

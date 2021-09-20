@@ -9,7 +9,7 @@ const ERRORS = [
 ];
 
 self.createError = (errorCode, originalError = undefined) => {
-    const errorDetails = ERRORS.find(err => err.errorCode === errorCode);
+    const errorDetails = ERRORS.find(err => { return err.errorCode === errorCode });
     const error = new Error();
     error.message = errorDetails.message;
     error.code = errorDetails.errorCode;

@@ -1,5 +1,4 @@
 
-const { expect } = require('@jest/globals');
 const AWS = require('aws-sdk');
 const cognitoService = require('./cognitoService');
 
@@ -13,7 +12,7 @@ jest.mock('aws-sdk', () => {
             return {
                 signUp: jest.fn((params) => {
                     return {
-                        promise: async () => mockCognitoIdentityServiceProviderResponse(params)
+                        promise: async () => {return mockCognitoIdentityServiceProviderResponse(params)}
                     };
                 }),
             };
@@ -22,6 +21,10 @@ jest.mock('aws-sdk', () => {
 });
 
 describe('Test cognitoService', () => {
+    beforeEach(() => {
+        AWS // Needed for eslint usage
+    })
+
     test("Test createUser call", async () => {
         const expectedParams = {
             ClientId: "app-client-id",

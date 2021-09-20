@@ -34,12 +34,12 @@ describe('Test registerUser', () => {
         const response = await instance.handler();
 
         expect(response).toEqual('mockAPIResponse');
-        expect(mockCognitoService.createUser).toHaveBeenCalledWith('mockAppClientId', 'mockUsername', 'mockPassword', [{ Name: 'email', Value: 'mockEmail' }]);
+        expect(mockCognitoService.createUser).toHaveBeenCalledWith('mockAppClientId', 'mockUsername', 'mockPassword', [{Name: 'email', Value: 'mockEmail'}]);
     });
 
     test('Test handler call with caught error', async () => {
         process.env.APP_CLIENT_ID = 'mockAppClientId';
-        instance.event = { body: JSON.stringify({}) };
+        instance.event = {body: JSON.stringify({})};
         const mockError = new Error('mockError');
         mockCognitoService.createUser = jest.fn().mockImplementation(() => {
             throw mockError;
@@ -54,8 +54,8 @@ describe('Test registerUser', () => {
     });
 
     test('Test lambda handler export', async () => {
-        jest.mock('/opt/cognitoService', () => { return { } }, { virtual: true });
-        jest.mock('/opt/createAPIResponse', () => { return { } }, { virtual: true });
+        jest.mock('/opt/cognitoService', () => { return { } }, {virtual: true});
+        jest.mock('/opt/createAPIResponse', () => { return { } }, {virtual: true});
         const mockEvent = 'mockEvent';
 
         const mockRegisterUser = require('./registerUser');

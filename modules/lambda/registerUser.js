@@ -13,7 +13,7 @@ class registerUser {
         
         try {
             const userAttributes = [
-                { Name: 'email', Value: reqBody.email }
+                {Name: 'email', Value: reqBody.email}
             ];
     
             const body = await this.cognitoService.createUser(process.env.APP_CLIENT_ID, reqBody.username, reqBody.password, userAttributes);
