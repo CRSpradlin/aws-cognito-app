@@ -41,4 +41,15 @@ describe('Test cognitoService', () => {
         expect(response).toEqual(mockResponse);
         expect(mockCognitoIdentityServiceProviderResponse).toHaveBeenCalledWith(expectedParams);
     });
+
+    test("Test createUser call with no userAttributes", async () => {
+        const expectedParams = {
+            ClientId: "app-client-id",
+            Password: "password",
+            Username: "username"
+        };
+        const response = await cognitoService.createUser('app-client-id', 'username', 'password');
+        expect(response).toEqual(mockResponse);
+        expect(mockCognitoIdentityServiceProviderResponse).toHaveBeenCalledWith(expectedParams);
+    });
 })
