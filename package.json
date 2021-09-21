@@ -6,7 +6,7 @@
   "type": "commonjs",
   "scripts": {
     "init": "mkdir ./modules/lambda/opt; rm -rf ./modules/lambda/opt/*.js; cp ./modules/services/code/*.js ./modules/lambda/opt; rm ./modules/lambda/opt/*.test.js",
-    "test": "jest",
+    "test": "jest . --coverage",
     "deploy": "zsh ./scripts/deploy.sh",
     "build": "zsh ./scripts/build.sh",
     "destroy": "cd aws; terraform destroy -var-file=variables.tfvars",
