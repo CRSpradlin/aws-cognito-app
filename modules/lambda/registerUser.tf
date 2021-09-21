@@ -10,8 +10,6 @@ resource "aws_lambda_function" "registerUser" {
   timeout = 300
 
   environment {
-    variables = {
-        APP_CLIENT_ID = var.str_cognito_app_client_id
-    }
+    variables = local.map_lambda_env_variables
   }
 }
