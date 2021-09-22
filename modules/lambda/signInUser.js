@@ -1,6 +1,7 @@
 const errorRepository = require('./opt/errorRepository');
 
 class signInUser {
+    
     constructor(cognitoService, createAPIResponse, event) {
         this.cognitoService = cognitoService;
         this.createAPIResponse = createAPIResponse;
