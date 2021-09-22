@@ -21,4 +21,4 @@ self.createError = (errorCode, originalError = undefined) => {
     }
 
     return error;
-}
+};

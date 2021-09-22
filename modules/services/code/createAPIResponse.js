@@ -8,7 +8,7 @@ self.Ok = (body, statusCode = 200) => {
     }
 
     return response;
-}
+};
 
 self.Error = (error, statusCode = 400) => {
     const body = {
@@ -26,4 +26,4 @@ self.Error = (error, statusCode = 400) => {
     }
 
     return response;
-}
+};

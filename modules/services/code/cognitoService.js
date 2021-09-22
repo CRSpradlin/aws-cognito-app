@@ -14,7 +14,7 @@ self.createUser = async (username, password, userAttributes=undefined) => {
     const response = await cognitoIdentityServiceProvider.signUp(params).promise();
     
     return response;
-}
+};
 
 self.getAuthToken = async (username, password) => {
     const params = {
@@ -29,4 +29,4 @@ self.getAuthToken = async (username, password) => {
     const response = await cognitoIdentityServiceProvider.initiateAuth(params).promise();
 
     return response;
-}
+};

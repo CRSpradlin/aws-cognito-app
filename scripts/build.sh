@@ -21,10 +21,11 @@ cd ./release
 for file in ./*.js
 do
 sed -i '' -- 's/\.\/opt/\/opt/g' $file
-zip $file:t:r.zip $file:t
-rm $file
 done
 cd ..
+
+# Run Init to Update Opt Folder
+mkdir ./modules/lambda/opt; rm -rf ./modules/lambda/opt/*.js; cp ./modules/services/code/*.js ./modules/lambda/opt; rm ./modules/lambda/opt/*.test.js
 
 # Prepare Service Lambda Layer Folder
 mkdir ./release/opt/
@@ -37,13 +38,13 @@ done
 # Remove All Test Files
 rm -r ./release/opt/*.test.js
 
-# Zip Service Lambda Layer
-cd ./release/opt
-zip ../opt.zip ./*.js
-cd ../..
+# # Zip Service Lambda Layer
+# cd ./release/opt
+# zip ../opt.zip ./*.js
+# cd ../..
 
-# Delete Temp Folder
-rm -rf ./release/opt
+# # Delete Temp Folder
+# rm -rf ./release/opt
 
 # Plan Terraform
 # cd ./aws
