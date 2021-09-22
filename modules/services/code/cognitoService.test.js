@@ -15,6 +15,11 @@ jest.mock('aws-sdk', () => {
                         promise: async () => {return mockCognitoIdentityServiceProviderResponse(params)}
                     };
                 }),
+                initiateAuth: jest.fn((params) => {
+                    return {
+                        promise: async () => {return mockCognitoIdentityServiceProviderResponse(params)}
+                    };
+                }),
             };
         }),
     };
@@ -23,21 +28,25 @@ jest.mock('aws-sdk', () => {
 describe('Test cognitoService', () => {
     beforeEach(() => {
         AWS // Needed for eslint usage
+        jest.clearAllMocks();
+        jest.resetModules();
+
+        process.env.APP_CLIENT_ID = 'app-client-id';
     })
 
     test("Test createUser call", async () => {
         const expectedParams = {
-            ClientId: "app-client-id",
-            Password: "password",
+            ClientId: 'app-client-id',
+            Password: 'password',
             UserAttributes: [
                 { 
-                    Name: "attrib1",
-                    Value: "value1",
+                    Name: 'attrib1',
+                    Value: 'value1',
                 }
             ],
-            Username: "username"
+            Username: 'username'
         };
-        const response = await cognitoService.createUser('app-client-id', 'username', 'password', [{Name: 'attrib1', Value: 'value1'}]);
+        const response = await cognitoService.createUser('username', 'password', [{Name: 'attrib1', Value: 'value1'}]);
         expect(response).toEqual(mockResponse);
         expect(mockCognitoIdentityServiceProviderResponse).toHaveBeenCalledWith(expectedParams);
     });
@@ -48,7 +57,21 @@ describe('Test cognitoService', () => {
             Password: "password",
             Username: "username"
         };
-        const response = await cognitoService.createUser('app-client-id', 'username', 'password');
+        const response = await cognitoService.createUser('username', 'password');
+        expect(response).toEqual(mockResponse);
+        expect(mockCognitoIdentityServiceProviderResponse).toHaveBeenCalledWith(expectedParams);
+    });
+
+    test("Test signInUser call", async () => {
+        const expectedParams = {
+            ClientId: 'app-client-id',
+            AuthFlow: 'USER_PASSWORD_AUTH',
+            AuthParameters: {
+                'USERNAME': 'username',
+                'PASSWORD': 'password'
+              }
+        };
+        const response = await cognitoService.getAuthToken('username', 'password');
         expect(response).toEqual(mockResponse);
         expect(mockCognitoIdentityServiceProviderResponse).toHaveBeenCalledWith(expectedParams);
     });

@@ -11,7 +11,9 @@ resource "aws_api_gateway_deployment" "api" {
 
   depends_on = [
     aws_api_gateway_method.method_post_register,
-    aws_api_gateway_integration.lambda_registerUser_integration
+    aws_api_gateway_integration.lambda_registerUser_method_post_register_integration,
+    aws_api_gateway_method.method_post_login,
+    aws_api_gateway_integration.lambda_signInUser_method_post_login_integration
   ]
 }
 

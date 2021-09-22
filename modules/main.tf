@@ -12,6 +12,9 @@ module "gateway" {
 
     str_registerUser_lambda_invoke_arn = module.lambda.str_registerUser_lambda_invoke_arn
     str_registerUser_lambda_function_name = module.lambda.str_registerUser_lambda_function_name
+
+    str_signInUser_lambda_invoke_arn = module.lambda.str_signInUser_lambda_invoke_arn
+    str_signInUser_lambda_function_name = module.lambda.str_signInUser_lambda_function_name
 }
 
 module "iam" {
