@@ -22,6 +22,6 @@ resource "aws_lambda_function" "registerUser" {
 
 data "archive_file" "registerUser" {
   type        = "zip"
-  source_file = "${path.module}/../../release/registerUser.js"
+  source_file = "${path.module}/../../temp/registerUser.js"
   output_path = "${path.module}/archive/registerUser.zip"
 }

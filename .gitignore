@@ -2,7 +2,7 @@ auth.tf
 .terraform
 .terraform.lock.hcl
 node_modules
-release
+temp
 *.tfstate
 *.backup
 *.tfvars

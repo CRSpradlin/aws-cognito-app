@@ -1,23 +1,23 @@
-mkdir ./release
+mkdir ./temp
 
-# Clean Current Release Folder
-rm -r ./release/*
+# Clean Current temp Folder
+rm -r ./temp/*
 
 # Copy Over Current Lambda Code
 for file in ./modules/lambda/*.js
 do
 filename=$file:t
 echo $filename
-newfile="./release/${filename}"
+newfile="./temp/${filename}"
 echo $newfile
 cp $file $newfile
 done
 
 # Remove Lambda Test Files
-rm -r ./release/*.test.js
+rm -r ./temp/*.test.js
 
 # Zip-Up Remaining JS Files
-cd ./release
+cd ./temp
 for file in ./*.js
 do
 sed -i '' -- 's/\.\/opt/\/opt/g' $file
@@ -28,23 +28,23 @@ cd ..
 mkdir ./modules/lambda/opt; rm -rf ./modules/lambda/opt/*.js; cp ./modules/services/code/*.js ./modules/lambda/opt; rm ./modules/lambda/opt/*.test.js
 
 # Prepare Service Lambda Layer Folder
-mkdir ./release/opt/
+mkdir ./temp/opt/
 for file in ./modules/services/code/*.js
 do
-newfile="./release/opt/${file:t}"
+newfile="./temp/opt/${file:t}"
 cp $file $newfile
 done
 
 # Remove All Test Files
-rm -r ./release/opt/*.test.js
+rm -r ./temp/opt/*.test.js
 
 # # Zip Service Lambda Layer
-# cd ./release/opt
+# cd ./temp/opt
 # zip ../opt.zip ./*.js
 # cd ../..
 
 # # Delete Temp Folder
-# rm -rf ./release/opt
+# rm -rf ./temp/opt
 
 # Plan Terraform
 # cd ./aws

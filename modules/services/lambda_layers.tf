@@ -9,7 +9,7 @@ resource "aws_lambda_layer_version" "services" {
 
 # data "archive_file" "services" {
 #   type        = "zip"
-#   source_file = "${path.module}/../../release/opt/*.js"
+#   source_file = "${path.module}/../../temp/opt/*.js"
 #   output_path = "${path.module}/archive/opt.zip"
 # }
 

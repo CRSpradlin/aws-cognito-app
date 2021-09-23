@@ -22,6 +22,6 @@ resource "aws_lambda_function" "signInUser" {
 
 data "archive_file" "signInUser" {
   type        = "zip"
-  source_file = "${path.module}/../../release/signInUser.js"
+  source_file = "${path.module}/../../temp/signInUser.js"
   output_path = "${path.module}/archive/signInUser.zip"
 }
