@@ -1,0 +1,1 @@
+variable "str_domain" {}

@@ -1,5 +1,14 @@
+module "certificates" {
+  source = "./certificates"
+
+  str_domain = var.str_domain
+}
+
 module "cognito" {
     source = "./cognito"
+    depends_on = [
+      module.certificates
+    ]
 
     str_app_name = var.str_app_name
 }
@@ -9,6 +18,10 @@ module "gateway" {
 
     str_aws_account_id = var.str_aws_account_id
     str_app_name = var.str_app_name
+
+    str_domain = var.str_domain
+
+    str_app_domain_certificate_validation_arn = module.certificates.str_app_domain_certificate_validation_arn
 
     str_registerUser_lambda_invoke_arn = module.lambda.str_registerUser_lambda_invoke_arn
     str_registerUser_lambda_function_name = module.lambda.str_registerUser_lambda_function_name
