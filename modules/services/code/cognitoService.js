@@ -16,6 +16,18 @@ self.createUser = async (username, password, userAttributes=undefined) => {
     return response;
 };
 
+self.confirmUser = async (username, confirmationCode) => {
+    const params = {
+        ClientId: process.env.APP_CLIENT_ID,
+        ConfirmationCode: confirmationCode,
+        Username: username
+    };
+
+    const response = await cognitoIdentityServiceProvider.confirmSignUp(params).promise();
+
+    return response;
+}
+
 self.getAuthToken = async (username, password) => {
     const params = {
         AuthFlow: 'USER_PASSWORD_AUTH', /* required */

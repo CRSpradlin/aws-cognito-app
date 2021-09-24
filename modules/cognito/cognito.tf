@@ -1,5 +1,7 @@
 resource "aws_cognito_user_pool" "app_user_pool" {
   name = "${var.str_app_name}_cognito_user_pool"
+
+  auto_verified_attributes = ["email"]
 }
 
 resource "aws_cognito_user_pool_client" "app_client" {
