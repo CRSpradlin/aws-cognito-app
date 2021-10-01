@@ -4,6 +4,7 @@ auth.tf
 node_modules
 temp
 *.tfstate
+*.tfstate.lock.info
 *.backup
 *.tfvars
 opt
