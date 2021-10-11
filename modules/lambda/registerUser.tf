@@ -6,7 +6,10 @@ resource "aws_lambda_function" "registerUser" {
   role = var.str_iam_basic_lambda_role_arn
   handler = "registerUser.handler"
 
-  layers = [ var.str_services_lambda_layer_arn ]
+  layers = [ 
+    var.str_services_lambda_layer_arn,
+    var.str_modules_lambda_layer_arn 
+  ]
 
   runtime = "nodejs14.x"
   timeout = 300

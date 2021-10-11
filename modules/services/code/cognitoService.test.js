@@ -20,6 +20,11 @@ jest.mock('aws-sdk', () => {
                         promise: async () => {return mockCognitoIdentityServiceProviderResponse(params)}
                     };
                 }),
+                getUser: jest.fn((params) => {
+                    return {
+                        promise: async () => {return mockCognitoIdentityServiceProviderResponse(params)}
+                    }
+                }),
                 initiateAuth: jest.fn((params) => {
                     return {
                         promise: async () => {return mockCognitoIdentityServiceProviderResponse(params)}
@@ -74,6 +79,17 @@ describe('Test cognitoService', () => {
             ConfirmationCode: 'confirmationCode'
         };
         const response = await cognitoService.confirmUser('username', 'confirmationCode');
+        expect(response).toEqual(mockResponse);
+        expect(mockCognitoIdentityServiceProviderResponse).toHaveBeenCalledWith(expectedParams);
+    });
+
+    test("Test getUser call", async () => {
+        const expectedParams = {
+            AccessToken: 'mockToken'
+        };
+
+        const response = await cognitoService.getUser('mockToken');
+
         expect(response).toEqual(mockResponse);
         expect(mockCognitoIdentityServiceProviderResponse).toHaveBeenCalledWith(expectedParams);
     });

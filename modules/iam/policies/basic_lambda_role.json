@@ -15,30 +15,11 @@
                 "cognito-idp:*",
                 "cognito-identity:GetOpenIdToken",
                 "cognito-identity:DescribeIdentity",
-                "cognito-identity:GetCredentialsForIdentity"
+                "cognito-identity:GetCredentialsForIdentity",
+                "logs:*",
+                "dynamodb:*"
             ],
             "Resource": "*"
-        },
-        {
-            "Sid": "VisualEditor1",
-            "Effect": "Allow",
-            "Action": [
-                "cognito-identity:*",
-                "logs:CreateLogGroup"
-            ],
-            "Resource": [
-                "arn:aws:logs:us-east-1:911809168925:*",
-                "arn:aws:cognito-identity:*:911809168925:identitypool/*"
-            ]
-        },
-        {
-            "Sid": "VisualEditor2",
-            "Effect": "Allow",
-            "Action": [
-                "logs:CreateLogStream",
-                "logs:PutLogEvents"
-            ],
-            "Resource": "arn:aws:logs:us-east-1:911809168925:log-group:/aws/lambda/test_cognitoCreateUser:*"
         }
     ]
 }

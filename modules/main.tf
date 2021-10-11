@@ -13,6 +13,13 @@ module "cognito" {
     str_app_name = var.str_app_name
 }
 
+module "dynamo" {
+    source = "./dynamo"
+
+    int_dynamo_write_capacity = var.int_dynamo_write_capacity
+    int_dynamo_read_capacity = var.int_dynamo_read_capacity
+}
+
 module "gateway" {
     source = "./gateway"
 
@@ -46,6 +53,7 @@ module "lambda" {
     str_cognito_app_client_id = module.cognito.str_cognito_app_client_id
 
     str_services_lambda_layer_arn = module.services.str_services_lambda_layer_arn
+    str_modules_lambda_layer_arn = module.services.str_modules_lambda_layer_arn
 
     str_iam_basic_lambda_role_arn = module.iam.str_iam_basic_lambda_role_arn
 }

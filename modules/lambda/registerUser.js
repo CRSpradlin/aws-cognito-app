@@ -2,8 +2,8 @@ const errorRepository = require('./opt/errorRepository');
 
 class registerUser {
     
-    constructor(cognitoService, createAPIResponse, event) {
-        this.cognitoService = cognitoService;
+    constructor(userUtils, createAPIResponse, event) {
+        this.userUtils = userUtils;
         this.createAPIResponse = createAPIResponse;
         this.event = event;
     }
@@ -13,12 +13,7 @@ class registerUser {
         const reqBody = JSON.parse(this.event.body);
         
         try {
-            const userAttributes = [
-                {Name: 'email', Value: reqBody.email}
-            ];
-    
-            const body = await this.cognitoService.createUser(reqBody.username, reqBody.password, userAttributes);
-
+            const body = await this.userUtils.createUser(reqBody.username, reqBody.password, reqBody.email);
             return this.createAPIResponse.Ok(body);
         } catch (error) {
             const newError = errorRepository.createError(1000, error);
@@ -28,14 +23,14 @@ class registerUser {
 }
 
 exports.registerUserService = (deps) => {
-    return new registerUser(deps.cognitoService, deps.createAPIResponse, deps.event);   
+    return new registerUser(deps.userUtils, deps.createAPIResponse, deps.event);   
 }
 
 exports.handler = async (event) => {
-    const cognitoService = require('/opt/cognitoService');
+    const userUtils = require('/opt/userUtils').default();
     const createAPIResponse = require('/opt/createAPIResponse');
     const deps = {
-        cognitoService,
+        userUtils,
         createAPIResponse,
         event
     };

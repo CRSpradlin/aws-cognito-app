@@ -1,3 +1,18 @@
+resource "aws_lambda_layer_version" "modules" {
+  filename   = "${path.module}/archive/modules.zip"
+  layer_name = "${var.str_app_name}_modules_layer"
+
+  source_code_hash = data.archive_file.modules.output_base64sha256
+
+  compatible_runtimes = ["nodejs14.x"]
+}
+
+data "archive_file" "modules" {
+  type        = "zip"
+  source_dir = "${path.module}/modules"
+  output_path = "${path.module}/archive/modules.zip"
+}
+
 resource "aws_lambda_layer_version" "services" {
   filename   = "${path.module}/archive/opt.zip"
   layer_name = "${var.str_app_name}_services_layer"
@@ -16,6 +31,8 @@ resource "aws_lambda_layer_version" "services" {
 locals {
   service_files = [
     "${path.module}/code/cognitoService.js", 
+    "${path.module}/code/dynamoService.js",
+    "${path.module}/code/userUtils.js",
     "${path.module}/code/createAPIResponse.js",
     "${path.module}/code/errorRepository.js"
   ]
@@ -44,5 +61,15 @@ data "archive_file" "services" {
   source {
     filename = "${basename(local.service_files[2])}"
     content  = "${data.template_file.service_files.2.rendered}"
+  }
+
+  source {
+    filename = "${basename(local.service_files[3])}"
+    content  = "${data.template_file.service_files.3.rendered}"
+  }
+
+  source {
+    filename = "${basename(local.service_files[4])}"
+    content  = "${data.template_file.service_files.4.rendered}"
   }
 }

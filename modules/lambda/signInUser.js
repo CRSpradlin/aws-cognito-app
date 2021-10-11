@@ -14,6 +14,9 @@ class signInUser {
         
         try {
             const body = await this.cognitoService.getAuthToken(reqBody.username, reqBody.password);
+            const attributes = await this.cognitoService.getUser(body.AuthenticationResult.AccessToken);
+
+            body.UserAttributes = attributes;
 
             return this.createAPIResponse.Ok(body);
         } catch (error) {

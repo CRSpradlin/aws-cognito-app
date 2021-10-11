@@ -2,7 +2,7 @@
 const errorRepository = require('./opt/errorRepository');
 const registerUser = require('./registerUser');
 
-const mockCognitoService = { };
+const mockUserUtils = { };
 const mockCreateAPIResponse = { };
 
 let instance;
@@ -11,7 +11,7 @@ let event
 describe('Test registerUser', () => {
     beforeEach(() => {
         const deps = {
-            cognitoService: mockCognitoService,
+            userUtils: mockUserUtils,
             createAPIResponse: mockCreateAPIResponse,
             event: event
         }
@@ -27,20 +27,20 @@ describe('Test registerUser', () => {
                 password: 'mockPassword'
             })
         };
-        mockCognitoService.createUser = jest.fn().mockResolvedValue('mockCognitoResponse');
+        mockUserUtils.createUser = jest.fn().mockResolvedValue('mockCognitoResponse');
         mockCreateAPIResponse.Ok = jest.fn().mockReturnValue('mockAPIResponse');
 
         const response = await instance.handler();
 
         expect(response).toEqual('mockAPIResponse');
-        expect(mockCognitoService.createUser).toHaveBeenCalledWith('mockUsername', 'mockPassword', [{Name: 'email', Value: 'mockEmail'}]);
+        expect(mockUserUtils.createUser).toHaveBeenCalledWith('mockUsername', 'mockPassword', 'mockEmail');
     });
 
     test('Test handler call with caught error', async () => {
         process.env.APP_CLIENT_ID = 'mockAppClientId';
         instance.event = {body: JSON.stringify({})};
         const mockError = new Error('mockError');
-        mockCognitoService.createUser = jest.fn().mockImplementation(() => {
+        mockUserUtils.createUser = jest.fn().mockImplementation(() => {
             throw mockError;
         });
         mockCreateAPIResponse.Error = jest.fn().mockReturnValue('mockAPIResponseError');
@@ -53,7 +53,7 @@ describe('Test registerUser', () => {
     });
 
     test('Test lambda handler export', async () => {
-        jest.mock('/opt/cognitoService', () => { return { } }, {virtual: true});
+        jest.mock('/opt/userUtils', () => { return {default: jest.fn().mockReturnValue({ })} }, {virtual: true});
         jest.mock('/opt/createAPIResponse', () => { return { } }, {virtual: true});
         const mockEvent = 'mockEvent';
 
@@ -68,7 +68,7 @@ describe('Test registerUser', () => {
 
         expect(response).toEqual('mockHandlerResponse');
         expect(mockRegisterUser.registerUserService).toHaveBeenCalledWith({
-            cognitoService: { },
+            userUtils: { },
             createAPIResponse: { },
             event: mockEvent
         })

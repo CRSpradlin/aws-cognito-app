@@ -26,6 +26,16 @@ self.confirmUser = async (username, confirmationCode) => {
     const response = await cognitoIdentityServiceProvider.confirmSignUp(params).promise();
 
     return response;
+};
+
+self.getUser = async (token) => {
+    const params = {
+        AccessToken: token
+    }
+
+    const response = await cognitoIdentityServiceProvider.getUser(params).promise();
+
+    return response;
 }
 
 self.getAuthToken = async (username, password) => {

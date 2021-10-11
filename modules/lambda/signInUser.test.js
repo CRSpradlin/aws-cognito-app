@@ -20,19 +20,26 @@ describe('Test signInUser', () => {
     })
 
     test('Test handler call', async () => {
+        const mockTokenResponse = {
+            AuthenticationResult: {
+                AccessToken: 'mockToken'
+            }
+        }
         instance.event = {
             body: JSON.stringify({
                 username: 'mockUsername',
                 password: 'mockPassword'
             })
         };
-        mockCognitoService.getAuthToken = jest.fn().mockResolvedValue('mockCognitoResponse');
+        mockCognitoService.getAuthToken = jest.fn().mockResolvedValue(mockTokenResponse);
+        mockCognitoService.getUser = jest.fn().mockResolvedValue('mockCognitoUserResponse')
         mockCreateAPIResponse.Ok = jest.fn().mockReturnValue('mockAPIResponse');
 
         const response = await instance.handler();
 
         expect(response).toEqual('mockAPIResponse');
         expect(mockCognitoService.getAuthToken).toHaveBeenCalledWith('mockUsername', 'mockPassword');
+        expect(mockCognitoService.getUser).toHaveBeenCalledWith('mockToken')
     });
 
     test('Test handler call with caught error', async () => {
