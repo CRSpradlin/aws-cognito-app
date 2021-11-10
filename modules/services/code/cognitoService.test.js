@@ -107,4 +107,18 @@ describe('Test cognitoService', () => {
         expect(response).toEqual(mockResponse);
         expect(mockCognitoIdentityServiceProviderResponse).toHaveBeenCalledWith(expectedParams);
     });
+
+    test("Test getClaims call", async () => {
+        const mockReq = {
+            requestContext: {
+                authorizer: {
+                    claims: 'mockClaims'
+                }
+            }
+        }
+
+        const response = cognitoService.getClaims(mockReq);
+
+        expect(response).toEqual('mockClaims');
+    })
 })

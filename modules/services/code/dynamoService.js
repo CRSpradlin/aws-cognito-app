@@ -59,3 +59,17 @@ self.put = async (tableName, item) => {
 
     return response;
 }
+
+self.update = async (tableName, key, updateExpression, additionalConfig={}) => {
+    const params = {
+        TableName: tableName,
+        Key: key,
+        UpdateExpression : updateExpression,
+        ReturnValues: "UPDATED_NEW",
+        ...additionalConfig
+    };
+
+    const response = await documentClient.update(params).promise();
+    
+    return response;
+}

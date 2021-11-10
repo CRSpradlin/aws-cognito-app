@@ -52,3 +52,7 @@ self.getAuthToken = async (username, password) => {
 
     return response;
 };
+
+self.getClaims = (reqBody) => {
+    return reqBody.requestContext.authorizer.claims;
+}

@@ -1,27 +1,37 @@
 class userUtils {
 
     constructor(uuid, dynamoDB, cognitoService) {
-        this.uuid = uuid;
+        this.uuid = uuid.v4;
         this.dynamoDB = dynamoDB;
         this.cognitoService = cognitoService;
     }
 
     createUser = async (username, password, email) => {
-        const userId = this.uuid();
+        const profile = this.uuid();
 
         await this.dynamoDB.put('UserData', {
-            profile: userId,
-            email: email
+            profile: profile,
+            email: email,
+            conversations: []
         });
         
         const userAttributes = [
             {Name: 'email', Value: email},
-            {Name: 'profile', Value: userId}
+            {Name: 'profile', Value: profile}
         ];
 
         const response = await this.cognitoService.createUser(username, password, userAttributes);
         
         return response;
+    }
+
+    getUser = async (userProfile) => {
+        const userKey = {
+            profile: userProfile
+        };
+        const user = await this.dynamoDB.get('UserData', userKey);
+
+        return user;
     }
 }
 
@@ -30,7 +40,7 @@ exports._userUtilsService = (deps) => {
 }
 
 exports.default = () => {
-    const uuid = require('uuid').v4;
+    const uuid = require('uuid');
     const dynamoDB = require('./dynamoService');
     const cognitoService = require('./cognitoService');
 

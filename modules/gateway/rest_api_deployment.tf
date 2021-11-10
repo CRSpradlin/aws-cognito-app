@@ -16,6 +16,8 @@ resource "aws_api_gateway_deployment" "api" {
     aws_api_gateway_integration.lambda_signInUser_method_post_user_login_integration,
     aws_api_gateway_method.method_post_user_confirm,
     aws_api_gateway_integration.lambda_confirmUser_method_post_user_confirm_integration,
+    aws_api_gateway_method.method_post_conversation_create,
+    aws_api_gateway_integration.lambda_createConversation_method_post_conversation_create_integration
   ]
 }
 

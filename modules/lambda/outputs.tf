@@ -18,3 +18,10 @@ output "str_signInUser_lambda_invoke_arn" {
 output "str_signInUser_lambda_function_name" {
   value = aws_lambda_function.signInUser.function_name
 }
+
+output "str_createConversation_lambda_invoke_arn" {
+  value = aws_lambda_function.createConversation.invoke_arn
+}
+output "str_createConversation_lambda_function_name" {
+  value = aws_lambda_function.createConversation.function_name
+}

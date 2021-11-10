@@ -33,6 +33,7 @@ locals {
     "${path.module}/code/cognitoService.js", 
     "${path.module}/code/dynamoService.js",
     "${path.module}/code/userUtils.js",
+    "${path.module}/code/convoUtils.js",
     "${path.module}/code/createAPIResponse.js",
     "${path.module}/code/errorRepository.js"
   ]
@@ -71,5 +72,10 @@ data "archive_file" "services" {
   source {
     filename = "${basename(local.service_files[4])}"
     content  = "${data.template_file.service_files.4.rendered}"
+  }
+
+  source {
+    filename = "${basename(local.service_files[5])}"
+    content  = "${data.template_file.service_files.5.rendered}"
   }
 }

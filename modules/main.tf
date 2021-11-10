@@ -30,6 +30,8 @@ module "gateway" {
 
     str_app_domain_certificate_validation_arn = module.certificates.str_app_domain_certificate_validation_arn
 
+    str_cognito_user_pool_arn = module.cognito.str_cognito_user_pool_arn
+
     str_registerUser_lambda_invoke_arn = module.lambda.str_registerUser_lambda_invoke_arn
     str_registerUser_lambda_function_name = module.lambda.str_registerUser_lambda_function_name
 
@@ -38,6 +40,9 @@ module "gateway" {
 
     str_signInUser_lambda_invoke_arn = module.lambda.str_signInUser_lambda_invoke_arn
     str_signInUser_lambda_function_name = module.lambda.str_signInUser_lambda_function_name
+
+    str_createConversation_lambda_invoke_arn = module.lambda.str_createConversation_lambda_invoke_arn
+    str_createConversation_lambda_function_name = module.lambda.str_createConversation_lambda_function_name
 }
 
 module "iam" {

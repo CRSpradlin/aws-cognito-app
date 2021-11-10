@@ -16,7 +16,7 @@ resource "aws_dynamodb_table" "api_conversations_table" {
   billing_mode   = "PROVISIONED"
   read_capacity  = var.int_dynamo_read_capacity
   write_capacity = var.int_dynamo_write_capacity
-  hash_key       = "profile"
+  hash_key       = "id"
 
   attribute {
     name = "id"
