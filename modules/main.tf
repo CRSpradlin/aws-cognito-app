@@ -31,6 +31,10 @@ module "gateway" {
     str_app_domain_certificate_validation_arn = module.certificates.str_app_domain_certificate_validation_arn
 
     str_cognito_user_pool_arn = module.cognito.str_cognito_user_pool_arn
+    // TODO: Might need to remove
+    str_cognito_user_pool_endpoint = module.cognito.str_cognito_user_pool_endpoint
+
+    str_socketAuthroizer_lambda_invoke_arn = module.lambda.str_socketAuthroizer_lambda_invoke_arn
 
     str_registerUser_lambda_invoke_arn = module.lambda.str_registerUser_lambda_invoke_arn
     str_registerUser_lambda_function_name = module.lambda.str_registerUser_lambda_function_name

@@ -1,3 +1,9 @@
+//SOCKET API Lambda Integration Outputs
+output "str_socketAuthroizer_lambda_invoke_arn" {
+  value = aws_lambda_function.socketAuthorizer.invoke_arn
+}
+
+// REST API Labmda Integration Ouputs
 output "str_registerUser_lambda_invoke_arn" {
   value = aws_lambda_function.registerUser.invoke_arn
 }

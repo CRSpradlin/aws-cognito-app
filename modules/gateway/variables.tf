@@ -6,6 +6,10 @@ variable "str_domain" {}
 variable "str_app_domain_certificate_validation_arn" {}
 
 variable "str_cognito_user_pool_arn" {}
+// TODO: Might need to remove
+variable "str_cognito_user_pool_endpoint" {}
+
+variable "str_socketAuthroizer_lambda_invoke_arn" {}
 
 variable "str_registerUser_lambda_invoke_arn" {}
 variable "str_registerUser_lambda_function_name" {}
