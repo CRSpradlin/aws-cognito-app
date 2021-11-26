@@ -1,11 +1,11 @@
 resource "aws_api_gateway_resource" "resource_user_confirm" {
   path_part   = "confirm"
   parent_id   = aws_api_gateway_resource.resource_user.id
-  rest_api_id = aws_api_gateway_rest_api.api.id
+  rest_api_id = aws_api_gateway_rest_api.rest.id
 }
 
 resource "aws_api_gateway_method" "method_post_user_confirm" {
-  rest_api_id   = aws_api_gateway_rest_api.api.id
+  rest_api_id   = aws_api_gateway_rest_api.rest.id
   resource_id   = aws_api_gateway_resource.resource_user_confirm.id
   http_method   = "POST"
   authorization = "NONE"
@@ -15,7 +15,7 @@ resource "aws_api_gateway_method" "method_post_user_confirm" {
 }
 
 resource "aws_api_gateway_model" "method_post_user_confirm_model" {
-  rest_api_id  = aws_api_gateway_rest_api.api.id
+  rest_api_id  = aws_api_gateway_rest_api.rest.id
   name         = "MethodPostconfirmModel"
   content_type = "application/json"
 
@@ -31,7 +31,7 @@ EOF
 }
 
 resource "aws_api_gateway_integration" "lambda_confirmUser_method_post_user_confirm_integration" {
-  rest_api_id             = aws_api_gateway_rest_api.api.id
+  rest_api_id             = aws_api_gateway_rest_api.rest.id
   resource_id             = aws_api_gateway_resource.resource_user_confirm.id
   http_method             = aws_api_gateway_method.method_post_user_confirm.http_method
   integration_http_method = "POST"
@@ -46,5 +46,5 @@ resource "aws_lambda_permission" "lambda_confirmUser_method_post_user_confirm_pe
   principal     = "apigateway.amazonaws.com"
 
   # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html
-  source_arn = "arn:aws:execute-api:us-east-1:${var.str_aws_account_id}:${aws_api_gateway_rest_api.api.id}/*/${aws_api_gateway_method.method_post_user_confirm.http_method}${aws_api_gateway_resource.resource_user_confirm.path}"
+  source_arn = "arn:aws:execute-api:us-east-1:${var.str_aws_account_id}:${aws_api_gateway_rest_api.rest.id}/*/${aws_api_gateway_method.method_post_user_confirm.http_method}${aws_api_gateway_resource.resource_user_confirm.path}"
 }

@@ -1,8 +1,8 @@
-resource "aws_api_gateway_deployment" "api" {
-  rest_api_id = aws_api_gateway_rest_api.api.id
+resource "aws_api_gateway_deployment" "rest" {
+  rest_api_id = aws_api_gateway_rest_api.rest.id
 
   triggers = {
-    redeployment = sha1(jsonencode(aws_api_gateway_rest_api.api.body))
+    redeployment = sha1(jsonencode(aws_api_gateway_rest_api.rest.body))
   }
 
   lifecycle {
@@ -21,16 +21,16 @@ resource "aws_api_gateway_deployment" "api" {
   ]
 }
 
-resource "aws_api_gateway_stage" "api" {
-  deployment_id = aws_api_gateway_deployment.api.id
-  rest_api_id   = aws_api_gateway_rest_api.api.id
-  stage_name    = "api"
+resource "aws_api_gateway_stage" "rest" {
+  deployment_id = aws_api_gateway_deployment.rest.id
+  rest_api_id   = aws_api_gateway_rest_api.rest.id
+  stage_name    = "rest"
 }
 
-resource "aws_api_gateway_base_path_mapping" "api_domain_mapping" {
+resource "aws_api_gateway_base_path_mapping" "rest_domain_mapping" {
   count = var.str_domain == "" ? 0 : 1
-  api_id      = aws_api_gateway_rest_api.api.id
-  stage_name  = aws_api_gateway_stage.api.stage_name
+  api_id      = aws_api_gateway_rest_api.rest.id
+  stage_name  = aws_api_gateway_stage.rest.stage_name
   domain_name = aws_api_gateway_domain_name.api_domain[0].domain_name
-  base_path = "api"
+  base_path = "rest"
 }
