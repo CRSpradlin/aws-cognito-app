@@ -35,6 +35,7 @@ module "gateway" {
     str_cognito_user_pool_endpoint = module.cognito.str_cognito_user_pool_endpoint
 
     str_socketAuthroizer_lambda_invoke_arn = module.lambda.str_socketAuthroizer_lambda_invoke_arn
+    str_socketAuthroizer_lambda_function_name = module.lambda.str_socketAuthroizer_lambda_function_name
 
     str_registerUser_lambda_invoke_arn = module.lambda.str_registerUser_lambda_invoke_arn
     str_registerUser_lambda_function_name = module.lambda.str_registerUser_lambda_function_name
@@ -60,6 +61,7 @@ module "lambda" {
 
     str_app_name = var.str_app_name
     str_cognito_app_client_id = module.cognito.str_cognito_app_client_id
+    str_gateway_socket_invoke_url = module.gateway.str_gateway_socket_invoke_url
 
     str_services_lambda_layer_arn = module.services.str_services_lambda_layer_arn
     str_modules_lambda_layer_arn = module.services.str_modules_lambda_layer_arn

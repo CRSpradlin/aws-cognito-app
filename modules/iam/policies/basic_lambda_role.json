@@ -17,7 +17,9 @@
                 "cognito-identity:DescribeIdentity",
                 "cognito-identity:GetCredentialsForIdentity",
                 "logs:*",
-                "dynamodb:*"
+                "dynamodb:*",
+                "apigateway:*",
+                "execute-api:*"
             ],
             "Resource": "*"
         }

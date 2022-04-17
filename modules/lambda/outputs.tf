@@ -2,6 +2,9 @@
 output "str_socketAuthroizer_lambda_invoke_arn" {
   value = aws_lambda_function.socketAuthorizer.invoke_arn
 }
+output "str_socketAuthroizer_lambda_function_name" {
+  value = aws_lambda_function.socketAuthorizer.function_name
+}
 
 // REST API Labmda Integration Ouputs
 output "str_registerUser_lambda_invoke_arn" {
