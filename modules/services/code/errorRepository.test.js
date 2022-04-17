@@ -1,7 +1,8 @@
 const errorRepository = require('./errorRepository');
 
 describe('Test errorRepository', () => {
-    test('Test 1000 error', async () => {
+    // TODO: Turn into for loop to test all errors
+    test('Test error creation', async () => {
         const mockOriginalError = new Error('originalMessage');
 
         const errorRepositoryObj = errorRepository.createError(1000, mockOriginalError);
