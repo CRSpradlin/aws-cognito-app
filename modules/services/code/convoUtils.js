@@ -13,14 +13,17 @@ class convoUtils {
     //     //  - else -> false
     // }
 
-    createConvo = async (ownerId, members) => {
-        members.push(ownerId);
+    createConvo = async (owner, members, name = 'Group Chat') => {
+        // TODO: Check to see if owner and members are friends
+        
+        members.push(owner);
 
         // TODO: Check if convo exists
         
         const newConvo = {
             id: this.uuid(),
-            owner: ownerId,
+            name,
+            owner,
             members: members,
             messages: [],
             subscriptions: []
@@ -37,7 +40,10 @@ class convoUtils {
                 ':empty_list': []
             }
         };
-        await this.dynamoDB.update('UserData', {profile: ownerId}, 'set #conversations = list_append(if_not_exists(#conversations, :empty_list), :array)', additionalConfig);
+
+        // TODO: would need to update every member in the conversation
+        // TODO: OR send requests to people to confirm to be in the conversation
+        await this.dynamoDB.update('UserData', {profile: owner}, 'set #conversations = list_append(if_not_exists(#conversations, :empty_list), :array)', additionalConfig);
 
         return newConvo;
     };
