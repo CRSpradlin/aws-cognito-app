@@ -24,6 +24,9 @@ variable "str_signInUser_lambda_function_name" {}
 variable "str_createConversation_lambda_invoke_arn" {}
 variable "str_createConversation_lambda_function_name" {}
 
+variable "str_sendMessage_lambda_invoke_arn" {}
+variable "str_sendMessage_lambda_function_name" {}
+
 // Module Independent Variables
 variable "str_socket_stage_name" {
     default = "socket"

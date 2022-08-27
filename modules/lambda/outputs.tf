@@ -34,3 +34,10 @@ output "str_createConversation_lambda_invoke_arn" {
 output "str_createConversation_lambda_function_name" {
   value = aws_lambda_function.createConversation.function_name
 }
+
+output "str_sendMessage_lambda_invoke_arn" {
+  value = aws_lambda_function.sendMessage.invoke_arn
+}
+output "str_sendMessage_lambda_function_name" {
+  value = aws_lambda_function.sendMessage.function_name
+}

@@ -1,3 +1,5 @@
+const errorRepository = require('./errorRepository');
+
 class convoUtils {
 
     constructor(uuid, dynamoDB, userUtils) {
@@ -12,6 +14,24 @@ class convoUtils {
     //     //  - if convo exists with members -> true
     //     //  - else -> false
     // }
+
+    appendMessage = async (userProfile, conversationId, messageBody) => {
+        const message = {
+            user: userProfile,
+            body: messageBody,
+            timestamp: new Date().getTime()
+        }
+
+        let conversation = await this.dynamoDB.get(process.env.CONVERSATIONS_TABLE, conversationId);
+        
+        if (conversation.Item) {
+            conversation = conversation.Item;
+            conversation.messages.push(message);
+            return await this.dynamoDB.put('ConversationsData', conversation);
+        } else {
+            throw errorRepository.createError(404, new Error('Conversation Not Found'));
+        }
+    }
 
     createConvo = async (owner, members, name = 'Group Chat') => {
         // TODO: Check to see if owner and members are friends

@@ -1,4 +1,5 @@
 const convoUtils = require('./convoUtils')._convoUtilsService;
+const errorRepository = require('./errorRepository');
 
 const mockUUID = { };
 const mockDynamoDB = { };
@@ -7,6 +8,11 @@ const mockUserUtils = { };
 let instance;
 
 describe('Test convoUtils', () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+        jest.resetModules();
+    });
+
     beforeEach(() => {
         const deps = {
             uuid: mockUUID,
@@ -78,6 +84,59 @@ describe('Test convoUtils', () => {
         expect(instance.dynamoDB.put).toHaveBeenCalledWith('ConversationsData', expectedNewConvo);
         expect(instance.dynamoDB.update).toHaveBeenCalledWith('UserData', {profile: 'owner'}, 'set #conversations = list_append(if_not_exists(#conversations, :empty_list), :array)', expectedAdditionalConfig);
     })
+
+    test('Test appendMessage call with conversation item', async () => {
+        process.env.CONVERSATIONS_TABLE = 'mockConversationsTableName'
+        const mockDate = new Date(1466424490000);
+        jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
+        const dynamoDBMockGetValue = {
+            Item: {
+                messages: [{user: '123', body: 'currMsg', timestamp: 1466424490000}]
+            }
+        };
+        instance.dynamoDB.get = jest.fn().mockResolvedValue(dynamoDBMockGetValue);
+        instance.dynamoDB.put = jest.fn();
+
+        const mockUserProfile = '456';
+        const mockConversationId = 'convoid';
+        const mockMessageBody = 'newMsg';
+
+        await instance.appendMessage(mockUserProfile, mockConversationId, mockMessageBody);
+
+        const expectedConversation = {
+            messages: [
+                {user: '123', body: 'currMsg', timestamp: 1466424490000},
+                {user: '456', body: 'newMsg', timestamp: 1466424490000} 
+            ]
+        }
+        expect(instance.dynamoDB.get).toHaveBeenCalledWith('mockConversationsTableName', 'convoid');
+        expect(instance.dynamoDB.put).toHaveBeenCalledWith('ConversationsData', expectedConversation);
+    });
+
+    test('Test appendMessage call without conversation item', async () => {
+        process.env.CONVERSATIONS_TABLE = 'mockConversationsTableName'
+        const mockDate = new Date(1466424490000);
+        jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
+        const dynamoDBMockGetValue = {};
+        instance.dynamoDB.get = jest.fn().mockResolvedValue(dynamoDBMockGetValue);
+        instance.dynamoDB.put = jest.fn();
+
+        const mockUserProfile = '456';
+        const mockConversationId = 'convoid';
+        const mockMessageBody = 'newMsg';
+
+        const expectedError = errorRepository.createError(404, new Error('Conversation Not Found'));
+
+        try {
+            await instance.appendMessage(mockUserProfile, mockConversationId, mockMessageBody);    
+        } catch (error) {
+            expect(error).toEqual(expectedError);
+        }
+
+        expect(instance.dynamoDB.get).toHaveBeenCalledWith('mockConversationsTableName', 'convoid');
+        expect(instance.dynamoDB.put).not.toHaveBeenCalled();
+        expect.assertions(3);
+    });
 
     test('Test default export', async () => {
         jest.mock('uuid', () => { return { } }, {virtual: true});
