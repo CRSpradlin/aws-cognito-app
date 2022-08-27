@@ -11,6 +11,8 @@
     "build": "zsh ./scripts/build.sh",
     "destroy": "cd aws; terraform destroy -var-file=variables.tfvars",
     "apply": "cd aws; terraform apply -var-file=variables.tfvars",
+    "lint": "eslint .",
+    "lint-fix": "eslint --fix .",
     "update-modules": "cd aws; terraform init;"
   },
   "author": "crspradlin",
@@ -19,9 +21,9 @@
     "@babel/core": "^7.15.5",
     "@babel/eslint-parser": "^7.15.7",
     "@babel/preset-env": "^7.15.6",
+    "eslint": "^7.32.0",
     "eslint-plugin-jest": "^24.4.2",
-    "jest": "^27.2.0",
-    "eslint": "^7.32.0"
+    "jest": "^27.2.0"
   },
   "dependencies": {
     "aws-sdk": "^2.991.0",
