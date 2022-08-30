@@ -86,13 +86,10 @@ describe('Test convoUtils', () => {
     })
 
     test('Test appendMessage call with conversation item', async () => {
-        process.env.CONVERSATIONS_TABLE = 'mockConversationsTableName'
         const mockDate = new Date(1466424490000);
         jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
         const dynamoDBMockGetValue = {
-            Item: {
-                messages: [{user: '123', body: 'currMsg', timestamp: 1466424490000}]
-            }
+            messages: [{user: '123', body: 'currMsg', timestamp: 1466424490000}]
         };
         instance.dynamoDB.get = jest.fn().mockResolvedValue(dynamoDBMockGetValue);
         instance.dynamoDB.put = jest.fn();
@@ -109,15 +106,14 @@ describe('Test convoUtils', () => {
                 {user: '456', body: 'newMsg', timestamp: 1466424490000} 
             ]
         }
-        expect(instance.dynamoDB.get).toHaveBeenCalledWith('mockConversationsTableName', 'convoid');
+        expect(instance.dynamoDB.get).toHaveBeenCalledWith('ConversationsData', {id: 'convoid'});
         expect(instance.dynamoDB.put).toHaveBeenCalledWith('ConversationsData', expectedConversation);
     });
 
     test('Test appendMessage call without conversation item', async () => {
-        process.env.CONVERSATIONS_TABLE = 'mockConversationsTableName'
         const mockDate = new Date(1466424490000);
         jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
-        const dynamoDBMockGetValue = {};
+        const dynamoDBMockGetValue = undefined;
         instance.dynamoDB.get = jest.fn().mockResolvedValue(dynamoDBMockGetValue);
         instance.dynamoDB.put = jest.fn();
 
@@ -133,7 +129,7 @@ describe('Test convoUtils', () => {
             expect(error).toEqual(expectedError);
         }
 
-        expect(instance.dynamoDB.get).toHaveBeenCalledWith('mockConversationsTableName', 'convoid');
+        expect(instance.dynamoDB.get).toHaveBeenCalledWith('ConversationsData', {id: 'convoid'});
         expect(instance.dynamoDB.put).not.toHaveBeenCalled();
         expect.assertions(3);
     });

@@ -22,10 +22,10 @@ class convoUtils {
             timestamp: new Date().getTime()
         }
 
-        let conversation = await this.dynamoDB.get(process.env.CONVERSATIONS_TABLE, conversationId);
-        
-        if (conversation.Item) {
-            conversation = conversation.Item;
+        // TODO: Update all this.dynamoDB.get operations to use environment variables
+        let conversation = await this.dynamoDB.get('ConversationsData', {id: conversationId});
+
+        if (conversation) {
             conversation.messages.push(message);
             return await this.dynamoDB.put('ConversationsData', conversation);
         } else {

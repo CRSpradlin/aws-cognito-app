@@ -71,7 +71,7 @@ describe('Test sendMessage', () => {
         jest.mock('/opt/userUtils', () => { return {default: jest.fn().mockReturnValue({ })} }, {virtual: true});
         jest.mock('/opt/createAPIResponse', () => { return { } }, {virtual: true});
         jest.mock('/opt/cognitoService', () => { return { } }, {virtual: true});
-        jest.mock('/opt/convoUtils', () => { return { } }, {virtual: true});
+        jest.mock('/opt/convoUtils', () => { return {default: jest.fn().mockReturnValue({ })} }, {virtual: true});
         const mockEvent = 'mockEvent';
 
         const mockRegisterUser = require('./sendMessage');

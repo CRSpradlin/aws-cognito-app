@@ -27,7 +27,7 @@ class sendMessage {
             // should there be a check for user in conversation?
             // should there be a check for conversation exists?
 
-            await this.convoUtils.appendMessage(claims.profile, reqBody.conversationId, reqBody.messageBody);
+            await this.convoUtils.appendMessage(claims.profile, this.event.pathParameters.conversationId, reqBody.messageBody);
 
             return this.createAPIResponse.Ok({user, conversationId: this.event.pathParameters.conversationId});
         } catch (error) {
@@ -45,7 +45,7 @@ exports.handler = async (event) => {
     const userUtils = require('/opt/userUtils').default();
     const createAPIResponse = require('/opt/createAPIResponse');
     const cognitoService = require('/opt/cognitoService');
-    const convoUtils = require('/opt/convoUtils');
+    const convoUtils = require('/opt/convoUtils').default();
     const deps = {
         userUtils,
         createAPIResponse,
