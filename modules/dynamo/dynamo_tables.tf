@@ -23,3 +23,22 @@ resource "aws_dynamodb_table" "api_conversation_table" {
     type = "S"
   }
 }
+
+resource "aws_dynamodb_table" "api_message_table" {
+  name           = "MessageData"
+  billing_mode   = "PROVISIONED"
+  read_capacity  = var.int_dynamo_read_capacity
+  write_capacity = var.int_dynamo_write_capacity
+  hash_key       = "conversationId"
+  range_key       = "messageSignature"
+
+  attribute {
+    name = "conversationId"
+    type = "S"
+  }
+
+  attribute {
+    name = "messageSignature"
+    type = "S"
+  }
+}
