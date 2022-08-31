@@ -11,8 +11,8 @@ resource "aws_dynamodb_table" "api_user_table" {
   }
 }
 
-resource "aws_dynamodb_table" "api_conversations_table" {
-  name           = "ConversationsData"
+resource "aws_dynamodb_table" "api_conversation_table" {
+  name           = "ConversationData"
   billing_mode   = "PROVISIONED"
   read_capacity  = var.int_dynamo_read_capacity
   write_capacity = var.int_dynamo_write_capacity

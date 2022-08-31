@@ -50,7 +50,7 @@ describe('Test convoUtils', () => {
         const response = await instance.createConvo(mockOwnerId, mockMembers);
 
         expect(response).toEqual(expectedNewConvo);
-        expect(instance.dynamoDB.put).toHaveBeenCalledWith('ConversationsData', expectedNewConvo);
+        expect(instance.dynamoDB.put).toHaveBeenCalledWith('ConversationData', expectedNewConvo);
         expect(instance.dynamoDB.update).toHaveBeenCalledWith('UserData', {profile: 'owner'}, 'set #conversations = list_append(if_not_exists(#conversations, :empty_list), :array)', expectedAdditionalConfig);
     })
 
@@ -81,7 +81,7 @@ describe('Test convoUtils', () => {
         const response = await instance.createConvo(mockOwnerId, mockMembers, 'Chat Room');
 
         expect(response).toEqual(expectedNewConvo);
-        expect(instance.dynamoDB.put).toHaveBeenCalledWith('ConversationsData', expectedNewConvo);
+        expect(instance.dynamoDB.put).toHaveBeenCalledWith('ConversationData', expectedNewConvo);
         expect(instance.dynamoDB.update).toHaveBeenCalledWith('UserData', {profile: 'owner'}, 'set #conversations = list_append(if_not_exists(#conversations, :empty_list), :array)', expectedAdditionalConfig);
     })
 
@@ -106,8 +106,8 @@ describe('Test convoUtils', () => {
                 {user: '456', body: 'newMsg', timestamp: 1466424490000} 
             ]
         }
-        expect(instance.dynamoDB.get).toHaveBeenCalledWith('ConversationsData', {id: 'convoid'});
-        expect(instance.dynamoDB.put).toHaveBeenCalledWith('ConversationsData', expectedConversation);
+        expect(instance.dynamoDB.get).toHaveBeenCalledWith('ConversationData', {id: 'convoid'});
+        expect(instance.dynamoDB.put).toHaveBeenCalledWith('ConversationData', expectedConversation);
     });
 
     test('Test appendMessage call without conversation item', async () => {
@@ -129,7 +129,7 @@ describe('Test convoUtils', () => {
             expect(error).toEqual(expectedError);
         }
 
-        expect(instance.dynamoDB.get).toHaveBeenCalledWith('ConversationsData', {id: 'convoid'});
+        expect(instance.dynamoDB.get).toHaveBeenCalledWith('ConversationData', {id: 'convoid'});
         expect(instance.dynamoDB.put).not.toHaveBeenCalled();
         expect.assertions(3);
     });

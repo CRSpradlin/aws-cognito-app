@@ -23,11 +23,11 @@ class convoUtils {
         }
 
         // TODO: Update all this.dynamoDB.get operations to use environment variables
-        let conversation = await this.dynamoDB.get('ConversationsData', {id: conversationId});
+        let conversation = await this.dynamoDB.get('ConversationData', {id: conversationId});
 
         if (conversation) {
             conversation.messages.push(message);
-            return await this.dynamoDB.put('ConversationsData', conversation);
+            return await this.dynamoDB.put('ConversationData', conversation);
         } else {
             throw errorRepository.createError(404, new Error('Conversation Not Found'));
         }
@@ -49,7 +49,7 @@ class convoUtils {
             subscriptions: []
         };
 
-        await this.dynamoDB.put('ConversationsData', newConvo);
+        await this.dynamoDB.put('ConversationData', newConvo);
 
         const additionalConfig = {
             ExpressionAttributeNames: {
