@@ -89,25 +89,28 @@ describe('Test convoUtils', () => {
         const mockDate = new Date(1466424490000);
         jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
         const dynamoDBMockGetValue = {
-            messages: [{user: '123', body: 'currMsg', timestamp: 1466424490000}]
+            id: 'mockId',
+            members: ['userProfile1']
         };
         instance.dynamoDB.get = jest.fn().mockResolvedValue(dynamoDBMockGetValue);
         instance.dynamoDB.put = jest.fn();
 
-        const mockUserProfile = '456';
+        const mockUser = {
+            profile: '456'
+        };
         const mockConversationId = 'convoid';
         const mockMessageBody = 'newMsg';
 
-        await instance.appendMessage(mockUserProfile, mockConversationId, mockMessageBody);
+        await instance.appendMessage(mockUser, mockConversationId, mockMessageBody);
 
-        const expectedConversation = {
-            messages: [
-                {user: '123', body: 'currMsg', timestamp: 1466424490000},
-                {user: '456', body: 'newMsg', timestamp: 1466424490000} 
-            ]
+        const expectedMessage = {
+            conversationId: mockConversationId,
+            userProfile: mockUser.profile,
+            body: mockMessageBody,
+            timestamp: 1466424490000
         }
         expect(instance.dynamoDB.get).toHaveBeenCalledWith('ConversationData', {id: 'convoid'});
-        expect(instance.dynamoDB.put).toHaveBeenCalledWith('ConversationData', expectedConversation);
+        expect(instance.dynamoDB.put).toHaveBeenCalledWith('MessageData', expectedMessage);
     });
 
     test('Test appendMessage call without conversation item', async () => {

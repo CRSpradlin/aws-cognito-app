@@ -28,22 +28,23 @@ describe('Test sendMessage', () => {
             conversationId: 'conversationId',
             messageBody: 'messageBody'
         };
-        const mockUserClaims = {
-            profile: 'profile'
-        };
+        const mockUserClaims = {};
+        const mockUser = {
+            profile: 'userProfile'
+        }
         event.pathParameters = {
             conversationId: 'conversationId'
         };
         event.body = JSON.stringify(mockReqBody);
         
         mockCognitoService.getClaims = jest.fn().mockReturnValue(mockUserClaims);
-        mockUserUtils.getUser = jest.fn().mockResolvedValue('user');
+        mockUserUtils.getUser = jest.fn().mockResolvedValue(mockUser);
         mockConvoUtils.appendMessage = jest.fn();
         mockCreateAPIResponse.Ok = jest.fn().mockReturnValue('Ok');
 
         const response = await instance.handler();
 
-        expect(mockConvoUtils.appendMessage).toHaveBeenCalledWith('profile', 'conversationId', 'messageBody');
+        expect(mockConvoUtils.appendMessage).toHaveBeenCalledWith(mockUser, 'conversationId', 'messageBody');
         expect(response).toEqual('Ok');
     });
 

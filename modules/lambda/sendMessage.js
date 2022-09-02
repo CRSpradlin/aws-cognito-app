@@ -27,7 +27,7 @@ class sendMessage {
             // should there be a check for user in conversation?
             // should there be a check for conversation exists?
 
-            await this.convoUtils.appendMessage(claims.profile, this.event.pathParameters.conversationId, reqBody.messageBody);
+            await this.convoUtils.appendMessage(user, this.event.pathParameters.conversationId, reqBody.messageBody);
 
             return this.createAPIResponse.Ok({user, conversationId: this.event.pathParameters.conversationId});
         } catch (error) {

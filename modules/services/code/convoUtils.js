@@ -15,19 +15,20 @@ class convoUtils {
     //     //  - else -> false
     // }
 
-    appendMessage = async (userProfile, conversationId, messageBody) => {
+    appendMessage = async (user, conversationId, messageBody) => {
         const message = {
-            user: userProfile,
+            conversationId,
+            userProfile: user.profile,
             body: messageBody,
-            timestamp: new Date().getTime()
+            timestamp: new Date().getTime() // TODO: add on uuid
         }
 
+        // TODO: Check for user access to conversation through use of user object
         // TODO: Update all this.dynamoDB.get operations to use environment variables
         let conversation = await this.dynamoDB.get('ConversationData', {id: conversationId});
 
         if (conversation) {
-            conversation.messages.push(message);
-            return await this.dynamoDB.put('ConversationData', conversation);
+            return await this.dynamoDB.put('MessageData', message);
         } else {
             throw errorRepository.createError(404, new Error('Conversation Not Found'));
         }
