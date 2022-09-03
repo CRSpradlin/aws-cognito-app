@@ -87,19 +87,20 @@ describe('Test convoUtils', () => {
 
     test('Test appendMessage call with conversation item', async () => {
         const mockDate = new Date(1466424490000);
+        const mockConversationId = 'convoid';
+        const mockMessageBody = 'newMsg';
+        const mockUser = {
+            profile: '456',
+            conversations: [mockConversationId]
+        };
+
         jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
         const dynamoDBMockGetValue = {
-            id: 'mockId',
+            id: mockConversationId,
             members: ['userProfile1']
         };
         instance.dynamoDB.get = jest.fn().mockResolvedValue(dynamoDBMockGetValue);
         instance.dynamoDB.put = jest.fn();
-
-        const mockUser = {
-            profile: '456'
-        };
-        const mockConversationId = 'convoid';
-        const mockMessageBody = 'newMsg';
 
         await instance.appendMessage(mockUser, mockConversationId, mockMessageBody);
 
@@ -111,6 +112,33 @@ describe('Test convoUtils', () => {
         }
         expect(instance.dynamoDB.get).toHaveBeenCalledWith('ConversationData', {id: 'convoid'});
         expect(instance.dynamoDB.put).toHaveBeenCalledWith('MessageData', expectedMessage);
+    });
+
+    test('Test appendMessage call with unauthorized conversation item', async () => {
+        const mockDate = new Date(1466424490000);
+        const mockConversationId = 'convoid';
+        const mockMessageBody = 'newMsg';
+        const mockUser = {
+            profile: '456',
+            conversations: ['convoid2']
+        };
+
+        jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
+        const dynamoDBMockGetValue = {
+            id: mockConversationId,
+            members: ['userProfile1']
+        };
+        instance.dynamoDB.get = jest.fn().mockResolvedValue(dynamoDBMockGetValue);
+        instance.dynamoDB.put = jest.fn();
+
+        try {
+            await instance.appendMessage(mockUser, mockConversationId, mockMessageBody);
+        } catch (error) {
+            expect(error).toEqual(errorRepository.createError(403, new Error('User is not included in conversation')));
+        }
+        
+        expect(instance.dynamoDB.get).toHaveBeenCalledWith('ConversationData', {id: 'convoid'});
+        expect.assertions(2);
     });
 
     test('Test appendMessage call without conversation item', async () => {

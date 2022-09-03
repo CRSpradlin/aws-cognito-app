@@ -20,14 +20,15 @@ class convoUtils {
             conversationId,
             userProfile: user.profile,
             body: messageBody,
-            timestamp: new Date().getTime() // TODO: add on uuid
+            timestamp: new Date().getTime() // TODO: add on uuid -> this seems dumb
         }
 
-        // TODO: Check for user access to conversation through use of user object
         // TODO: Update all this.dynamoDB.get operations to use environment variables
         let conversation = await this.dynamoDB.get('ConversationData', {id: conversationId});
 
         if (conversation) {
+            // TODO: This doesnt seem right but I dont want to query for user again
+            if (!user.conversations.includes(conversationId)) throw errorRepository.createError(403, new Error('User is not included in conversation'));
             return await this.dynamoDB.put('MessageData', message);
         } else {
             throw errorRepository.createError(404, new Error('Conversation Not Found'));
