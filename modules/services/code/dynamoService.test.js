@@ -4,9 +4,10 @@ const dynamoService = require('./dynamoService');
 
 const mockResponse = 'mockResponse'
 
-const mockDynamoDBResponse = jest.fn().mockResolvedValue(mockResponse);
-const mockDynamoGetResponse = {Item: 'item'}
-const mockDynamoUpdateResponse = (params) => { return params; };
+const mockDynamoPutResponse = jest.fn().mockResolvedValue(mockResponse);
+const mockDynamoGetResponse = jest.fn().mockResolvedValue({Item: 'item'});
+const mockDynamoUpdateResponse = jest.fn().mockResolvedValue(mockResponse);
+const mockDynamoQueryResponse = jest.fn().mockResolvedValue({Items: ['item1', 'item2']});
 
 jest.mock('aws-sdk', () => {
     return {
@@ -15,12 +16,12 @@ jest.mock('aws-sdk', () => {
                 return {
                     put: jest.fn((params) => {
                         return {
-                            promise: async () => {return mockDynamoDBResponse(params)}
+                            promise: async () => {return mockDynamoPutResponse(params)}
                         };
                     }),
                     get: jest.fn((params) => {
                         return {
-                            promise: async () => {return mockDynamoGetResponse || params}
+                            promise: async () => {return mockDynamoGetResponse(params)}
                         };
                     }),
                     update: jest.fn((params) => {
@@ -28,6 +29,11 @@ jest.mock('aws-sdk', () => {
                             promise: async () => {return mockDynamoUpdateResponse(params)}
                         };
                     }),
+                    query: jest.fn((params) => {
+                        return {
+                            promise: async () => {return mockDynamoQueryResponse(params)}
+                        };
+                    })
                 };
             }),
         }
@@ -45,6 +51,10 @@ describe('Test dynamoService', () => {
 
         const response = await dynamoService.get(mockTableName, mockKey);
 
+        expect(mockDynamoGetResponse).toHaveBeenCalledWith({
+            TableName: mockTableName,
+            Key: mockKey
+        })
         expect(response).toEqual('item');
     });
 
@@ -54,6 +64,10 @@ describe('Test dynamoService', () => {
 
         const response = await dynamoService.put(mockTableName, mockItem);
 
+        expect(mockDynamoPutResponse).toHaveBeenCalledWith({
+            TableName: mockTableName,
+            Item: mockItem
+        })
         expect(response).toEqual(mockResponse);
     });
 
@@ -64,13 +78,13 @@ describe('Test dynamoService', () => {
 
         const response = await dynamoService.update(mockTableName, mockItem, updateExpression);
 
-        const expectedResponse = {
+        expect(mockDynamoUpdateResponse).toHaveBeenCalledWith({
             TableName: 'tableName',
             Key: {key: 'value'},
             UpdateExpression: 'mockUpdateExpression',
             ReturnValues: 'UPDATED_NEW'
-        }
-        expect(response).toEqual(expectedResponse);
+        });
+        expect(response).toEqual(mockResponse);
     });
     
     test('Test update call with additionalConfig', async () => {
@@ -83,14 +97,48 @@ describe('Test dynamoService', () => {
 
         const response = await dynamoService.update(mockTableName, mockItem, updateExpression, additionalConfig);
 
-        const expectedResponse = {
+        expect(mockDynamoUpdateResponse).toHaveBeenCalledWith({
             TableName: 'tableName',
             Key: {key: 'value'},
             UpdateExpression: 'mockUpdateExpression',
             ReturnValues: 'UPDATED_NEW',
             key1: 'value1'
-        }
-        expect(response).toEqual(expectedResponse);
+        });
+        expect(response).toEqual(mockResponse);
     });
+
+    test('Test query call', async () => {
+        const mockTableName = 'tableName';
+        const keyConditionExpression = 'mockKeyConditionExpression';
+        const expressionAttributeValues = 'mockExpressionAttributeValues';
+
+        const response = await dynamoService.query(mockTableName, keyConditionExpression, expressionAttributeValues);
+
+        expect(mockDynamoQueryResponse).toHaveBeenCalledWith({
+            TableName: mockTableName,
+            KeyConditionExpression: keyConditionExpression,
+            ExpressionAttributeValues: expressionAttributeValues
+        });
+        expect(response).toEqual(['item1', 'item2']);
+    });
+
+    test('Test query call with additionalConfig', async () => {
+        const mockTableName = 'tableName';
+        const keyConditionExpression = 'mockKeyConditionExpression';
+        const expressionAttributeValues = 'mockExpressionAttributeValues';
+        const additionalConfig = {
+            Limit: 10
+        };
+
+        const response = await dynamoService.query(mockTableName, keyConditionExpression, expressionAttributeValues, additionalConfig);
+
+        expect(mockDynamoQueryResponse).toHaveBeenCalledWith({
+            TableName: mockTableName,
+            KeyConditionExpression: keyConditionExpression,
+            ExpressionAttributeValues: expressionAttributeValues,
+            Limit: 10
+        });
+        expect(response).toEqual(['item1', 'item2']);   
+    })
 });
 

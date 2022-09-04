@@ -73,3 +73,16 @@ self.update = async (tableName, key, updateExpression, additionalConfig={}) => {
     
     return response;
 }
+
+self.query = async (tableName, keyConditionExpression, expressionAttributeValues, additionalConfig = {}) => {
+    var params = {
+        TableName: tableName,
+        KeyConditionExpression: keyConditionExpression,
+        ExpressionAttributeValues: expressionAttributeValues,
+        ...additionalConfig
+    };
+
+    const response = await documentClient.query(params).promise();
+
+    return response.Items;
+}
