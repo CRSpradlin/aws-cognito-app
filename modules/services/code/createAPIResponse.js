@@ -1,3 +1,5 @@
+const errorRepository = require('./errorRepository');
+
 const self = exports;
 
 self.Ok = (body, statusCode = 200) => {
@@ -10,7 +12,15 @@ self.Ok = (body, statusCode = 200) => {
     return response;
 };
 
-self.Error = (error, statusCode = 400) => {
+self.Error = (error, statusCode = undefined) => {
+    if (!statusCode){
+        statusCode = error.defaultStatusCode ? error.defaultStatusCode : 500
+    }
+
+    if (!error.defaultStatusCode) {
+        error = errorRepository.createError(1000, error);
+    }
+
     const body = {
         error: {
             message: error.message,

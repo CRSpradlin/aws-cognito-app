@@ -8,6 +8,7 @@ class convoUtils {
         this.userUtils = userUtils;
     }
 
+    // TODO: Implement within convo creation to prevent duplicate conversations
     // convoExist = (ownerId, members) => {
     //     members.push(ownerId);
     //     // loop through owner conversations 
@@ -15,37 +16,42 @@ class convoUtils {
     //     //  - else -> false
     // }
 
-    appendMessage = async (user, conversationId, messageBody) => {
+    appendMessage = async (userProfile, conversationId, messageBody) => {
         const message = {
             conversationId,
-            userProfile: user.profile,
+            userProfile,
             body: messageBody,
-            timestamp: new Date().getTime() // TODO: add on uuid -> this seems dumb
+            sentDate: new Date().getTime() // TODO: add on uuid -> this seems dumb
         }
 
-        // TODO: Update all this.dynamoDB.get operations to use environment variables
-        let conversation = await this.dynamoDB.get('ConversationData', {id: conversationId});
-
-        if (conversation) {
-            // TODO: This doesnt seem right but I dont want to query for user again
-            if (!user.conversations.includes(conversationId)) throw errorRepository.createError(403, new Error('User is not included in conversation'));
-            return await this.dynamoDB.put('MessageData', message);
-        } else {
-            throw errorRepository.createError(404, new Error('Conversation Not Found'));
-        }
+        return await this.dynamoDB.put('MessageData', message);
     }
 
-    createConvo = async (owner, members, name = 'Group Chat') => {
+    getMessages = async (conversationId, sentDate = new Date().getTime(), maxCount = 10) => {
+        const keyConditionExpression = 'conversationId = :convoId and sentDate < :sentDate';
+        const expressionAttributeValues = {
+            ':convoId': conversationId,
+            ':sentDate': sentDate
+        }
+        const additionalConfig = {
+            Limit: maxCount,
+            ScanIndexForward: false
+        };
+
+        return await this.dynamoDB.query('MessageData', keyConditionExpression, expressionAttributeValues, additionalConfig);
+    }
+
+    createConvo = async (ownerProfile, members, name = 'Group Chat') => {
         // TODO: Check to see if owner and members are friends
         
-        members.push(owner);
+        members.push(ownerProfile);
 
         // TODO: Check if convo exists
         
         const newConvo = {
             id: this.uuid(),
             name,
-            owner,
+            ownerProfile,
             members: members,
             messages: [],
             subscriptions: []
@@ -63,14 +69,27 @@ class convoUtils {
             }
         };
 
-        // TODO: would need to update every member in the conversation
+        // TODO: would need to upsentDate every member in the conversation
         // TODO: OR send requests to people to confirm to be in the conversation
-        await this.dynamoDB.update('UserData', {profile: owner}, 'set #conversations = list_append(if_not_exists(#conversations, :empty_list), :array)', additionalConfig);
+        await this.dynamoDB.update('UserData', {profile: ownerProfile}, 'set #conversations = list_append(if_not_exists(#conversations, :empty_list), :array)', additionalConfig);
 
         return newConvo;
     };
 
+    userHasAccessToConvo = async (user, conversationId) => {
+        // TODO: Update all this.dynamoDB.get operations to use environment variables
+        let conversation = await this.dynamoDB.get('ConversationData', {id: conversationId});
 
+        if (conversation) {
+            // TODO: This doesnt seem right but I dont want to query for user again
+            if (user.conversations.includes(conversationId)){
+                return true;
+            }
+            return false;
+        } else {
+            throw errorRepository.createError(4404, new Error('Conversation Not Found'));
+        }
+    }
 }
 
 exports._convoUtilsService = (deps) => {

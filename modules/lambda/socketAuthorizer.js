@@ -16,18 +16,12 @@ class socketAuthorizer {
                 await this.cognitoService.getUser(this.token);
                 //TODO: add connection id to user
             } else {
-                throw errorRepository.createError(404);
+                throw errorRepository.createError(4404);
             }
             
             return this.createAPIResponse.Ok();
         } catch (error) {
-            let newError = error;
-
-            if (!error.code) {
-                newError = errorRepository.createError(403, error);
-            }
-
-            return this.createAPIResponse.Error(newError, newError.code);
+            return this.createAPIResponse.Error(error);
         }
     }
 }

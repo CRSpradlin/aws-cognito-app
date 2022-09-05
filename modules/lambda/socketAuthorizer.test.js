@@ -30,11 +30,11 @@ describe('Test socketAuthorizer', () => {
         mockCreateAPIResponse.Error = jest.fn().mockReturnValue('Error');
         mockCognitoService.getUser = jest.fn();
 
-        const expectedError = errorRepository.createError(404);
+        const expectedError = errorRepository.createError(4404);
 
         const response = await instance.handler();
 
-        expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(expectedError, 404);
+        expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(expectedError);
         expect(mockCognitoService.getUser).not.toHaveBeenCalled();
         expect(response).toEqual('Error');
     });
@@ -50,23 +50,6 @@ describe('Test socketAuthorizer', () => {
 
         expect(mockCreateAPIResponse.Error).not.toHaveBeenCalled();
         expect(response).toEqual('Ok');
-    });
-
-    test('Test handler call with invalid token', async () => {
-        mockCreateAPIResponse.Error = jest.fn().mockReturnValue('Error');
-        mockCreateAPIResponse.Ok = jest.fn().mockReturnValue('Ok');
-        const mockError = 'UnAuthorized User';
-        mockCognitoService.getUser = jest.fn().mockImplementation(() => {
-            throw mockError;
-        });
-
-        const expectedError = errorRepository.createError(403, mockError);
-        instance.token = 'mockInvalidToken';
-
-        const response = await instance.handler();
-
-        expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(expectedError, 403);
-        expect(response).toEqual('Error');
     });
 
     test('Test lambda handler export', async () => {

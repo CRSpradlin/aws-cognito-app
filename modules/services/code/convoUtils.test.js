@@ -32,7 +32,7 @@ describe('Test convoUtils', () => {
         const expectedNewConvo = {
             id: 'uuid',
             name: 'Group Chat',
-            owner: 'owner',
+            ownerProfile: 'owner',
             members: ['member1', 'member2', 'owner'],
             messages: [],
             subscriptions: []
@@ -63,7 +63,7 @@ describe('Test convoUtils', () => {
         const expectedNewConvo = {
             id: 'uuid',
             name: 'Chat Room',
-            owner: 'owner',
+            ownerProfile: 'owner',
             members: ['member1', 'member2', 'owner'],
             messages: [],
             subscriptions: []
@@ -89,80 +89,125 @@ describe('Test convoUtils', () => {
         const mockDate = new Date(1466424490000);
         const mockConversationId = 'convoid';
         const mockMessageBody = 'newMsg';
-        const mockUser = {
-            profile: '456',
-            conversations: [mockConversationId]
-        };
+        const mockUserProfile = '456';
 
         jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
-        const dynamoDBMockGetValue = {
-            id: mockConversationId,
-            members: ['userProfile1']
-        };
-        instance.dynamoDB.get = jest.fn().mockResolvedValue(dynamoDBMockGetValue);
         instance.dynamoDB.put = jest.fn();
 
-        await instance.appendMessage(mockUser, mockConversationId, mockMessageBody);
+        await instance.appendMessage(mockUserProfile, mockConversationId, mockMessageBody);
 
         const expectedMessage = {
             conversationId: mockConversationId,
-            userProfile: mockUser.profile,
+            userProfile: mockUserProfile,
             body: mockMessageBody,
-            timestamp: 1466424490000
+            sentDate: 1466424490000
         }
-        expect(instance.dynamoDB.get).toHaveBeenCalledWith('ConversationData', {id: 'convoid'});
         expect(instance.dynamoDB.put).toHaveBeenCalledWith('MessageData', expectedMessage);
     });
 
-    test('Test appendMessage call with unauthorized conversation item', async () => {
+    test('Test getMessages call', async () => {
         const mockDate = new Date(1466424490000);
+        const conversationId = '123';
+
+        jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
+        instance.dynamoDB.query = jest.fn().mockResolvedValue(['message1', 'message2']);
+        
+        const response = await instance.getMessages(conversationId);
+
+        const expectedExpression = 'conversationId = :convoId and sentDate < :sentDate';
+        const expectedAttributeValues = {
+            ':convoId': conversationId,
+            ':sentDate': 1466424490000
+        };
+        const expectedAdditionalConfig = {
+            Limit: 10,
+            ScanIndexForward: false
+        };
+
+        expect(response).toEqual(['message1', 'message2']);
+        expect(instance.dynamoDB.query).toHaveBeenCalledWith(
+            'MessageData',
+            expectedExpression,
+            expectedAttributeValues,
+            expectedAdditionalConfig
+        );
+    });
+
+    test('Test getMessages call with optional parameters', async () => {
+        const conversationId = '123';
+        const mockMessageDate = 1466424490001
+
+        instance.dynamoDB.query = jest.fn().mockResolvedValue(['message1', 'message2']);
+        
+        const response = await instance.getMessages(conversationId, 1466424490001, 20);
+
+        const expectedExpression = 'conversationId = :convoId and sentDate < :sentDate';
+        const expectedAttributeValues = {
+            ':convoId': conversationId,
+            ':sentDate': mockMessageDate
+        };
+        const expectedAdditionalConfig = {
+            Limit: 20,
+            ScanIndexForward: false
+        };
+
+        expect(response).toEqual(['message1', 'message2']);
+        expect(instance.dynamoDB.query).toHaveBeenCalledWith(
+            'MessageData',
+            expectedExpression,
+            expectedAttributeValues,
+            expectedAdditionalConfig
+        );
+    });
+
+    test('Test userHasAccessToConvo call with unauthorized conversation item', async () => {
         const mockConversationId = 'convoid';
-        const mockMessageBody = 'newMsg';
         const mockUser = {
             profile: '456',
             conversations: ['convoid2']
         };
 
-        jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
-        const dynamoDBMockGetValue = {
-            id: mockConversationId,
-            members: ['userProfile1']
-        };
-        instance.dynamoDB.get = jest.fn().mockResolvedValue(dynamoDBMockGetValue);
-        instance.dynamoDB.put = jest.fn();
+        instance.dynamoDB.get = jest.fn().mockResolvedValue({
+            members: ['123']
+        });
 
-        try {
-            await instance.appendMessage(mockUser, mockConversationId, mockMessageBody);
-        } catch (error) {
-            expect(error).toEqual(errorRepository.createError(403, new Error('User is not included in conversation')));
-        }
-        
-        expect(instance.dynamoDB.get).toHaveBeenCalledWith('ConversationData', {id: 'convoid'});
-        expect.assertions(2);
+        const response = await instance.userHasAccessToConvo(mockUser, mockConversationId);
+
+        expect(response).toEqual(false);
     });
 
-    test('Test appendMessage call without conversation item', async () => {
-        const mockDate = new Date(1466424490000);
-        jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
-        const dynamoDBMockGetValue = undefined;
-        instance.dynamoDB.get = jest.fn().mockResolvedValue(dynamoDBMockGetValue);
-        instance.dynamoDB.put = jest.fn();
+    test('Test userHasAccessToConvo call with unauthorized conversation item', async () => {
+        const mockConversationId = 'convoid2';
+        const mockUser = {
+            profile: '456',
+            conversations: ['convoid2']
+        };
+        
+        instance.dynamoDB.get = jest.fn().mockResolvedValue({
+            members: ['123']
+        });
 
-        const mockUserProfile = '456';
-        const mockConversationId = 'convoid';
-        const mockMessageBody = 'newMsg';
+        const response = await instance.userHasAccessToConvo(mockUser, mockConversationId);
 
-        const expectedError = errorRepository.createError(404, new Error('Conversation Not Found'));
+        expect(response).toEqual(true);
+    });
+
+    test('Test userHasAccessToConvo call with unknown conversation item', async () => {
+        const mockConversationId = 'convoid2';
+        const mockUser = {
+            profile: '456',
+            conversations: ['convoid2']
+        };
+        
+        instance.dynamoDB.get = jest.fn().mockResolvedValue(undefined);
 
         try {
-            await instance.appendMessage(mockUserProfile, mockConversationId, mockMessageBody);    
+            await instance.userHasAccessToConvo(mockUser, mockConversationId);
         } catch (error) {
-            expect(error).toEqual(expectedError);
+            expect(error).toEqual(errorRepository.createError(4404, new Error('Conversation not found')));
         }
 
-        expect(instance.dynamoDB.get).toHaveBeenCalledWith('ConversationData', {id: 'convoid'});
-        expect(instance.dynamoDB.put).not.toHaveBeenCalled();
-        expect.assertions(3);
+        expect.assertions(1);
     });
 
     test('Test default export', async () => {

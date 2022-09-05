@@ -8,6 +8,6 @@ describe('Test errorRepository', () => {
         const errorRepositoryObj = errorRepository.createError(1000, mockOriginalError);
 
         expect(errorRepositoryObj.message).toEqual('An error has occured during a lambda function execution runtime');
-        expect(errorRepositoryObj.devMessage).toEqual('originalMessage');
+        expect(errorRepositoryObj.context).toEqual('originalMessage');
     });
 })

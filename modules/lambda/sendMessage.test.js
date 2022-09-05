@@ -1,6 +1,6 @@
 
-const errorRepository = require('./opt/errorRepository');
 const sendMessage = require('./sendMessage');
+const errorRepository = require('./opt/errorRepository');
 
 const mockUserUtils = { };
 const mockCreateAPIResponse = { };
@@ -11,6 +11,11 @@ let instance;
 let event = {};
 
 describe('Test sendMessage', () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+        jest.resetModules();
+    })
+
     beforeEach(() => {
         const deps = {
             userUtils: mockUserUtils,
@@ -28,10 +33,12 @@ describe('Test sendMessage', () => {
             conversationId: 'conversationId',
             messageBody: 'messageBody'
         };
-        const mockUserClaims = {};
+        const mockUserClaims = {
+            profile: 'userProfile'
+        };
         const mockUser = {
             profile: 'userProfile'
-        }
+        };
         event.pathParameters = {
             conversationId: 'conversationId'
         };
@@ -39,6 +46,7 @@ describe('Test sendMessage', () => {
         
         mockCognitoService.getClaims = jest.fn().mockReturnValue(mockUserClaims);
         mockUserUtils.getUser = jest.fn().mockResolvedValue(mockUser);
+        mockConvoUtils.userHasAccessToConvo = jest.fn().mockResolvedValue(true);
         mockConvoUtils.appendMessage = jest.fn();
         mockCreateAPIResponse.Ok = jest.fn().mockReturnValue('Ok');
 
@@ -48,7 +56,30 @@ describe('Test sendMessage', () => {
         expect(response).toEqual('Ok');
     });
 
-    test('Test handler call with caught error', async () => {
+    test('Test handler call with unauthorized user error', async () => {
+        const mockUserClaims = {
+            profile: 'userProfile'
+        };
+        const mockUser = {
+            profile: 'userProfile'
+        }
+        const mockAPIResponse = {
+            error: 'error'
+        };
+        const expectedError = errorRepository.createError(4403, new Error('User is not a member of this conversation'));
+
+        mockCognitoService.getClaims = jest.fn().mockReturnValue(mockUserClaims);
+        mockUserUtils.getUser = jest.fn().mockResolvedValue(mockUser);
+        mockConvoUtils.userHasAccessToConvo = jest.fn().mockResolvedValue(false);
+        mockCreateAPIResponse.Error = jest.fn().mockReturnValue(mockAPIResponse);
+
+        const response = await instance.handler();
+
+        expect(response).toEqual(mockAPIResponse);
+        expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(expectedError);
+    });
+
+    test('Test handler call with unexpected error', async () => {
         const mockResponse = {
             error: 'error'
         };
@@ -60,11 +91,9 @@ describe('Test sendMessage', () => {
         mockCreateAPIResponse.Error = jest.fn().mockReturnValue(mockResponse);
 
         const response = await instance.handler();
-        
-        const expectedError = errorRepository.createError(1000, mockError);
 
         expect(response).toEqual(mockResponse);
-        expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(expectedError);
+        expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(mockError);
         expect(mockUserUtils.getUser).not.toHaveBeenCalled();
     });
 

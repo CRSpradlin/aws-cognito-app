@@ -30,7 +30,7 @@ resource "aws_dynamodb_table" "api_message_table" {
   read_capacity  = var.int_dynamo_read_capacity
   write_capacity = var.int_dynamo_write_capacity
   hash_key       = "conversationId"
-  range_key       = "timestamp"
+  range_key       = "sentDate"
 
   attribute {
     name = "conversationId"
@@ -38,7 +38,7 @@ resource "aws_dynamodb_table" "api_message_table" {
   }
 
   attribute {
-    name = "timestamp"
+    name = "sentDate"
     type = "N"
   }
 }

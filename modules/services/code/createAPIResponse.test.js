@@ -21,10 +21,10 @@ describe('Test createAPIResponse', () => {
         const expectedAPIResponse = {
             isBase64Encoded: false,
             body: JSON.stringify(mockBody),
-            statusCode: 201
+            statusCode: 204
         };
 
-        const apiResponse = createAPIResponse.Ok(mockBody, 201);
+        const apiResponse = createAPIResponse.Ok(mockBody, 204);
 
         expect(apiResponse).toEqual(expectedAPIResponse);
     });
@@ -39,7 +39,7 @@ describe('Test createAPIResponse', () => {
                     code: 1000
                 }
             }),
-            statusCode: 400
+            statusCode: 500
         };
 
         const apiResponse = createAPIResponse.Error(mockError);
@@ -57,10 +57,30 @@ describe('Test createAPIResponse', () => {
                     code: 1000
                 }
             }),
+            statusCode: 501
+        };
+
+        const apiResponse = createAPIResponse.Error(mockError, 501);
+
+        expect(apiResponse).toEqual(expectedAPIResponse);
+    });
+
+    test('Test Error call with non-repository error', async () => {
+        const mockError = new Error('Unexpected Error')
+
+        const expectedAPIResponse = {
+            isBase64Encoded: false,
+            body: JSON.stringify({
+                error: {
+                    message: 'An error has occured during a lambda function execution runtime',
+                    code: 1000
+                },
+                context: 'Unexpected Error'
+            }),
             statusCode: 500
         };
 
-        const apiResponse = createAPIResponse.Error(mockError, 500);
+        const apiResponse = createAPIResponse.Error(mockError);
 
         expect(apiResponse).toEqual(expectedAPIResponse);
     });

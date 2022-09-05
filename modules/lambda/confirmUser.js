@@ -15,6 +15,7 @@ class confirmUser {
         try {
             const body = await this.cognitoService.confirmUser(reqBody.username, reqBody.confirmation);
 
+            //TODO: 204 no content?
             return this.createAPIResponse.Ok(body);
         } catch (error) {
             const newError = errorRepository.createError(1000, error);

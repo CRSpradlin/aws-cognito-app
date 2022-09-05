@@ -11,28 +11,21 @@ class sendMessage {
     }
 
     handler = async () => {
-        //TODO: Get User
-        // - Check user is in coversation
-        // - Send message
-
         const reqBody = JSON.parse(this.event.body);
         
         try {
             const claims = this.cognitoService.getClaims(this.event);
             const user = await this.userUtils.getUser(claims.profile);
-            // conversionID: reqBody.conversationId
-            // messageBody: reqBody.messageBody
-            // const body = await this.userUtils.createUser(reqBody.username, reqBody.password, reqBody.email);
+            const conversationId = this.event.pathParameters.conversationId
 
-            // should there be a check for user in conversation?
-            // should there be a check for conversation exists?
+            if (!await this.convoUtils.userHasAccessToConvo(user, conversationId)) 
+                throw errorRepository.createError(4403, new Error('User is not a member of this conversation'));
 
-            await this.convoUtils.appendMessage(user, this.event.pathParameters.conversationId, reqBody.messageBody);
+            await this.convoUtils.appendMessage(user, conversationId, reqBody.messageBody);
 
-            return this.createAPIResponse.Ok({user, conversationId: this.event.pathParameters.conversationId});
+            return this.createAPIResponse.Ok({user, conversationId});
         } catch (error) {
-            const newError = errorRepository.createError(1000, error);
-            return this.createAPIResponse.Error(newError);
+            return this.createAPIResponse.Error(error);
         }
     }
 }
