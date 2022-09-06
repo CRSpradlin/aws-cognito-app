@@ -41,3 +41,10 @@ output "str_sendMessage_lambda_invoke_arn" {
 output "str_sendMessage_lambda_function_name" {
   value = aws_lambda_function.sendMessage.function_name
 }
+
+output "str_getMessages_lambda_invoke_arn" {
+  value = aws_lambda_function.getMessages.invoke_arn
+}
+output "str_getMessages_lambda_function_name" {
+  value = aws_lambda_function.getMessages.function_name
+}

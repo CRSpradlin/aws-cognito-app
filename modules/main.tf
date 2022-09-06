@@ -51,6 +51,9 @@ module "gateway" {
 
     str_sendMessage_lambda_invoke_arn = module.lambda.str_sendMessage_lambda_invoke_arn
     str_sendMessage_lambda_function_name = module.lambda.str_sendMessage_lambda_function_name
+
+    str_getMessages_lambda_invoke_arn = module.lambda.str_getMessages_lambda_invoke_arn
+    str_getMessages_lambda_function_name = module.lambda.str_getMessages_lambda_function_name
 }
 
 module "iam" {

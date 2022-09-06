@@ -19,7 +19,8 @@ resource "aws_api_gateway_deployment" "rest" {
     aws_api_gateway_method.method_post_conversation_create,
     aws_api_gateway_integration.lambda_createConversation_method_post_conversation_create_integration,
     aws_api_gateway_method.method_post_message,
-    aws_api_gateway_integration.lambda_sendMessage_method_post_message_integration
+    aws_api_gateway_integration.lambda_sendMessage_method_post_message_create_integration,
+    aws_api_gateway_integration.lambda_getMessages_method_post_message_integration
   ]
 }
 
