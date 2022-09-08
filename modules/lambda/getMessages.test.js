@@ -8,7 +8,12 @@ const mockCognitoService = { };
 const mockConvoUtils = { };
 
 let instance;
-let event = {};
+let event = {
+    pathParameters: {
+        conversationId: 'conversationId'
+    },
+    queryStringParameters: { }
+};
 
 describe('Test getMessages', () => {
     afterEach(() => {
@@ -32,25 +37,23 @@ describe('Test getMessages', () => {
         event.pathParameters = {
             conversationId: 'conversationId'
         };
+        event.queryStringParameters = { };
         const mockUserClaims = {
             profile: 'userProfile'
         };
         const mockUser = {
             profile: 'userProfile'
         };
-        event.pathParameters = {
-            conversationId: 'conversationId'
-        };
         
         mockCognitoService.getClaims = jest.fn().mockReturnValue(mockUserClaims);
         mockUserUtils.getUser = jest.fn().mockResolvedValue(mockUser);
         mockConvoUtils.userHasAccessToConvo = jest.fn().mockResolvedValue(true);
-        mockConvoUtils.getMessages = jest.fn();
+        instance.processGetMessages = jest.fn().mockResolvedValue(['message1', 'message2']);
         mockCreateAPIResponse.Ok = jest.fn().mockReturnValue('Ok');
 
         const response = await instance.handler();
 
-        expect(mockConvoUtils.getMessages).toHaveBeenCalledWith('conversationId');
+        expect(instance.processGetMessages).toHaveBeenCalled();
         expect(response).toEqual('Ok');
     });
 
@@ -93,6 +96,35 @@ describe('Test getMessages', () => {
         expect(response).toEqual(mockResponse);
         expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(mockError);
         expect(mockUserUtils.getUser).not.toHaveBeenCalled();
+    });
+
+    test('Test processGetMessages call', async () => {
+        mockConvoUtils.getMessages = jest.fn().mockResolvedValue(['message1', 'message2']);
+
+        const response = await instance.processGetMessages();
+
+        expect(response).toEqual(['message1', 'message2']);
+        expect(mockConvoUtils.getMessages).toHaveBeenCalledWith('conversationId');
+    });
+
+    test('Test processGetMessages call with latest information', async () => {
+        mockConvoUtils.getMessages = jest.fn().mockResolvedValue(['message2']);
+        instance.latest = '123456789';
+
+        const response = await instance.processGetMessages();
+
+        expect(response).toEqual(['message2']);
+        expect(mockConvoUtils.getMessages).toHaveBeenCalledWith('conversationId', 123456789);
+    });
+
+    test('Test processGetMessages call with latest information giberish', async () => {
+        mockConvoUtils.getMessages = jest.fn().mockResolvedValue(['message2']);
+        instance.latest = 'hiphop';
+
+        const response = await instance.processGetMessages();
+
+        expect(response).toEqual(['message2']);
+        expect(mockConvoUtils.getMessages).toHaveBeenCalledWith('conversationId');
     });
 
     test('Test lambda handler export', async () => {

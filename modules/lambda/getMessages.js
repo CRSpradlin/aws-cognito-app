@@ -8,6 +8,8 @@ class getMessages {
         this.cognitoService = cognitoService;
         this.convoUtils = convoUtils;
         this.event = event;
+        this.latest = this.event.queryStringParameters?.latest;
+        this.conversationId = this.event.pathParameters.conversationId;
     }
 
     handler = async () => {
@@ -15,16 +17,24 @@ class getMessages {
             // TODO: Add query parameters for Limit and LatestTimeStamp (to query messages before the given time)
             const claims = this.cognitoService.getClaims(this.event);
             const user = await this.userUtils.getUser(claims.profile);
-            const conversationId = this.event.pathParameters.conversationId
 
-            if (!await this.convoUtils.userHasAccessToConvo(user, conversationId)) 
+            if (!await this.convoUtils.userHasAccessToConvo(user, this.conversationId)) 
                 throw errorRepository.createError(4403, new Error('User is not a member of this conversation'));
 
-            const messages = await this.convoUtils.getMessages(conversationId);
+            const messages = await this.processGetMessages();
 
-            return this.createAPIResponse.Ok({user, conversationId, messages});
+            return this.createAPIResponse.Ok({user, conversationId: this.conversationId, messages});
         } catch (error) {
             return this.createAPIResponse.Error(error);
+        }
+    }
+    
+    processGetMessages = async () => {
+        if (this.latest && parseInt(this.latest) > 0) {
+            const latest = parseInt(this.latest);
+            return await this.convoUtils.getMessages(this.conversationId, latest);
+        } else {
+            return await this.convoUtils.getMessages(this.conversationId);
         }
     }
 }
