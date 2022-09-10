@@ -26,7 +26,8 @@ describe('Test userUtils', () => {
         const mockPutParams = {
             profile: 'uuid',
             email: 'email',
-            conversations: []
+            conversations: [],
+            sessions: []
         };
         const expectedUserAttribs = [
             {Name: 'email', Value: 'email'},
