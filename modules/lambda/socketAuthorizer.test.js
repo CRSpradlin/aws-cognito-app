@@ -42,18 +42,32 @@ describe('Test socketAuthorizer', () => {
     test('Test handler call with token', async () => {
         mockCreateAPIResponse.Error = jest.fn().mockReturnValue('Error');
         mockCreateAPIResponse.Ok = jest.fn().mockReturnValue('Ok');
-        mockCognitoService.getUser = jest.fn().mockResolvedValue('Authorized User');
+        instance.connectionId = 'mockConnectionId';
+        mockCognitoService.getUser = jest.fn().mockResolvedValue({
+            UserAttributes: [
+                {
+                    Name: 'info',
+                    Value: 'dummyValue'
+                },
+                {
+                    Name: 'profile',
+                    Value: 'mockProfile'
+                }
+            ]
+        });
+        mockUserUtils.addUserSession = jest.fn();
 
         instance.token = 'mockToken';
 
         const response = await instance.handler();
 
         expect(mockCreateAPIResponse.Error).not.toHaveBeenCalled();
+        expect(mockUserUtils.addUserSession).toHaveBeenCalledWith('mockProfile', 'mockConnectionId');
         expect(response).toEqual('Ok');
     });
 
     test('Test lambda handler export', async () => {
-        jest.mock('/opt/userUtils', () => { return { } }, {virtual: true});
+        jest.mock('/opt/userUtils', () => { return {default: () => { return { } }} }, {virtual: true});
         jest.mock('/opt/cognitoService', () => { return { } }, {virtual: true});
         jest.mock('/opt/createAPIResponse', () => { return { } }, {virtual: true});
         const mockEvent = 'mockEvent';

@@ -48,6 +48,20 @@ describe('Test userUtils', () => {
         const response = await instance.getUser(mockProfile);
 
         expect(response).toEqual('mockUser');
+    });
+
+    test('Test addUserSession', async () => {
+        const mockProfile = 'profile';
+        const mockConnectionId = 'connectionId';
+        instance.dynamoDB.put = jest.fn().mockResolvedValue('put response');
+
+        const response  = await instance.addUserSession(mockProfile, mockConnectionId);
+
+        expect(response).toEqual('put response');
+        expect(instance.dynamoDB.put).toHaveBeenCalledWith('SocketData', {
+            connectionId: mockConnectionId,
+            userProfile: mockProfile
+        });
     })
 
     test('Test default export', async () => {
