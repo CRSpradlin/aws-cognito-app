@@ -62,6 +62,18 @@ describe('Test userUtils', () => {
             connectionId: mockConnectionId,
             userProfile: mockProfile
         });
+    });
+
+    test('Test removeUserSession', async () => {
+        const mockConnectionId = 'connectionId';
+        instance.dynamoDB.delete = jest.fn().mockResolvedValue('delete response');
+
+        const response  = await instance.removeUserSession(mockConnectionId);
+
+        expect(response).toEqual('delete response');
+        expect(instance.dynamoDB.delete).toHaveBeenCalledWith('SocketData', {
+            connectionId: mockConnectionId
+        });
     })
 
     test('Test default export', async () => {

@@ -60,6 +60,17 @@ self.put = async (tableName, item) => {
     return response;
 }
 
+self.delete = async (tableName, key) => {
+    const params = {
+        TableName: tableName,
+        Key: key
+    };
+
+    const response = await documentClient.delete(params).promise();
+
+    return response;
+}
+
 self.update = async (tableName, key, updateExpression, additionalConfig={}) => {
     const params = {
         TableName: tableName,

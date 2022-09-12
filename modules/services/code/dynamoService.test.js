@@ -8,6 +8,7 @@ const mockDynamoPutResponse = jest.fn().mockResolvedValue(mockResponse);
 const mockDynamoGetResponse = jest.fn().mockResolvedValue({Item: 'item'});
 const mockDynamoUpdateResponse = jest.fn().mockResolvedValue(mockResponse);
 const mockDynamoQueryResponse = jest.fn().mockResolvedValue({Items: ['item1', 'item2']});
+const mockDynamoDeleteResponse = jest.fn().mockResolvedValue(mockResponse);
 
 jest.mock('aws-sdk', () => {
     return {
@@ -32,6 +33,11 @@ jest.mock('aws-sdk', () => {
                     query: jest.fn((params) => {
                         return {
                             promise: async () => {return mockDynamoQueryResponse(params)}
+                        };
+                    }),
+                    delete: jest.fn((params) => {
+                        return {
+                            promise: async () => {return mockDynamoDeleteResponse(params)}
                         };
                     })
                 };
@@ -121,6 +127,19 @@ describe('Test dynamoService', () => {
         });
         expect(response).toEqual(['item1', 'item2']);
     });
+
+    test('Test delete call', async () => {
+        const mockTableName = 'tableName';
+        const mockKey = 'key';
+
+        const response = await dynamoService.delete(mockTableName, mockKey);
+
+        expect(response).toEqual(mockResponse);
+        expect(mockDynamoDeleteResponse).toHaveBeenCalledWith({
+            TableName: mockTableName,
+            Key: mockKey
+        });
+    })
 
     test('Test query call with additionalConfig', async () => {
         const mockTableName = 'tableName';
