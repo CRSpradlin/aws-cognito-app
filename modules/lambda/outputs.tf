@@ -6,6 +6,13 @@ output "str_socketAuthroizer_lambda_function_name" {
   value = aws_lambda_function.socketAuthorizer.function_name
 }
 
+output "str_socketDisconnect_lambda_invoke_arn" {
+  value = aws_lambda_function.socketDisconnect.invoke_arn
+}
+output "str_socketDisconnect_lambda_function_name" {
+  value = aws_lambda_function.socketDisconnect.function_name
+}
+
 // REST API Labmda Integration Ouputs
 output "str_registerUser_lambda_invoke_arn" {
   value = aws_lambda_function.registerUser.invoke_arn

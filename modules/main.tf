@@ -37,6 +37,9 @@ module "gateway" {
     str_socketAuthroizer_lambda_invoke_arn = module.lambda.str_socketAuthroizer_lambda_invoke_arn
     str_socketAuthroizer_lambda_function_name = module.lambda.str_socketAuthroizer_lambda_function_name
 
+    str_socketDisconnect_lambda_invoke_arn = module.lambda.str_socketDisconnect_lambda_invoke_arn
+    str_socketDisconnect_lambda_function_name = module.lambda.str_socketDisconnect_lambda_function_name
+
     str_registerUser_lambda_invoke_arn = module.lambda.str_registerUser_lambda_invoke_arn
     str_registerUser_lambda_function_name = module.lambda.str_registerUser_lambda_function_name
 

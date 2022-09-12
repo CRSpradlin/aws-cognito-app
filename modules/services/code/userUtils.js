@@ -43,6 +43,14 @@ class userUtils {
 
         return await this.dynamoDB.put('SocketData', item);
     }
+
+    removeUserSession = async (connectionId) => {
+        const key = {
+            connectionId
+        };
+
+        return await this.dynamoDB.delete('SocketData', key);
+    }
 }
 
 exports._userUtilsService = (deps) => {

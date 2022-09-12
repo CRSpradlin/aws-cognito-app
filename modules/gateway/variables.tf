@@ -12,6 +12,9 @@ variable "str_cognito_user_pool_endpoint" {}
 variable "str_socketAuthroizer_lambda_invoke_arn" {}
 variable "str_socketAuthroizer_lambda_function_name" {}
 
+variable "str_socketDisconnect_lambda_invoke_arn" {}
+variable "str_socketDisconnect_lambda_function_name" {}
+
 variable "str_registerUser_lambda_invoke_arn" {}
 variable "str_registerUser_lambda_function_name" {}
 
