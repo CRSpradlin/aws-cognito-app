@@ -13,8 +13,8 @@ class socketAuthorizer {
     handler = async () => {
         try {
             if (this.token !== undefined) {
-                await this.cognitoService.getUser(this.token);
-                //TODO: add connection id to user
+                const user = await this.cognitoService.getUser(this.token);
+                await this.userUtils.addUserSession(user.UserAttributes.find((item) => item.Name == 'profile').Value, this.connectionId);
             } else {
                 throw errorRepository.createError(4404);
             }
@@ -33,7 +33,7 @@ exports.socketAuthorizerService = (deps) => {
 exports.handler = async (event) => {
     const cognitoService = require('/opt/cognitoService');
     const createAPIResponse = require('/opt/createAPIResponse');
-    const userUtils = require('/opt/userUtils');
+    const userUtils = require('/opt/userUtils').default();
     const deps = {
         cognitoService,
         createAPIResponse,

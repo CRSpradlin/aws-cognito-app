@@ -34,6 +34,15 @@ class userUtils {
 
         return user;
     }
+
+    addUserSession = async (userProfile, connectionId) => {
+        const item = {
+            connectionId,
+            userProfile
+        }
+
+        return await this.dynamoDB.put('SocketData', item);
+    }
 }
 
 exports._userUtilsService = (deps) => {

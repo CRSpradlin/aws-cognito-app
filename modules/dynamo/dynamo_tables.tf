@@ -42,3 +42,16 @@ resource "aws_dynamodb_table" "api_message_table" {
     type = "N"
   }
 }
+
+resource "aws_dynamodb_table" "api_socket_table" {
+  name           = "SocketData"
+  billing_mode   = "PROVISIONED"
+  read_capacity  = var.int_dynamo_read_capacity
+  write_capacity = var.int_dynamo_write_capacity
+  hash_key       = "connectionId"
+
+  attribute {
+    name = "connectionId"
+    type = "S"
+  }
+}
