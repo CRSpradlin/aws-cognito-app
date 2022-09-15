@@ -47,12 +47,14 @@ describe('Test sendMessage', () => {
         mockCognitoService.getClaims = jest.fn().mockReturnValue(mockUserClaims);
         mockUserUtils.getUser = jest.fn().mockResolvedValue(mockUser);
         mockConvoUtils.userHasAccessToConvo = jest.fn().mockResolvedValue(true);
-        mockConvoUtils.appendMessage = jest.fn();
+        const mockMessage = {messageBody: 'text'};
+        mockConvoUtils.sendMessage = jest.fn().mockResolvedValue(mockMessage);
         mockCreateAPIResponse.Ok = jest.fn().mockReturnValue('Ok');
 
         const response = await instance.handler();
 
-        expect(mockConvoUtils.appendMessage).toHaveBeenCalledWith(mockUser, 'conversationId', 'messageBody');
+        expect(mockConvoUtils.sendMessage).toHaveBeenCalledWith(mockUser, 'conversationId', 'messageBody');
+        expect(mockCreateAPIResponse.Ok).toHaveBeenCalledWith({message: mockMessage});
         expect(response).toEqual('Ok');
     });
 

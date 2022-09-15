@@ -4,6 +4,7 @@ const errorRepository = require('./errorRepository');
 const mockUUID = { };
 const mockDynamoDB = { };
 const mockUserUtils = { };
+const mockSocketUtils = { };
 
 let instance;
 
@@ -17,7 +18,8 @@ describe('Test convoUtils', () => {
         const deps = {
             uuid: mockUUID,
             dynamoDB: mockDynamoDB,
-            userUtils: mockUserUtils
+            userUtils: mockUserUtils,
+            socketUtils: mockSocketUtils
         };
 
         instance = convoUtils(deps);
@@ -94,7 +96,7 @@ describe('Test convoUtils', () => {
         jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
         instance.dynamoDB.put = jest.fn();
 
-        await instance.createMessage(mockUserProfile, mockConversationId, mockMessageBody);
+        const response = await instance.createMessage(mockUserProfile, mockConversationId, mockMessageBody);
 
         const expectedMessage = {
             conversationId: mockConversationId,
@@ -103,6 +105,38 @@ describe('Test convoUtils', () => {
             sentDate: 1466424490000
         }
         expect(instance.dynamoDB.put).toHaveBeenCalledWith('MessageData', expectedMessage);
+        expect(response).toEqual(expectedMessage);
+    });
+
+    test('Test sendMessage call with conversation item', async () => {
+        const mockConversationId = 'convoid';
+        const mockMessageBody = 'newMsg';
+        const mockUserProfile = '456';
+        const mockConversation = {
+            members: ['member1', 'member2', 'member3']
+        }
+
+        instance.dynamoDB.get = jest.fn().mockResolvedValue(mockConversation);
+        instance.userUtils.getUserSessions = jest.fn().mockResolvedValue([
+            {connectionId: 'mockConnectionId1'},
+            {connectionId: 'mockConnectionId2'}
+        ]);
+        instance.socketUtils.sendMessage = jest.fn();
+
+
+
+        const response = await instance.sendMessage(mockUserProfile, mockConversationId, mockMessageBody);
+
+        const expectedMessage = {
+            conversationId: mockConversationId,
+            userProfile: mockUserProfile,
+            body: mockMessageBody,
+            sentDate: 1466424490000
+        }
+        expect(instance.dynamoDB.put).toHaveBeenCalledWith('MessageData', expectedMessage);
+        expect(response).toEqual(expectedMessage);
+
+        expect(instance.socketUtils.sendMessage).toHaveBeenCalledTimes(6);
     });
 
     test('Test getMessages call', async () => {
@@ -210,10 +244,37 @@ describe('Test convoUtils', () => {
         expect.assertions(1);
     });
 
+    test('Test getMembersOfConvo call', async () => {
+        const mockMembers = ['member1', 'member2']
+        instance.dynamoDB.get = jest.fn().mockResolvedValue({
+            members: mockMembers
+        });
+
+        const response = await instance.getMembersOfConvo('mockConversationId');
+
+        expect(response).toEqual(mockMembers);
+        expect(instance.dynamoDB.get).toHaveBeenCalledWith('ConversationData', {conversationId: 'mockConversationId'});
+    });
+
+    test('Test getMembersOfConvo call with unknown convo', async () => {
+        instance.dynamoDB.get = jest.fn().mockResolvedValue(undefined);
+        const expectedError = errorRepository.createError(4404, new Error('Conversation Not Found'));
+
+        try {
+            await instance.getMembersOfConvo('mockConversationId');
+        } catch (error) {
+            expect(error).toEqual(expectedError);
+        }
+
+        expect(instance.dynamoDB.get).toHaveBeenCalledWith('ConversationData', {conversationId: 'mockConversationId'});
+        expect.assertions(2);
+    });
+
     test('Test default export', async () => {
         jest.mock('uuid', () => { return { } }, {virtual: true});
         jest.mock('./dynamoService', () => { return { } }, {virtual: true});
-        jest.mock('./userUtils', () => { return { } }, {virtual: true});
+        jest.mock('./userUtils', () => { return { default: () => { return { } }} }, {virtual: true});
+        jest.mock('./socketUtils', () => { return { } }, {virtual: true});
 
         const mockConvoUtils = require('./convoUtils');
         mockConvoUtils._convoUtilsService = jest.fn();
@@ -221,7 +282,8 @@ describe('Test convoUtils', () => {
         const expectedDeps = { 
             uuid: { },
             dynamoDB: { },
-            userUtils: { }
+            userUtils: { },
+            socketUtils: { }
         };
 
         mockConvoUtils.default();
