@@ -18,6 +18,7 @@ resource "aws_apigatewayv2_deployment" "socket" {
 
   # TODO: Causes Cycle issue in terraform plan
   depends_on = [
-      aws_apigatewayv2_route.socket_api_connect_route
+      aws_apigatewayv2_route.socket_api_connect_route,
+      aws_apigatewayv2_route.socket_api_disconnect_route
   ]
 }
