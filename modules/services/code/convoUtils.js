@@ -16,7 +16,7 @@ class convoUtils {
     //     //  - else -> false
     // }
 
-    appendMessage = async (userProfile, conversationId, messageBody) => {
+    createMessage = async (userProfile, conversationId, messageBody) => {
         const message = {
             conversationId,
             userProfile,

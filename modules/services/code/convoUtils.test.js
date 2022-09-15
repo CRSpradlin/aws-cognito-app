@@ -85,7 +85,7 @@ describe('Test convoUtils', () => {
         expect(instance.dynamoDB.update).toHaveBeenCalledWith('UserData', {profile: 'owner'}, 'set #conversations = list_append(if_not_exists(#conversations, :empty_list), :array)', expectedAdditionalConfig);
     })
 
-    test('Test appendMessage call with conversation item', async () => {
+    test('Test createMessage call with conversation item', async () => {
         const mockDate = new Date(1466424490000);
         const mockConversationId = 'convoid';
         const mockMessageBody = 'newMsg';
@@ -94,7 +94,7 @@ describe('Test convoUtils', () => {
         jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
         instance.dynamoDB.put = jest.fn();
 
-        await instance.appendMessage(mockUserProfile, mockConversationId, mockMessageBody);
+        await instance.createMessage(mockUserProfile, mockConversationId, mockMessageBody);
 
         const expectedMessage = {
             conversationId: mockConversationId,
