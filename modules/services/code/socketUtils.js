@@ -8,7 +8,7 @@ const self = module.exports;
 self.sendMessage = async (message, connectionId) => {
     const params = {
         ConnectionId: connectionId,
-        Data: JSON.stringify(message)
+        Data: JSON.stringify({newMessage: message})
     };
 
     const response = await api.postToConnection(params).promise();

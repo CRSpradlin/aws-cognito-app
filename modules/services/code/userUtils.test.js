@@ -64,6 +64,26 @@ describe('Test userUtils', () => {
         });
     });
 
+    test('Test getUserSessions call', async () => {
+        instance.dynamoDB.query = jest.fn().mockResolvedValue('query response');
+
+        const response = await instance.getUserSessions('mockUserProfile');
+
+        expect(instance.dynamoDB.query).toHaveBeenCalledWith(
+            'SocketData',
+            'userProfile = :userProfile',
+            {
+                ':userProfile': 'mockUserProfile'
+            },
+            {
+                Limit: 10,
+                IndexName: 'ProfileIndex'
+            }
+        );
+
+        expect(response).toEqual('query response');
+    });
+
     test('Test removeUserSession', async () => {
         const mockConnectionId = 'connectionId';
         instance.dynamoDB.delete = jest.fn().mockResolvedValue('delete response');

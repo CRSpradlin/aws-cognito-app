@@ -2,10 +2,11 @@ const errorRepository = require('./errorRepository');
 
 class convoUtils {
 
-    constructor(uuid, dynamoDB, userUtils) {
+    constructor(uuid, dynamoDB, userUtils, socketUtils) {
         this.uuid = uuid.v4;
         this.dynamoDB = dynamoDB;
         this.userUtils = userUtils;
+        this.socketUtils = socketUtils;
     }
 
     // TODO: Implement within convo creation to prevent duplicate conversations
@@ -24,7 +25,24 @@ class convoUtils {
             sentDate: new Date().getTime() // TODO: add on uuid -> this seems dumb
         }
 
-        return await this.dynamoDB.put('MessageData', message);
+        await this.dynamoDB.put('MessageData', message);
+
+        return message;
+    }
+
+    sendMessage = async (userProfile, conversationId, messageBody) => {
+        const message = await this.createMessage(userProfile, conversationId, messageBody);
+        const conversation = await this.dynamoDB.get('ConversationData', {id: conversationId});
+
+        for (const member of conversation.members) {
+            const memberSessions = await this.userUtils.getUserSessions(member);
+
+            for (const session of memberSessions) {
+                await this.socketUtils.sendMessage(message, session.connectionId);
+            }
+        }
+
+        return message;
     }
 
     getMessages = async (conversationId, sentDate = new Date().getTime(), maxCount = 10) => {
@@ -89,22 +107,34 @@ class convoUtils {
         } else {
             throw errorRepository.createError(4404, new Error('Conversation Not Found'));
         }
+    };
+
+    getMembersOfConvo = async (conversationId) => {
+        const conversation = await this.dynamoDB.get('ConversationData', {conversationId});
+
+        if (conversation) {
+            return conversation.members;
+        } else {
+            throw errorRepository.createError(4404, new Error('Conversation Not Found'));
+        }
     }
 }
 
 exports._convoUtilsService = (deps) => {
-    return new convoUtils(deps.uuid, deps.dynamoDB, deps.userUtils);
+    return new convoUtils(deps.uuid, deps.dynamoDB, deps.userUtils, deps.socketUtils);
 }
 
 exports.default = () => {
     const uuid = require('uuid');
     const dynamoDB = require('./dynamoService');
-    const userUtils = require('./userUtils');
+    const userUtils = require('./userUtils').default();
+    const socketUtils = require('./socketUtils');
 
     const deps = {
         uuid: uuid,
         dynamoDB: dynamoDB,
-        userUtils: userUtils    
+        userUtils: userUtils,
+        socketUtils: socketUtils    
     };
 
     return exports._convoUtilsService(deps);

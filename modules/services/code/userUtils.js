@@ -44,6 +44,21 @@ class userUtils {
         return await this.dynamoDB.put('SocketData', item);
     }
 
+    getUserSessions = async (userProfile) => {
+        // Max 10 sessions at once
+
+        const keyConditionExpression = 'userProfile = :userProfile';
+        const expressionAttributeValues = {
+            ':userProfile': userProfile
+        };
+        const additionalConfig = {
+            Limit: 10,
+            IndexName: 'ProfileIndex'
+        };
+
+        return await this.dynamoDB.query('SocketData', keyConditionExpression, expressionAttributeValues, additionalConfig);
+    }
+
     removeUserSession = async (connectionId) => {
         const key = {
             connectionId
