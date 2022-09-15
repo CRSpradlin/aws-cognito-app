@@ -49,7 +49,7 @@ resource "aws_dynamodb_table" "api_socket_table" {
   read_capacity  = var.int_dynamo_read_capacity
   write_capacity = var.int_dynamo_write_capacity
   hash_key       = "connectionId"
-  non_key_attributes = ["userProfile"]
+  # non_key_attributes = ["userProfile"]
 
   attribute {
     name = "connectionId"
@@ -64,7 +64,6 @@ resource "aws_dynamodb_table" "api_socket_table" {
   global_secondary_index {
     name               = "ProfileIndex"
     hash_key           = "userProfile"
-    range_key          = "connectionId"
     read_capacity      = var.int_dynamo_read_capacity
     write_capacity     = var.int_dynamo_write_capacity
     projection_type    = "ALL"
