@@ -12,8 +12,7 @@ class userUtils {
         await this.dynamoDB.put('UserData', {
             profile: profile,
             email: email,
-            conversations: [],
-            sessions: []
+            conversations: []
         });
         
         const userAttributes = [
