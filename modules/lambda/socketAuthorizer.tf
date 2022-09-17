@@ -28,3 +28,7 @@ data "archive_file" "socketAuthorizer" {
   source_file = "${path.module}/../../temp/socketAuthorizer.js"
   output_path = "${path.module}/archive/socketAuthorizer.zip"
 }
+
+resource "aws_cloudwatch_log_group" "socketAuthorizer" {
+  name = "/aws/lambda/socketAuthorizer"
+}

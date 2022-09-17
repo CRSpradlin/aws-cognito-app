@@ -28,3 +28,7 @@ data "archive_file" "confirmUser" {
   source_file = "${path.module}/../../temp/confirmUser.js"
   output_path = "${path.module}/archive/confirmUser.zip"
 }
+
+resource "aws_cloudwatch_log_group" "confirmUser" {
+  name = "/aws/lambda/confirmUser"
+}

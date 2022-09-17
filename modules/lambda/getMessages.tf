@@ -28,3 +28,7 @@ data "archive_file" "getMessages" {
   source_file = "${path.module}/../../temp/getMessages.js"
   output_path = "${path.module}/archive/getMessages.zip"
 }
+
+resource "aws_cloudwatch_log_group" "getMessages" {
+  name = "/aws/lambda/getMessages"
+}
