@@ -28,3 +28,7 @@ data "archive_file" "sendMessage" {
   source_file = "${path.module}/../../temp/sendMessage.js"
   output_path = "${path.module}/archive/sendMessage.zip"
 }
+
+resource "aws_cloudwatch_log_group" "sendMessage" {
+  name = "/aws/lambda/sendMessage"
+}

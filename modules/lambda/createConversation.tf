@@ -28,3 +28,7 @@ data "archive_file" "createConversation" {
   source_file = "${path.module}/../../temp/createConversation.js"
   output_path = "${path.module}/archive/createConversation.zip"
 }
+
+resource "aws_cloudwatch_log_group" "createConversation" {
+  name = "/aws/lambda/createConversation"
+}

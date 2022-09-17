@@ -28,3 +28,7 @@ data "archive_file" "registerUser" {
   source_file = "${path.module}/../../temp/registerUser.js"
   output_path = "${path.module}/archive/registerUser.zip"
 }
+
+resource "aws_cloudwatch_log_group" "registerUser" {
+  name = "/aws/lambda/registerUser"
+}

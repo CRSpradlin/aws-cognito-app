@@ -28,3 +28,7 @@ data "archive_file" "socketDisconnect" {
   source_file = "${path.module}/../../temp/socketDisconnect.js"
   output_path = "${path.module}/archive/socketDisconnect.zip"
 }
+
+resource "aws_cloudwatch_log_group" "socketDisconnect" {
+  name = "/aws/lambda/socketDisconnect"
+}
