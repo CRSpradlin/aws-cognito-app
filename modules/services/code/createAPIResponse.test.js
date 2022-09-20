@@ -21,10 +21,34 @@ describe('Test createAPIResponse', () => {
         const expectedAPIResponse = {
             isBase64Encoded: false,
             body: JSON.stringify(mockBody),
+            statusCode: 205
+        };
+
+        const apiResponse = createAPIResponse.Ok(mockBody, 205);
+
+        expect(apiResponse).toEqual(expectedAPIResponse);
+    });
+
+    test('Test Ok call with no body', async () => {
+        const expectedAPIResponse = {
+            isBase64Encoded: false,
             statusCode: 204
         };
 
-        const apiResponse = createAPIResponse.Ok(mockBody, 204);
+        const apiResponse = createAPIResponse.Ok();
+
+        expect(apiResponse).toEqual(expectedAPIResponse);
+    });
+
+    test('Test Ok call with body', async () => {
+        const mockBody = {message: 'mockBody'};
+        const expectedAPIResponse = {
+            isBase64Encoded: false,
+            body: JSON.stringify(mockBody),
+            statusCode: 200
+        };
+
+        const apiResponse = createAPIResponse.Ok(mockBody);
 
         expect(apiResponse).toEqual(expectedAPIResponse);
     });

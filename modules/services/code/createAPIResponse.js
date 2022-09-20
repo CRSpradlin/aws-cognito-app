@@ -2,11 +2,15 @@ const errorRepository = require('./errorRepository');
 
 const self = exports;
 
-self.Ok = (body, statusCode = 200) => {
+self.Ok = (body = null, statusCode = 204) => {
     const response = {
         isBase64Encoded: false,
-        body: JSON.stringify(body),
         statusCode
+    }
+    
+    if (body) {
+        response.statusCode = statusCode === 204 ? 200 : statusCode
+        response.body = JSON.stringify(body);
     }
 
     return response;

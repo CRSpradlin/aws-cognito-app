@@ -13,10 +13,9 @@ class confirmUser {
         const reqBody = JSON.parse(this.event.body);
         
         try {
-            const body = await this.cognitoService.confirmUser(reqBody.username, reqBody.confirmation);
+            await this.cognitoService.confirmUser(reqBody.username, reqBody.confirmation);
 
-            //TODO: 204 no content?
-            return this.createAPIResponse.Ok(body);
+            return this.createAPIResponse.Ok();
         } catch (error) {
             const newError = errorRepository.createError(1000, error);
             return this.createAPIResponse.Error(newError);
