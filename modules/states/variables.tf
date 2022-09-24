@@ -1,0 +1,1 @@
+variable "str_iam_basic_states_role_arn" {}

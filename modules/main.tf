@@ -83,3 +83,9 @@ module "services" {
 
     str_app_name = var.str_app_name
 }
+
+module "states" {
+    source = "./states"
+
+    str_iam_basic_states_role_arn = module.iam.str_iam_basic_states_role_arn
+}
