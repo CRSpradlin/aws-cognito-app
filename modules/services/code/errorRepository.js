@@ -18,6 +18,12 @@ const ERRORS = [
         name: 'GENERIC_LAMBDA_ERROR',
         message: 'An error has occured during a lambda function execution runtime',
         defaultStatusCode: 500
+    },
+    {
+        errorCode: 1400,
+        name: 'User Already Exists',
+        message: 'User with that username already exists, please try another one',
+        defaultStatusCode: 400
     }
 ];
 

@@ -36,7 +36,24 @@ describe('Test registerUser', () => {
         expect(mockUserUtils.createUser).toHaveBeenCalledWith('mockUsername', 'mockPassword', 'mockEmail');
     });
 
-    test('Test handler call with caught error', async () => {
+    test('Test handler call with UsernameExistsException caught error', async () => {
+        process.env.APP_CLIENT_ID = 'mockAppClientId';
+        instance.event = {body: JSON.stringify({})};
+        const mockError = new Error('mockUsernameExistsException');
+        mockError.code = 'UsernameExistsException';
+        mockUserUtils.createUser = jest.fn().mockImplementation(() => {
+            throw mockError;
+        });
+        mockCreateAPIResponse.Error = jest.fn().mockReturnValue('mockAPIResponseError');
+        const expectedError = errorRepository.createError(1400, mockError);
+
+        const response = await instance.handler();
+
+        expect(response).toEqual('mockAPIResponseError');
+        expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(expectedError);
+    })
+
+    test('Test handler call with unknown caught error', async () => {
         process.env.APP_CLIENT_ID = 'mockAppClientId';
         instance.event = {body: JSON.stringify({})};
         const mockError = new Error('mockError');

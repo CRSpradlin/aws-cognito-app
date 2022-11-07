@@ -16,7 +16,12 @@ class registerUser {
             const body = await this.userUtils.createUser(reqBody.username, reqBody.password, reqBody.email);
             return this.createAPIResponse.Ok(body);
         } catch (error) {
-            const newError = errorRepository.createError(1000, error);
+            let newError;
+            if (error.code == 'UsernameExistsException') {
+                newError = errorRepository.createError(1400, error);
+            } else {
+                newError = errorRepository.createError(1000, error);
+            }
             return this.createAPIResponse.Error(newError);
         }
     }
