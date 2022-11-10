@@ -2,8 +2,15 @@ const errorRepository = require('./errorRepository');
 
 const self = exports;
 
+const HEADERS = {
+    "Access-Control-Allow-Origin": "*", // Required for CORS support to work
+    'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Accept,Authorization,X-Api-Key,X-Amz-Security-Token',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS'
+};
+
 self.Ok = (body = null, statusCode = 204) => {
     const response = {
+        headers: HEADERS,
         isBase64Encoded: false,
         statusCode
     }
@@ -34,6 +41,7 @@ self.Error = (error, statusCode = undefined) => {
     }
 
     const response = {
+        headers: HEADERS,
         isBase64Encoded: false,
         body: JSON.stringify(body),
         statusCode

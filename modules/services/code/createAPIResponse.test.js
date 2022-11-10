@@ -2,13 +2,20 @@
 const createAPIResponse = require('./createAPIResponse');
 const errorRepository = require('./errorRepository');
 
+const HEADERS = {
+    "Access-Control-Allow-Origin": "*", // Required for CORS support to work
+    'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Accept,Authorization,X-Api-Key,X-Amz-Security-Token',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS'    
+}
+
 describe('Test createAPIResponse', () => {
     test('Test Ok call', async () => {
         const mockBody = {message: 'mockBody'};
         const expectedAPIResponse = {
             isBase64Encoded: false,
             body: JSON.stringify(mockBody),
-            statusCode: 200
+            statusCode: 200,
+            headers: HEADERS
         }
 
         const apiResponse = createAPIResponse.Ok(mockBody);
@@ -21,7 +28,8 @@ describe('Test createAPIResponse', () => {
         const expectedAPIResponse = {
             isBase64Encoded: false,
             body: JSON.stringify(mockBody),
-            statusCode: 205
+            statusCode: 205,
+            headers: HEADERS
         };
 
         const apiResponse = createAPIResponse.Ok(mockBody, 205);
@@ -32,7 +40,8 @@ describe('Test createAPIResponse', () => {
     test('Test Ok call with no body', async () => {
         const expectedAPIResponse = {
             isBase64Encoded: false,
-            statusCode: 204
+            statusCode: 204,
+            headers: HEADERS
         };
 
         const apiResponse = createAPIResponse.Ok();
@@ -45,7 +54,8 @@ describe('Test createAPIResponse', () => {
         const expectedAPIResponse = {
             isBase64Encoded: false,
             body: JSON.stringify(mockBody),
-            statusCode: 200
+            statusCode: 200,
+            headers: HEADERS
         };
 
         const apiResponse = createAPIResponse.Ok(mockBody);
@@ -63,7 +73,8 @@ describe('Test createAPIResponse', () => {
                     code: 1000
                 }
             }),
-            statusCode: 500
+            statusCode: 500,
+            headers: HEADERS
         };
 
         const apiResponse = createAPIResponse.Error(mockError);
@@ -81,7 +92,8 @@ describe('Test createAPIResponse', () => {
                     code: 1000
                 }
             }),
-            statusCode: 501
+            statusCode: 501,
+            headers: HEADERS
         };
 
         const apiResponse = createAPIResponse.Error(mockError, 501);
@@ -101,7 +113,8 @@ describe('Test createAPIResponse', () => {
                 },
                 context: 'Unexpected Error'
             }),
-            statusCode: 500
+            statusCode: 500,
+            headers: HEADERS
         };
 
         const apiResponse = createAPIResponse.Error(mockError);
