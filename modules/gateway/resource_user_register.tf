@@ -4,6 +4,17 @@ resource "aws_api_gateway_resource" "resource_user_register" {
   rest_api_id = aws_api_gateway_rest_api.rest.id
 }
 
+module "resource_user_register_cors" {
+  source = "./cors_rest_module"
+
+  depends_on = [
+    aws_api_gateway_resource.resource_user_register
+  ]
+
+  aws_api_gateway_rest_api_id = aws_api_gateway_rest_api.rest.id
+  resource_id                 = aws_api_gateway_resource.resource_user_register.id
+}
+
 resource "aws_api_gateway_method" "method_post_user_register" {
   rest_api_id   = aws_api_gateway_rest_api.rest.id
   resource_id   = aws_api_gateway_resource.resource_user_register.id
@@ -59,61 +70,4 @@ resource "aws_lambda_permission" "lambda_registerUser_method_post_user_register_
 
   # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html
   source_arn = "arn:aws:execute-api:us-east-1:${var.str_aws_account_id}:${aws_api_gateway_rest_api.rest.id}/*/${aws_api_gateway_method.method_post_user_register.http_method}${aws_api_gateway_resource.resource_user_register.path}"
-}
-
-resource "aws_api_gateway_method" "method_options_user_register" {
-    rest_api_id   = aws_api_gateway_rest_api.rest.id
-    resource_id   = aws_api_gateway_resource.resource_user_register.id
-    http_method   = "OPTIONS"
-    authorization = "NONE"
-}
-
-resource "aws_api_gateway_method_response" "method_options_user_register_response" {
-    rest_api_id   = aws_api_gateway_rest_api.rest.id
-    resource_id   = aws_api_gateway_resource.resource_user_register.id
-    http_method   = aws_api_gateway_method.method_options_user_register.http_method
-    status_code   = "200"
-
-    response_models = {
-        "application/json" = "Empty"
-    }
-    response_parameters = {
-        "method.response.header.Access-Control-Allow-Headers" = true,
-        "method.response.header.Access-Control-Allow-Methods" = true,
-        "method.response.header.Access-Control-Allow-Origin" = true
-    }
-
-    depends_on = [
-      aws_api_gateway_method.method_options_user_register
-    ]
-}
-
-resource "aws_api_gateway_integration" "method_options_user_register_integration" {
-    rest_api_id   = aws_api_gateway_rest_api.rest.id
-    resource_id   = aws_api_gateway_resource.resource_user_register.id
-    http_method   = aws_api_gateway_method.method_options_user_register.http_method
-    type          = "MOCK"
-    passthrough_behavior = "WHEN_NO_MATCH"
-    request_templates = {
-      "application/json" : "{\"statusCode\": 200}"
-    }
-    
-    depends_on = [
-      aws_api_gateway_method.method_options_user_register
-    ]
-}
-
-resource "aws_api_gateway_integration_response" "method_options_user_register_integration_response" {
-    rest_api_id   = aws_api_gateway_rest_api.rest.id
-    resource_id   = aws_api_gateway_resource.resource_user_register.id
-    http_method   = aws_api_gateway_method.method_options_user_register.http_method
-    status_code   = aws_api_gateway_method_response.method_options_user_register_response.status_code
-    response_parameters = {
-        "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Accept,Authorization,X-Api-Key,X-Amz-Security-Token'",
-        "method.response.header.Access-Control-Allow-Methods" = "'OPTIONS,POST'"
-        "method.response.header.Access-Control-Allow-Origin" = "'*'"
-    }
-    depends_on = [
-      aws_api_gateway_method_response.method_options_user_register_response
-    ]
 }
