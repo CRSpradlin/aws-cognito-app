@@ -15,13 +15,18 @@ resource "aws_api_gateway_deployment" "rest" {
     module.resource_user_register_cors,
     aws_api_gateway_method.method_post_user_login,
     aws_api_gateway_integration.lambda_signInUser_method_post_user_login_integration,
+    module.resource_user_login_cors,
     aws_api_gateway_method.method_post_user_confirm,
     aws_api_gateway_integration.lambda_confirmUser_method_post_user_confirm_integration,
+    module.resource_user_confirm_cors,
     aws_api_gateway_method.method_post_conversation_create,
     aws_api_gateway_integration.lambda_createConversation_method_post_conversation_create_integration,
+    module.resource_conversation_create_cors,
     aws_api_gateway_method.method_post_message,
+    module.resource_message_cors,
     aws_api_gateway_integration.lambda_sendMessage_method_post_message_create_integration,
-    aws_api_gateway_integration.lambda_getMessages_method_post_message_integration
+    aws_api_gateway_integration.lambda_getMessages_method_post_message_integration,
+    module.resource_message_create_cors
   ]
 }
 

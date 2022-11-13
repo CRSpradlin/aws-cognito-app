@@ -4,6 +4,17 @@ resource "aws_api_gateway_resource" "resource_conversation_create" {
   rest_api_id = aws_api_gateway_rest_api.rest.id
 }
 
+module "resource_conversation_create_cors" {
+  source = "./cors_rest_module"
+
+  depends_on = [
+    aws_api_gateway_resource.resource_conversation_create
+  ]
+
+  aws_api_gateway_rest_api_id = aws_api_gateway_rest_api.rest.id
+  resource_id                 = aws_api_gateway_resource.resource_conversation_create.id
+}
+
 resource "aws_api_gateway_method" "method_post_conversation_create" {
   rest_api_id   = aws_api_gateway_rest_api.rest.id
   resource_id   = aws_api_gateway_resource.resource_conversation_create.id

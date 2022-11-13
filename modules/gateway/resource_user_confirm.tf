@@ -4,6 +4,17 @@ resource "aws_api_gateway_resource" "resource_user_confirm" {
   rest_api_id = aws_api_gateway_rest_api.rest.id
 }
 
+module "resource_user_confirm_cors" {
+  source = "./cors_rest_module"
+
+  depends_on = [
+    aws_api_gateway_resource.resource_user_confirm
+  ]
+
+  aws_api_gateway_rest_api_id = aws_api_gateway_rest_api.rest.id
+  resource_id                 = aws_api_gateway_resource.resource_user_confirm.id
+}
+
 resource "aws_api_gateway_method" "method_post_user_confirm" {
   rest_api_id   = aws_api_gateway_rest_api.rest.id
   resource_id   = aws_api_gateway_resource.resource_user_confirm.id
