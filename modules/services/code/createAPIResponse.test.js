@@ -68,7 +68,7 @@ describe('Test createAPIResponse', () => {
         const expectedAPIResponse = {
             isBase64Encoded: false,
             body: JSON.stringify({
-                error: {
+                info: {
                     message: 'An error has occured during a lambda function execution runtime',
                     code: 1000
                 }
@@ -87,7 +87,7 @@ describe('Test createAPIResponse', () => {
         const expectedAPIResponse = {
             isBase64Encoded: false,
             body: JSON.stringify({
-                error: {
+                info: {
                     message: 'An error has occured during a lambda function execution runtime',
                     code: 1000
                 }
@@ -107,7 +107,7 @@ describe('Test createAPIResponse', () => {
         const expectedAPIResponse = {
             isBase64Encoded: false,
             body: JSON.stringify({
-                error: {
+                info: {
                     message: 'An error has occured during a lambda function execution runtime',
                     code: 1000
                 },

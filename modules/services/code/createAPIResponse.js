@@ -33,7 +33,7 @@ self.Error = (error, statusCode = undefined) => {
     }
 
     const body = {
-        error: {
+        info: {
             message: error.message,
             code: error.code,
         },
