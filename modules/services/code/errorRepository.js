@@ -24,6 +24,12 @@ const ERRORS = [
         name: 'User Already Exists',
         message: 'User with that username already exists, please try another one',
         defaultStatusCode: 400
+    },
+    {
+        errorCode: 1401,
+        name: 'Invalid Password',
+        message: 'Password must be longer than 8 characters, include at least an uppercase character, lowercase character, a number and a symbol character.',
+        defaultStatusCode: 400
     }
 ];
 

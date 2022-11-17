@@ -17,10 +17,15 @@ class registerUser {
             return this.createAPIResponse.Ok(body);
         } catch (error) {
             let newError;
-            if (error.code == 'UsernameExistsException') {
-                newError = errorRepository.createError(1400, error);
-            } else {
-                newError = errorRepository.createError(1000, error);
+            switch (error.code) {
+                case 'UsernameExistsException':
+                    newError = errorRepository.createError(1400, error);
+                    break;
+                case 'InvalidPasswordException':
+                    newError = errorRepository.createError(1401, error);
+                    break;
+                default:
+                    newError = errorRepository.createError(1000, error);
             }
             return this.createAPIResponse.Error(newError);
         }
