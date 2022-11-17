@@ -51,7 +51,24 @@ describe('Test registerUser', () => {
 
         expect(response).toEqual('mockAPIResponseError');
         expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(expectedError);
-    })
+    });
+
+    test('Test handler call with InvalidPasswordException caught error', async () => {
+        process.env.APP_CLIENT_ID = 'mockAppClientId';
+        instance.event = {body: JSON.stringify({})};
+        const mockError = new Error('mockInvalidPasswordException');
+        mockError.code = 'InvalidPasswordException';
+        mockUserUtils.createUser = jest.fn().mockImplementation(() => {
+            throw mockError;
+        });
+        mockCreateAPIResponse.Error = jest.fn().mockReturnValue('mockAPIResponseError');
+        const expectedError = errorRepository.createError(1401, mockError);
+
+        const response = await instance.handler();
+
+        expect(response).toEqual('mockAPIResponseError');
+        expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(expectedError);
+    });
 
     test('Test handler call with unknown caught error', async () => {
         process.env.APP_CLIENT_ID = 'mockAppClientId';
