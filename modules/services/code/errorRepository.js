@@ -15,8 +15,8 @@ const ERRORS = [
     },
     {
         errorCode: 1000,
-        name: 'GENERIC_LAMBDA_ERROR',
-        message: 'An error has occured during a lambda function execution runtime',
+        name: 'Unknown Error',
+        message: 'An error has occured during processing your request, please try again later',
         defaultStatusCode: 500
     },
     {
