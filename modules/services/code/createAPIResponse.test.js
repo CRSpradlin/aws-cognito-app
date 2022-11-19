@@ -69,7 +69,7 @@ describe('Test createAPIResponse', () => {
             isBase64Encoded: false,
             body: JSON.stringify({
                 info: {
-                    message: 'An error has occured during a lambda function execution runtime',
+                    message: 'An error has occured during processing your request, please try again later',
                     code: 1000
                 }
             }),
@@ -88,7 +88,7 @@ describe('Test createAPIResponse', () => {
             isBase64Encoded: false,
             body: JSON.stringify({
                 info: {
-                    message: 'An error has occured during a lambda function execution runtime',
+                    message: 'An error has occured during processing your request, please try again later',
                     code: 1000
                 }
             }),
@@ -108,7 +108,7 @@ describe('Test createAPIResponse', () => {
             isBase64Encoded: false,
             body: JSON.stringify({
                 info: {
-                    message: 'An error has occured during a lambda function execution runtime',
+                    message: 'An error has occured during processing your request, please try again later',
                     code: 1000
                 },
                 context: 'Unexpected Error'
