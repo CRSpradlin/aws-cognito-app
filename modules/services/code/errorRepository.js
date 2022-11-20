@@ -30,6 +30,12 @@ const ERRORS = [
         name: 'Invalid Password',
         message: 'Password must be longer than 8 characters, include at least an uppercase character, lowercase character, a number and a symbol character.',
         defaultStatusCode: 400
+    },
+    {
+        errorCode: 1402,
+        name: 'Invalid Confirmation Code',
+        message: 'The confirmation code you entered is incorrect, please be sure you have entered the proper code sent to your email',
+        defaultStatusCode: 400
     }
 ];
 

@@ -17,7 +17,14 @@ class confirmUser {
 
             return this.createAPIResponse.Ok();
         } catch (error) {
-            const newError = errorRepository.createError(1000, error);
+            let newError;
+            switch (error.code) {
+                case 'CodeMismatchException':
+                    newError = errorRepository.createError(1402, error);
+                    break;
+                default:
+                    newError = errorRepository.createError(1000, error);
+            }
             return this.createAPIResponse.Error(newError);
         }
     }
