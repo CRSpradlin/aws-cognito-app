@@ -8,4 +8,5 @@ module "app" {
   int_dynamo_read_capacity = var.int_dynamo_read_capacity
 
   str_domain = var.str_domain
+  str_support_email = var.str_support_email
 }

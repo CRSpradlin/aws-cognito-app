@@ -84,6 +84,12 @@ module "services" {
     str_app_name = var.str_app_name
 }
 
+module "ses" {
+    source = "./ses"
+
+    str_support_email = var.str_support_email
+}
+
 module "states" {
     source = "./states"
 

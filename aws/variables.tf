@@ -23,3 +23,8 @@ variable "str_domain" {
     description = "Optional Domain to hook into API Gateway, Provide an Empty String if you do not have a Domain"
     type = string
 }
+
+variable "str_support_email" {
+    description = "Optional Email string variable to send error reports for support purposes"
+    type = string
+}
