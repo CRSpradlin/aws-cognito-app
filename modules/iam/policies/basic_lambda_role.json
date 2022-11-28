@@ -19,7 +19,8 @@
                 "logs:*",
                 "dynamodb:*",
                 "apigateway:*",
-                "execute-api:*"
+                "execute-api:*",
+                "ses:*"
             ],
             "Resource": "*"
         }
