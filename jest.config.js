@@ -2,6 +2,7 @@ const config = {
     verbose: true,
     collectCoverageFrom: [
         "modules/**/*.{test.js,js}",
+        "!**/devonly_*.{test.js,js}",
         "!**/node_modules/**",
         "!**/vendor/**",
         "!**/opt/**"
