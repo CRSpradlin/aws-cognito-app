@@ -71,6 +71,7 @@ module "lambda" {
     str_app_name = var.str_app_name
     str_cognito_app_client_id = module.cognito.str_cognito_app_client_id
     str_gateway_socket_invoke_url = module.gateway.str_gateway_socket_invoke_url
+    str_support_email = var.str_support_email
 
     str_services_lambda_layer_arn = module.services.str_services_lambda_layer_arn
     str_modules_lambda_layer_arn = module.services.str_modules_lambda_layer_arn

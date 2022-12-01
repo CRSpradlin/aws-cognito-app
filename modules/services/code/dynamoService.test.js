@@ -2,7 +2,7 @@
 const AWS = require('aws-sdk');
 const dynamoService = require('./dynamoService');
 
-const mockResponse = 'mockResponse'
+const mockResponse = 'mockResponse';
 
 const mockDynamoPutResponse = jest.fn().mockResolvedValue(mockResponse);
 const mockDynamoGetResponse = jest.fn().mockResolvedValue({Item: 'item'});
