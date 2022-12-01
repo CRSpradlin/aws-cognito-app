@@ -36,6 +36,12 @@ const ERRORS = [
         name: 'Invalid Confirmation Code',
         message: 'The confirmation code you entered is incorrect, please be sure you have entered the proper code sent to your email',
         defaultStatusCode: 400
+    },
+    {
+        errorCode: 1403,
+        name: 'No Support Email Defined',
+        message: 'You have tried to email application logs to support but no support email has been defined within the application infrastructure',
+        defaultStatusCode: 400
     }
 ];
 
