@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk');
 const sesUtils = require('./sesUtils');
 
+const errorRepository = require('./errorRepository');
 const mockResponse = 'mockResponse';
 
 const mockSendEmailResponse = jest.fn().mockResolvedValue(mockResponse);
@@ -48,5 +49,19 @@ describe('Test sesUtils', () => {
 
         expect(mockSendEmailResponse).toHaveBeenCalledWith(expectedParams);
         expect(response).toEqual(mockResponse);
+    });
+
+    test('Test sendToSupportEmail call with undefined email error thrown', async () => {
+        process.env.APP_SUPPORT_EMAIL = '';
+        process.env.APP_NAME = 'Test App Name';
+        const expectedError = errorRepository.createError(1403);
+
+        try {
+            await sesUtils.sendHTMLToSupport('test html');
+        } catch (error) {
+            expect(error).toEqual(expectedError);
+        }
+
+        expect.assertions(1);
     });
 })
