@@ -69,6 +69,7 @@ module "lambda" {
     source = "./lambda"
 
     str_app_name = var.str_app_name
+    str_region = var.str_region
     str_cognito_app_client_id = module.cognito.str_cognito_app_client_id
     str_gateway_socket_invoke_url = module.gateway.str_gateway_socket_invoke_url
     str_support_email = var.str_support_email

@@ -9,6 +9,11 @@ variable "str_aws_account_id" {
     type = string
 }
 
+variable "str_region" {
+  description = "Region for AWS resources to be built in"
+  type = string
+}
+
 variable "int_dynamo_write_capacity" {
     description = "Write Capacity for DynamoDB Table"
     type = number
