@@ -18,7 +18,7 @@ resource "aws_cloudwatch_log_subscription_filter" "logging_module_subscription_f
 resource "aws_lambda_permission" "logging_module_subscription_filter_permission" {
   count = var.str_support_email == "" ? 0 : 1
 
-  statement_id  = "${var.str_emailToSupport}_logging_for_${var.str_lambda_name}_permission"
+  statement_id  = "${var.str_emailToSupport_lambda_name}_logging_for_${var.str_lambda_name}_permission"
   action        = "lambda:InvokeFunction"
   function_name = var.str_emailToSupport_lambda_name
   principal     = "logs.${var.str_region}.amazonaws.com"
