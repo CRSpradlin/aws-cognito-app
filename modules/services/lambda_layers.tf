@@ -88,6 +88,6 @@ data "archive_file" "services" {
 
   source {
     filename = "${basename(local.service_files[7])}"
-    content = "${data.template_file.service_files}"
+    content = "${data.template_file.service_files.7.rendered}"
   }
 }

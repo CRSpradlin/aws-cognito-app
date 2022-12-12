@@ -20,7 +20,7 @@ exports.sendHTMLToSupport = async (html) => {
         },
       },
 
-      Subject: {Data: `${process.env.APP_NAME} Automated Alert`},
+      Subject: {Data: process.env.APP_NAME + ' Automated Alert'},
     },
     Source: process.env.APP_SUPPORT_EMAIL,
   };
