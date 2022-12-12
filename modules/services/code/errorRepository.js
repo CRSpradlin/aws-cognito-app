@@ -53,9 +53,9 @@ self.createError = (errorCode, originalError = undefined) => {
     error.context = originalError;
     error.defaultStatusCode = errorDetails.defaultStatusCode;
 
-    if (originalError instanceof Error) {
+    if (originalError instanceof Error && errorCode === 1000) {
         error.context = originalError.message;
-        console.log('Error Encountered: ', originalError);
+        console.log('Uknown Error with Code 1000 Encountered. ', 'Original Error: ', originalError);
     }
 
     return error;
