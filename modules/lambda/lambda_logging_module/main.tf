@@ -21,7 +21,7 @@ resource "aws_lambda_permission" "logging_module_subscription_filter_permission"
   statement_id  = "${var.str_emailToSupport_lambda_name}_logging_for_${var.str_lambda_name}_permission"
   action        = "lambda:InvokeFunction"
   function_name = var.str_emailToSupport_lambda_name
-  principal     = "logs.${var.str_region}.amazonaws.com"
+  principal     = "logs.amazonaws.com"
   source_arn    = "${aws_cloudwatch_log_group.logging_module_log_group.arn}:*"
 
   # TODO: Add Specific ARNS
