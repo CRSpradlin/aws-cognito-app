@@ -11,7 +11,7 @@ resource "aws_cloudwatch_log_subscription_filter" "logging_module_subscription_f
 
   name            = "logging_module_${var.str_lambda_name}_support_subscription_filter"
   log_group_name  = aws_cloudwatch_log_group.logging_module_log_group.name
-  filter_pattern  = "Unknown 1000"
+  filter_pattern  = "Error 1000"
   destination_arn = var.str_emailToSupport_lambda_arn
 }
 
