@@ -55,7 +55,7 @@ self.createError = (errorCode, originalError = undefined) => {
 
     if (originalError instanceof Error && errorCode === 1000) {
         error.context = originalError.message;
-        console.log('Uknown Error with Code 1000 Encountered. ', 'Original Error: ', originalError);
+        console.error('Uknown Error with Code 1000 Encountered. ', 'Original Error: ', originalError);
     }
 
     return error;
