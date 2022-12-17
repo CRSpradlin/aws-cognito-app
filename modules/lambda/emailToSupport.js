@@ -1,18 +1,20 @@
-const errorRepository = require('./opt/errorRepository');
+const errorRepository = require('/opt/errorRepository');
 
 class emailToSupport {
     
     constructor(sesUtils, event) {
-        this.sesUtils = sesUtils
+        this.sesUtils = sesUtils;
         this.event = event;
     }
 
     handler = async () => {
-
-        const reqBody = JSON.parse(this.event.body);
-        
         try {
-            console.log(reqBody);
+            const payload = Buffer.from(this.event.awslogs.data, 'base64');
+
+            let errorLoggedStr = await this.sesUtils.gunzip(payload);
+            const htmlBody = '<html><body><h1>1000 Error Has Been Logged</h1><br><br><code>' + errorLoggedStr + '</code></body></html>';
+            
+            await this.sesUtils.sendHTMLToSupport(htmlBody);
         } catch (error) {
             const newError = errorRepository.createError(1000, error);
             return this.createAPIResponse.Error(newError);
