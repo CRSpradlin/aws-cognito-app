@@ -5,7 +5,8 @@ const config = {
         "!**/devonly_*.{test.js,js}",
         "!**/node_modules/**",
         "!**/vendor/**",
-        "!**/opt/**"
+        "!**/opt/**",
+        "!**/**/devonly_*.{test.js,js}"
     ],
     collectCoverage: true,
     coverageThreshold: {
