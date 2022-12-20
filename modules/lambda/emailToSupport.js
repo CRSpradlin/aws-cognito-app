@@ -1,4 +1,4 @@
-const errorRepository = require('/opt/errorRepository');
+const errorRepository = require('./opt/errorRepository');
 
 class emailToSupport {
     
@@ -17,7 +17,7 @@ class emailToSupport {
             await this.sesUtils.sendHTMLToSupport(htmlBody);
         } catch (error) {
             const newError = errorRepository.createError(1000, error);
-            return this.createAPIResponse.Error(newError);
+            throw newError;
         }
     }
 }
