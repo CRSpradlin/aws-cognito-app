@@ -29,6 +29,20 @@ data "archive_file" "registerUser" {
   output_path = "${path.module}/archive/registerUser.zip"
 }
 
-resource "aws_cloudwatch_log_group" "registerUser" {
-  name = "/aws/lambda/registerUser"
+# resource "aws_cloudwatch_log_group" "registerUser" {
+#   name = "/aws/lambda/registerUser"
+# }
+
+module "registerUser_logging_module" {
+  source = "./lambda_logging_module"
+
+  depends_on = [
+    aws_lambda_function.registerUser
+  ]
+
+  str_region = var.str_region
+  str_emailToSupport_lambda_name = aws_lambda_function.emailToSupport.function_name
+  str_emailToSupport_lambda_arn = aws_lambda_function.emailToSupport.arn
+  str_lambda_name = "registerUser"
+  str_support_email = var.str_support_email
 }
