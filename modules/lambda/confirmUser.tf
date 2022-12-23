@@ -29,6 +29,16 @@ data "archive_file" "confirmUser" {
   output_path = "${path.module}/archive/confirmUser.zip"
 }
 
-resource "aws_cloudwatch_log_group" "confirmUser" {
-  name = "/aws/lambda/confirmUser"
+module "confirmUser_logging_module" {
+  source = "./lambda_logging_module"
+
+  depends_on = [
+    aws_lambda_function.confirmUser
+  ]
+
+  str_region = var.str_region
+  str_emailToSupport_lambda_name = aws_lambda_function.emailToSupport.function_name
+  str_emailToSupport_lambda_arn = aws_lambda_function.emailToSupport.arn
+  str_lambda_name = "confirmUser"
+  str_support_email = var.str_support_email
 }

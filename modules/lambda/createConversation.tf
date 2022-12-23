@@ -29,6 +29,16 @@ data "archive_file" "createConversation" {
   output_path = "${path.module}/archive/createConversation.zip"
 }
 
-resource "aws_cloudwatch_log_group" "createConversation" {
-  name = "/aws/lambda/createConversation"
+module "createConversation_logging_module" {
+  source = "./lambda_logging_module"
+
+  depends_on = [
+    aws_lambda_function.createConversation
+  ]
+
+  str_region = var.str_region
+  str_emailToSupport_lambda_name = aws_lambda_function.emailToSupport.function_name
+  str_emailToSupport_lambda_arn = aws_lambda_function.emailToSupport.arn
+  str_lambda_name = "createConversation"
+  str_support_email = var.str_support_email
 }
