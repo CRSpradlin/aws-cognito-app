@@ -29,6 +29,16 @@ data "archive_file" "socketAuthorizer" {
   output_path = "${path.module}/archive/socketAuthorizer.zip"
 }
 
-resource "aws_cloudwatch_log_group" "socketAuthorizer" {
-  name = "/aws/lambda/socketAuthorizer"
+module "socketAuthorizer_logging_module" {
+  source = "./lambda_logging_module"
+
+  depends_on = [
+    aws_lambda_function.socketAuthorizer
+  ]
+
+  str_region = var.str_region
+  str_emailToSupport_lambda_name = aws_lambda_function.emailToSupport.function_name
+  str_emailToSupport_lambda_arn = aws_lambda_function.emailToSupport.arn
+  str_lambda_name = "socketAuthorizer"
+  str_support_email = var.str_support_email
 }

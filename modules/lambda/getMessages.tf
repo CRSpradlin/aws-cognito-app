@@ -29,6 +29,16 @@ data "archive_file" "getMessages" {
   output_path = "${path.module}/archive/getMessages.zip"
 }
 
-resource "aws_cloudwatch_log_group" "getMessages" {
-  name = "/aws/lambda/getMessages"
+module "getMessages_logging_module" {
+  source = "./lambda_logging_module"
+
+  depends_on = [
+    aws_lambda_function.getMessages
+  ]
+
+  str_region = var.str_region
+  str_emailToSupport_lambda_name = aws_lambda_function.emailToSupport.function_name
+  str_emailToSupport_lambda_arn = aws_lambda_function.emailToSupport.arn
+  str_lambda_name = "getMessages"
+  str_support_email = var.str_support_email
 }

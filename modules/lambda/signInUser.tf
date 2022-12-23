@@ -29,6 +29,16 @@ data "archive_file" "signInUser" {
   output_path = "${path.module}/archive/signInUser.zip"
 }
 
-resource "aws_cloudwatch_log_group" "singInUser" {
-  name = "/aws/lambda/signInUser"
+module "signInUser_logging_module" {
+  source = "./lambda_logging_module"
+
+  depends_on = [
+    aws_lambda_function.signInUser
+  ]
+
+  str_region = var.str_region
+  str_emailToSupport_lambda_name = aws_lambda_function.emailToSupport.function_name
+  str_emailToSupport_lambda_arn = aws_lambda_function.emailToSupport.arn
+  str_lambda_name = "signInUser"
+  str_support_email = var.str_support_email
 }
