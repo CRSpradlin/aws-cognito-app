@@ -29,6 +29,7 @@ data "archive_file" "emailToSupport" {
   output_path = "${path.module}/archive/emailToSupport.zip"
 }
 
+# Only has cloudwatch group and not logging module due to recursive calling potential
 resource "aws_cloudwatch_log_group" "emailToSupport" {
   name = "/aws/lambda/emailToSupport"
 }
