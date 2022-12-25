@@ -45,11 +45,14 @@ const ERRORS = [
     }
 ];
 
+self.REPOSITORY_ERROR_CODE = 'REPOSITORY ERROR';
+
 self.createError = (errorCode, originalError = undefined) => {
     const errorDetails = ERRORS.find(err => { return err.errorCode === errorCode });
     const error = new Error();
     error.message = errorDetails.message;
-    error.code = errorDetails.errorCode;
+    error.code = self.REPOSITORY_ERROR_CODE;
+    error.repoCode = errorDetails.errorCode;
     error.context = originalError;
     error.defaultStatusCode = errorDetails.defaultStatusCode;
 
