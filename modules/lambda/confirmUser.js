@@ -17,8 +17,10 @@ class confirmUser {
 
             return this.createAPIResponse.Ok();
         } catch (error) {
-            let newError;
+            let newError = error;
             switch (error.code) {
+                case errorRepository.REPOSITORY_ERROR_CODE:
+                    break;
                 case 'CodeMismatchException':
                     newError = errorRepository.createError(1402, error);
                     break;
