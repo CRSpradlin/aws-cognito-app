@@ -51,6 +51,21 @@ describe('Test confirmUser', () => {
         expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(expectedError);
     });
 
+    test('Test handler call with caught error repository error', async () => {
+        process.env.APP_CLIENT_ID = 'mockAppClientId';
+        instance.event = {body: JSON.stringify({})};
+        const mockError = errorRepository.createError(1403, new Error('repo error'));
+        mockCognitoService.confirmUser = jest.fn().mockImplementation(() => {
+            throw mockError;
+        });
+        mockCreateAPIResponse.Error = jest.fn().mockReturnValue('mockAPIResponseError');
+
+        const response = await instance.handler();
+
+        expect(response).toEqual('mockAPIResponseError');
+        expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(mockError);
+    });
+
     test('Test handler call with caught CodeMismatchException', async () => {
         process.env.APP_CLIENT_ID = 'mockAppClientId';
         instance.event = {body: JSON.stringify({})};
