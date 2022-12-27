@@ -18,7 +18,13 @@ class createConversation {
             const response = await this.convoUtils.createConvo(claims.profile, reqBody.members);
             return this.createAPIResponse.Ok(response);
         } catch (error) {
-            const newError = errorRepository.createError(1000, error);
+            let newError = error;
+            switch (error.code) {
+                case errorRepository.REPOSITORY_ERROR_CODE:
+                    break;
+                default:
+                    newError = errorRepository.createError(1000, error);
+            }
             return this.createAPIResponse.Error(newError);
         }
     }

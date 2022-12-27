@@ -44,6 +44,31 @@ describe('Test createConversation', () => {
         expect(instance.createAPIResponse.Error).not.toHaveBeenCalled();
     });
 
+    test('Test handler call with caught errorRepository error', async () => {
+        instance.event = {
+            body: JSON.stringify({
+                members: 'members'
+            })
+        };
+
+        const mockError = errorRepository.createError(1403, new Error());
+
+        instance.cognitoService.getClaims = jest.fn().mockImplementation(() => {
+            throw mockError;
+        });
+        instance.convoUtils.createConvo = jest.fn();
+        instance.createAPIResponse.Ok = jest.fn();
+        instance.createAPIResponse.Error = jest.fn().mockReturnValue('mockErrorResponse');
+
+        const response = await instance.handler();
+
+        expect(response).toEqual('mockErrorResponse');
+        expect(instance.cognitoService.getClaims).toHaveBeenCalledWith(instance.event);
+        expect(instance.convoUtils.createConvo).not.toHaveBeenCalled();
+        expect(instance.createAPIResponse.Ok).not.toHaveBeenCalled();
+        expect(instance.createAPIResponse.Error).toHaveBeenCalledWith(mockError);    
+    });
+
     test('Test handler call with unexpected error', async () => {
         instance.event = {
             body: JSON.stringify({
