@@ -16,8 +16,10 @@ class registerUser {
             const body = await this.userUtils.createUser(reqBody.username, reqBody.password, reqBody.email);
             return this.createAPIResponse.Ok(body);
         } catch (error) {
-            let newError;
+            let newError = error;
             switch (error.code) {
+                case errorRepository.REPOSITORY_ERROR_CODE:
+                    break;
                 case 'UsernameExistsException':
                     newError = errorRepository.createError(1400, error);
                     break;
