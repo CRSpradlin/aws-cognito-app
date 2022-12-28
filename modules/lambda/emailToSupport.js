@@ -16,7 +16,13 @@ class emailToSupport {
             
             await this.sesUtils.sendHTMLToSupport(htmlBody);
         } catch (error) {
-            const newError = errorRepository.createError(1000, error);
+            let newError = error;
+            switch (error.code) {
+                case errorRepository.REPOSITORY_ERROR_CODE:
+                    break;
+                default:
+                    newError = errorRepository.createError(1000, error);
+            }
             throw newError;
         }
     }
