@@ -81,6 +81,24 @@ describe('Test sendMessage', () => {
         expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(expectedError);
     });
 
+    test('Test handler call with caught errorRepository error', async () => {
+        const mockResponse = {
+            error: 'error'
+        };
+        const mockError = errorRepository.createError(1403, new Error());
+        mockCognitoService.getClaims = jest.fn().mockImplementation(() => {
+            throw mockError;
+        });
+        mockUserUtils.getUser = jest.fn();
+        mockCreateAPIResponse.Error = jest.fn().mockReturnValue(mockResponse);
+
+        const response = await instance.handler();
+
+        expect(response).toEqual(mockResponse);
+        expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(mockError);
+        expect(mockUserUtils.getUser).not.toHaveBeenCalled();
+    });
+
     test('Test handler call with unexpected error', async () => {
         const mockResponse = {
             error: 'error'
@@ -92,10 +110,12 @@ describe('Test sendMessage', () => {
         mockUserUtils.getUser = jest.fn();
         mockCreateAPIResponse.Error = jest.fn().mockReturnValue(mockResponse);
 
+        const expectedError = errorRepository.createError(1000, mockError);
+
         const response = await instance.handler();
 
         expect(response).toEqual(mockResponse);
-        expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(mockError);
+        expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(expectedError);
         expect(mockUserUtils.getUser).not.toHaveBeenCalled();
     });
 
