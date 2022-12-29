@@ -25,7 +25,14 @@ class sendMessage {
 
             return this.createAPIResponse.Ok({message});
         } catch (error) {
-            return this.createAPIResponse.Error(error);
+            let newError = error;
+            switch (error.code) {
+                case errorRepository.REPOSITORY_ERROR_CODE:
+                    break;
+                default:
+                    newError = errorRepository.createError(1000, error);
+            }
+            return this.createAPIResponse.Error(newError);
         }
     }
 
