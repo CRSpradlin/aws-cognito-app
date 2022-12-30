@@ -42,7 +42,22 @@ describe('Test signInUser', () => {
         expect(mockCognitoService.getUser).toHaveBeenCalledWith('mockToken')
     });
 
-    test('Test handler call with caught error', async () => {
+    test('Test handler call with caught errorRepository error', async () => {
+        process.env.APP_CLIENT_ID = 'mockAppClientId';
+        instance.event = {body: JSON.stringify({})};
+        const mockError = errorRepository.createError(1403, new Error());
+        mockCognitoService.getAuthToken = jest.fn().mockImplementation(() => {
+            throw mockError;
+        });
+        mockCreateAPIResponse.Error = jest.fn().mockReturnValue('mockAPIResponseError');
+
+        const response = await instance.handler();
+
+        expect(response).toEqual('mockAPIResponseError');
+        expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(mockError);
+    })
+
+    test('Test handler call with caught unexpected error', async () => {
         process.env.APP_CLIENT_ID = 'mockAppClientId';
         instance.event = {body: JSON.stringify({})};
         const mockError = new Error('mockError');
