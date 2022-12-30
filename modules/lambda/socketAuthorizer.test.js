@@ -66,6 +66,36 @@ describe('Test socketAuthorizer', () => {
         expect(response).toEqual('Ok');
     });
 
+    test('Test handler call with caught errorRepository error', async () => {
+        const mockError = errorRepository.createError(1403, new Error());
+        mockCognitoService.getUser = jest.fn().mockImplementation(() => {
+            throw mockError;
+        })
+        mockUserUtils.addUserSession = jest.fn();
+
+        instance.token = 'mockToken';
+
+        await instance.handler();
+
+        expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(mockError);
+    });
+
+    test('Test handler call with unexpected error', async () => {
+        const mockError = new Error('Unexpected Error');
+        mockCognitoService.getUser = jest.fn().mockImplementation(() => {
+            throw mockError;
+        })
+        mockUserUtils.addUserSession = jest.fn();
+
+        instance.token = 'mockToken';
+
+        const expectedError = errorRepository.createError(1000, mockError);
+
+        await instance.handler();
+
+        expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(expectedError);
+    });
+
     test('Test lambda handler export', async () => {
         jest.mock('/opt/userUtils', () => { return {default: () => { return { } }} }, {virtual: true});
         jest.mock('/opt/cognitoService', () => { return { } }, {virtual: true});
