@@ -1,5 +1,6 @@
 
 const socketDisconnect = require('./socketDisconnect');
+const errorRepository = require('./opt/errorRepository');
 
 const mockUserUtils = { };
 const mockCreateAPIResponse = { };
@@ -36,20 +37,31 @@ describe('Test socketDisconnect', () => {
         expect(mockCreateAPIResponse.Error).not.toHaveBeenCalled();
     });
 
-    test('Test handler call with error', async () => {
-        mockCreateAPIResponse.Error = jest.fn().mockReturnValue('Error');
-        mockCreateAPIResponse.Ok = jest.fn().mockReturnValue('Ok');
+    test('Test handler call with caught errorRepository error', async () => {
+        instance.connectionId = 'mockConnectionId';
+        const mockError = errorRepository.createError(1403, new Error());
+        mockUserUtils.removeUserSession = jest.fn().mockImplementation(() => {
+            throw mockError;
+        });
+
+        await instance.handler();
+
+        expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(mockError);
+    });
+
+    test('Test handler call with unexpected error', async () => {
         instance.connectionId = 'mockConnectionId';
         const mockError = new Error('mock error');
         mockUserUtils.removeUserSession = jest.fn().mockImplementation(() => {
             throw mockError;
         });
 
-        const response = await instance.handler();
+        const expectedError = errorRepository.createError(1000, mockError);
 
-        expect(response).toEqual('Error');
-        expect(mockCreateAPIResponse.Ok).not.toHaveBeenCalled();
-    })
+        await instance.handler();
+
+        expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(expectedError);
+    });
 
     test('Test lambda handler export', async () => {
         jest.mock('/opt/userUtils', () => { return {default: () => { return { } }} }, {virtual: true});
