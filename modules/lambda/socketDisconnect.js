@@ -1,3 +1,5 @@
+const errorRepository = require('./opt/errorRepository'); 
+
 class socketDisconnect {
     
     constructor(createAPIResponse, userUtils, event) {
@@ -13,7 +15,14 @@ class socketDisconnect {
             await this.userUtils.removeUserSession(this.connectionId);
             return this.createAPIResponse.Ok();
         } catch (error) {
-            return this.createAPIResponse.Error(error);
+            let newError = error;
+            switch (error.code) {
+                case errorRepository.REPOSITORY_ERROR_CODE:
+                    break;
+                default:
+                    newError = errorRepository.createError(1000, error);
+            }
+            return this.createAPIResponse.Error(newError);
         }
     }
 }
