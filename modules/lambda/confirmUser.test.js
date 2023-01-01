@@ -51,7 +51,7 @@ describe('Test confirmUser', () => {
         expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(expectedError);
     });
 
-    test('Test handler call with caught error repository error', async () => {
+    test('Test handler call with caught errorRepository error', async () => {
         process.env.APP_CLIENT_ID = 'mockAppClientId';
         instance.event = {body: JSON.stringify({})};
         const mockError = errorRepository.createError(1403, new Error('repo error'));
