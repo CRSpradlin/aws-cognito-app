@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 mkdir ./temp
 
 # Clean Current temp Folder
