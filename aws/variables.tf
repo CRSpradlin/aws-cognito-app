@@ -1,12 +1,13 @@
 # Required Variables
-variable "str_app_name" {
-    description = "Name of the Application"
-    default = "CongitoWebApplication"
+variable "str_aws_account_id" {
+    description = "AWS Account ID"
     type = string
 }
 
-variable "str_aws_account_id" {
-    description = "AWS Account ID"
+# Default Variables
+variable "str_app_name" {
+    description = "Name of the Application"
+    default = "CongitoWebApplication"
     type = string
 }
 
