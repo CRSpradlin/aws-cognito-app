@@ -8,6 +8,6 @@ output "AWS_SOCKET_API_INVOKE_URL" {
   description = "Default API URL used to invoke the Socket API Resources."
 }
 output "CLOUDFRONT_DOMAIN" {
-  value = module.app.str_api_cloudfront_hosted_domain_name
+  value = module.app.str_api_cloudfront_hosted_domain_name=="" ? "No Domain Specified" : module.app.str_api_cloudfront_hosted_domain_name
   description = "This should be the domain your custom specified domain should route to."
 }
