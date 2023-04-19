@@ -26,6 +26,8 @@ describe('Test convoUtils', () => {
     });
 
     test('Test createConvo call', async () => {
+        const mockDate = new Date(1466424490000);
+        jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
         instance.uuid = jest.fn().mockReturnValue('uuid');
         instance.dynamoDB.put = jest.fn();
         instance.dynamoDB.update = jest.fn();
@@ -37,7 +39,8 @@ describe('Test convoUtils', () => {
             ownerProfile: 'owner',
             members: ['member1', 'member2', 'owner'],
             messages: [],
-            subscriptions: []
+            subscriptions: [],
+            createdDate: 1466424490000
         };
         const expectedAdditionalConfig = {
             ExpressionAttributeNames: {
@@ -57,6 +60,8 @@ describe('Test convoUtils', () => {
     })
 
     test('Test createConvo call with defined conversation name', async () => {
+        const mockDate = new Date(1466424490000);
+        jest.spyOn(global, 'Date').mockImplementation(() => mockDate);
         instance.uuid = jest.fn().mockReturnValue('uuid');
         instance.dynamoDB.put = jest.fn();
         instance.dynamoDB.update = jest.fn();
@@ -68,7 +73,8 @@ describe('Test convoUtils', () => {
             ownerProfile: 'owner',
             members: ['member1', 'member2', 'owner'],
             messages: [],
-            subscriptions: []
+            subscriptions: [],
+            createdDate: 1466424490000
         };
         const expectedAdditionalConfig = {
             ExpressionAttributeNames: {

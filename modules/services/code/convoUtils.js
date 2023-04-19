@@ -72,7 +72,8 @@ class convoUtils {
             ownerProfile,
             members: members,
             messages: [],
-            subscriptions: []
+            subscriptions: [],
+            createdDate: new Date().getTime()
         };
 
         await this.dynamoDB.put('ConversationData', newConvo);
