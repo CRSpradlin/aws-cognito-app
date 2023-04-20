@@ -17,10 +17,24 @@ resource "aws_dynamodb_table" "api_conversation_table" {
   read_capacity  = var.int_dynamo_read_capacity
   write_capacity = var.int_dynamo_write_capacity
   hash_key       = "id"
+  range_key      = "createdDate"
 
   attribute {
     name = "id"
     type = "S"
+  }
+
+  attribute {
+    name = "createdDate"
+    type = "N"
+  }
+
+  global_secondary_index {
+    name               = "CreatedDateIndex"
+    hash_key           = "createdDate"
+    read_capacity      = var.int_dynamo_read_capacity
+    write_capacity     = var.int_dynamo_write_capacity
+    projection_type    = "ALL"
   }
 }
 
