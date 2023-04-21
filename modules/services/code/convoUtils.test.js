@@ -276,6 +276,15 @@ describe('Test convoUtils', () => {
         expect.assertions(2);
     });
 
+    test('Test getConversations call', async () => {
+        mockUserUtils.getUser = jest.fn().mockResolvedValue({conversations: ['1', '2', '3']});
+
+        const result = await instance.getConversations('1234');
+
+        expect(mockUserUtils.getUser).toHaveBeenCalledWith('1234');
+        expect(result).toEqual(['1', '2', '3']);
+    })
+
     test('Test default export', async () => {
         jest.mock('uuid', () => { return { } }, {virtual: true});
         jest.mock('./dynamoService', () => { return { } }, {virtual: true});

@@ -59,19 +59,10 @@ class convoUtils {
         return await this.dynamoDB.query('MessageData', keyConditionExpression, expressionAttributeValues, additionalConfig);
     }
 
-    getConversations = async (userId, maxCount = 100, latestCreatedDate = new Date()) => {
-        const keyConditionExpression = 'createdDate < :latestCreatedDate';
-        const expressionAttributeValues = {
-            ':latestCreatedDate': latestCreatedDate.getTime(),
-            ':userId': userId
-        }
-        const additionalConfig = {
-            Limit: maxCount,
-            FilterExpression: "contains(members, :userId)",
-            IndexName: 'CreatedDateIndex'
-        };
+    getConversations = async (userId) => {
+        const userObj = await this.userUtils.getUser(userId);
 
-        return await this.dynamoDB.query('ConversationData', keyConditionExpression, expressionAttributeValues, additionalConfig);
+        return userObj.conversations;
     }
 
     createConvo = async (ownerProfile, members, name = 'Group Chat') => {
