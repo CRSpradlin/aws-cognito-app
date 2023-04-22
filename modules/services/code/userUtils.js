@@ -12,6 +12,7 @@ class userUtils {
         await this.dynamoDB.put('UserData', {
             profile: profile,
             email: email,
+            confirmed: false,
             conversations: []
         });
         
@@ -21,6 +22,8 @@ class userUtils {
         ];
 
         const response = await this.cognitoService.createUser(username, password, userAttributes);
+
+        response.Profile = profile;
         
         return response;
     }
