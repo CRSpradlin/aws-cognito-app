@@ -21,11 +21,12 @@ describe('Test userUtils', () => {
 
     test('Test createUser', async () => {
         mockDynamoDB.put = jest.fn();
-        mockCognitoService.createUser = jest.fn().mockResolvedValue('user created');
+        mockCognitoService.createUser = jest.fn().mockResolvedValue({});
 
         const mockPutParams = {
             profile: 'uuid',
             email: 'email',
+            confirmed: false,
             conversations: []
         };
         const expectedUserAttribs = [
@@ -37,7 +38,7 @@ describe('Test userUtils', () => {
 
         expect(mockDynamoDB.put).toHaveBeenCalledWith('UserData', mockPutParams);
         expect(mockCognitoService.createUser).toHaveBeenCalledWith('username', 'password', expectedUserAttribs);
-        expect(response).toEqual('user created')
+        expect(response).toEqual({Profile:'uuid'});
     });
 
     test('Test getUser', async () => {
