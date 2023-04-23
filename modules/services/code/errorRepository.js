@@ -4,25 +4,31 @@ const ERRORS = [
     {
         errorCode: 4403,
         name: 'UnAuthorized',
-        message: 'You are not authorized to access this resource',
+        message: 'You are not authorized to access this resource.',
         defaultStatusCode: 403
     },
     {
         errorCode: 4404,
         name: 'Resource Not Found',
-        message: 'The resource you have requested does not exist',
+        message: 'The resource you have requested does not exist.',
         defaultStatusCode: 404
+    },
+    {
+        errorCode: 5504,
+        name: 'User Not Confirmed',
+        message: 'The user has not been confirmed.',
+        defaultStatusCode: 403
     },
     {
         errorCode: 1000,
         name: 'Unknown Error',
-        message: 'An error has occured during processing your request, please try again later',
+        message: 'An error has occured during processing your request, please try again later.',
         defaultStatusCode: 500
     },
     {
         errorCode: 1400,
         name: 'User Already Exists',
-        message: 'User with that username already exists, please try another one',
+        message: 'User with that username already exists, please try another one.',
         defaultStatusCode: 400
     },
     {
@@ -34,13 +40,13 @@ const ERRORS = [
     {
         errorCode: 1402,
         name: 'Invalid Confirmation Code',
-        message: 'The confirmation code you entered is incorrect, please be sure you have entered the proper code sent to your email',
+        message: 'The confirmation code you entered is incorrect, please be sure you have entered the proper code sent to your email.',
         defaultStatusCode: 400
     },
     {
         errorCode: 1403,
         name: 'No Support Email Defined',
-        message: 'You have tried to email application logs to support but no support email has been defined within the application infrastructure',
+        message: 'You have tried to email application logs to support but no support email has been defined within the application infrastructure.',
         defaultStatusCode: 400
     }
 ];

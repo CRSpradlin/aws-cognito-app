@@ -7,7 +7,7 @@ describe('Test errorRepository', () => {
 
         const errorRepositoryObj = errorRepository.createError(1000, mockOriginalError);
 
-        expect(errorRepositoryObj.message).toEqual('An error has occured during processing your request, please try again later');
+        expect(errorRepositoryObj.message).toEqual('An error has occured during processing your request, please try again later.');
         expect(errorRepositoryObj.context).toEqual('originalMessage');
     });
 })
