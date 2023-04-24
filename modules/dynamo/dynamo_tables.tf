@@ -9,6 +9,19 @@ resource "aws_dynamodb_table" "api_user_table" {
     name = "profile"
     type = "S"
   }
+
+  attribute {
+    name = "name"
+    type = "S"
+  }
+
+  global_secondary_index {
+    name               = "UserNameIndex"
+    hash_key           = "name"
+    read_capacity      = var.int_dynamo_read_capacity
+    write_capacity     = var.int_dynamo_write_capacity
+    projection_type    = "ALL"
+  }
 }
 
 resource "aws_dynamodb_table" "api_conversation_table" {
