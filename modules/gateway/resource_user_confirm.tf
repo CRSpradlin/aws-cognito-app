@@ -34,7 +34,7 @@ resource "aws_api_gateway_model" "method_post_user_confirm_model" {
 {
   "type": "object",
   "properties": {
-    "username": { "type": "string" },
+    "profile": { "type": "string" },
     "confirmation": { "type": "string" }
   }
 }
