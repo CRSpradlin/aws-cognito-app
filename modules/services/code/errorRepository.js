@@ -14,6 +14,12 @@ const ERRORS = [
         defaultStatusCode: 404
     },
     {
+        errorCode: 5404,
+        name: 'User Not Found',
+        message: 'Username and Password combination not found.',
+        defaultStatusCode: 404
+    },
+    {
         errorCode: 5504,
         name: 'User Not Confirmed',
         message: 'The user has not been confirmed.',
