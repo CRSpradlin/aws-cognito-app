@@ -3,6 +3,8 @@ const errorRepository = require('./opt/errorRepository');
 const confirmUser = require('./confirmUser');
 
 const mockCognitoService = { };
+const mockUserUtils = { };
+const mockDynamoService = { };
 const mockCreateAPIResponse = { };
 
 let instance;
@@ -12,6 +14,8 @@ describe('Test confirmUser', () => {
     beforeEach(() => {
         const deps = {
             cognitoService: mockCognitoService,
+            userUtils: mockUserUtils,
+            dynamoService: mockDynamoService,
             createAPIResponse: mockCreateAPIResponse,
             event: event
         }
@@ -22,17 +26,27 @@ describe('Test confirmUser', () => {
     test('Test handler call', async () => {
         instance.event = {
             body: JSON.stringify({
-                username: 'mockUsername',
+                profile: 'mockProfile',
                 confirmation: 'mockConfirmation'
             })
         };
         mockCognitoService.confirmUser = jest.fn().mockResolvedValue('mockCognitoResponse');
+        mockUserUtils.getUser = jest.fn().mockResolvedValue({name: 'mockUserName'});
+        mockDynamoService.update = jest.fn().mockResolvedValue(true);
         mockCreateAPIResponse.Ok = jest.fn().mockReturnValue('mockAPIResponse');
 
         const response = await instance.handler();
 
         expect(response).toEqual('mockAPIResponse');
-        expect(mockCognitoService.confirmUser).toHaveBeenCalledWith('mockUsername', 'mockConfirmation');
+        expect(mockCognitoService.confirmUser).toHaveBeenCalledWith('mockUserName', 'mockConfirmation');
+        expect(mockDynamoService.update).toHaveBeenCalledWith('UserData', {profile: 'mockProfile'}, 'set #key = :value', {
+            ExpressionAttributeNames: {
+                '#key': 'confirmed'
+            },
+            ExpressionAttributeValues: {
+                ':value': true
+            }
+        });
     });
 
     test('Test handler call with unknown caught error', async () => {
@@ -85,6 +99,8 @@ describe('Test confirmUser', () => {
 
     test('Test lambda handler export', async () => {
         jest.mock('/opt/cognitoService', () => { return { } }, {virtual: true});
+        jest.mock('/opt/userUtils', () => { return {default: () => {return { }}}}, {virtual: true});
+        jest.mock('/opt/dynamoService', () => { return { } }, {virtual: true});
         jest.mock('/opt/createAPIResponse', () => { return { } }, {virtual: true});
         const mockEvent = 'mockEvent';
 
@@ -100,6 +116,8 @@ describe('Test confirmUser', () => {
         expect(response).toEqual('mockHandlerResponse');
         expect(mockconfirmUser.confirmUserService).toHaveBeenCalledWith({
             cognitoService: { },
+            userUtils: { },
+            dynamoService: { },
             createAPIResponse: { },
             event: mockEvent
         })
