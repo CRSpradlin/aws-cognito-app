@@ -2,7 +2,9 @@ const errorRepository = require('./opt/errorRepository');
 
 class confirmUser {
     
-    constructor(cognitoService, createAPIResponse, event) {
+    constructor(dynamoService, userUtils, cognitoService, createAPIResponse, event) {
+        this.dynamoService = dynamoService;
+        this.userUtils = userUtils;
         this.cognitoService = cognitoService;
         this.createAPIResponse = createAPIResponse;
         this.event = event;
@@ -13,7 +15,19 @@ class confirmUser {
         const reqBody = JSON.parse(this.event.body);
         
         try {
-            await this.cognitoService.confirmUser(reqBody.username, reqBody.confirmation);
+            const userObj = await this.userUtils.getUser(reqBody.profile);
+
+            await this.cognitoService.confirmUser(userObj.name, reqBody.confirmation);
+
+            const additionalConfig = {
+                ExpressionAttributeNames: {
+                    '#key': 'confirmed'
+                },
+                ExpressionAttributeValues: {
+                    ':value': true
+                }
+            };
+            await this.dynamoService.update('UserData', {profile: reqBody.profile}, 'set #key = :value', additionalConfig);
 
             return this.createAPIResponse.Ok();
         } catch (error) {
@@ -33,13 +47,17 @@ class confirmUser {
 }
 
 exports.confirmUserService = (deps) => {
-    return new confirmUser(deps.cognitoService, deps.createAPIResponse, deps.event);   
+    return new confirmUser(deps.dynamoService, deps.userUtils, deps.cognitoService, deps.createAPIResponse, deps.event);   
 }
 
 exports.handler = async (event) => {
+    const dynamoService = require('/opt/dynamoService');
+    const userUtils = require('/opt/userUtils').default();
     const cognitoService = require('/opt/cognitoService');
     const createAPIResponse = require('/opt/createAPIResponse');
     const deps = {
+        dynamoService,
+        userUtils,
         cognitoService,
         createAPIResponse,
         event
