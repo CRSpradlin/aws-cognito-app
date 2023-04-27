@@ -4,6 +4,7 @@ const signInUser = require('./signInUser');
 
 const mockCognitoService = { };
 const mockCreateAPIResponse = { };
+const mockUserUtils = { };
 
 let instance;
 let event
@@ -12,6 +13,7 @@ describe('Test signInUser', () => {
     beforeEach(() => {
         const deps = {
             cognitoService: mockCognitoService,
+            userUtils: mockUserUtils,
             createAPIResponse: mockCreateAPIResponse,
             event: event
         }
@@ -32,17 +34,24 @@ describe('Test signInUser', () => {
             })
         };
         mockCognitoService.getAuthToken = jest.fn().mockResolvedValue(mockTokenResponse);
-        mockCognitoService.getUser = jest.fn().mockResolvedValue('mockCognitoUserResponse')
+        mockCognitoService.getUser = jest.fn().mockResolvedValue({UserAttributes: [{Name: 'sub', Value: 'mockProfile'}]});
+        mockUserUtils.getUser = jest.fn().mockResolvedValue('mockUserObj');
         mockCreateAPIResponse.Ok = jest.fn().mockReturnValue('mockAPIResponse');
 
         const response = await instance.handler();
 
         expect(response).toEqual('mockAPIResponse');
         expect(mockCognitoService.getAuthToken).toHaveBeenCalledWith('mockUsername', 'mockPassword');
-        expect(mockCognitoService.getUser).toHaveBeenCalledWith('mockToken')
+        expect(mockCognitoService.getUser).toHaveBeenCalledWith('mockToken');
+        expect(mockCreateAPIResponse.Ok).toHaveBeenCalledWith({ 
+            AuthenticationResult: {
+                AccessToken: 'mockToken'
+            },
+            User: 'mockUserObj' 
+        });
     });
 
-    test('Test handler call with caught errorRepository error', async () => {
+    test('Test handler call with caught 1403 errorRepository error', async () => {
         process.env.APP_CLIENT_ID = 'mockAppClientId';
         instance.event = {body: JSON.stringify({})};
         const mockError = errorRepository.createError(1403, new Error());
@@ -55,7 +64,43 @@ describe('Test signInUser', () => {
 
         expect(response).toEqual('mockAPIResponseError');
         expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(mockError);
-    })
+    });
+
+    test('Test handler call with caught 5404 errorRepository error', async () => {
+        process.env.APP_CLIENT_ID = 'mockAppClientId';
+        instance.event = {body: JSON.stringify({})};
+        const mockError = new Error();
+        mockError.code = 'UserNotFoundException';
+        mockCognitoService.getAuthToken = jest.fn().mockImplementation(async () => {
+            throw mockError;
+        });
+        mockCreateAPIResponse.Error = jest.fn().mockReturnValue('mockAPIResponseError');
+
+        const expectedError = errorRepository.createError(5404, mockError);
+
+        const response = await instance.handler();
+
+        expect(response).toEqual('mockAPIResponseError');
+        expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(expectedError);
+    });
+
+    test('Test handler call with caught 5504 errorRepository error', async () => {
+        process.env.APP_CLIENT_ID = 'mockAppClientId';
+        instance.event = {body: JSON.stringify({})};
+        const mockError = new Error();
+        mockError.code = 'UserNotConfirmedException';
+        mockCognitoService.getAuthToken = jest.fn().mockImplementation(async () => {
+            throw mockError;
+        });
+        mockCreateAPIResponse.Error = jest.fn().mockReturnValue('mockAPIResponseError');
+
+        const expectedError = errorRepository.createError(5504, mockError);
+
+        const response = await instance.handler();
+
+        expect(response).toEqual('mockAPIResponseError');
+        expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(expectedError);
+    });
 
     test('Test handler call with caught unexpected error', async () => {
         process.env.APP_CLIENT_ID = 'mockAppClientId';
@@ -75,6 +120,7 @@ describe('Test signInUser', () => {
 
     test('Test lambda handler export', async () => {
         jest.mock('/opt/cognitoService', () => { return { } }, {virtual: true});
+        jest.mock('/opt/userUtils', () => { return {default: () => { return { }}} }, {virtual: true});
         jest.mock('/opt/createAPIResponse', () => { return { } }, {virtual: true});
         const mockEvent = 'mockEvent';
 
@@ -90,6 +136,7 @@ describe('Test signInUser', () => {
         expect(response).toEqual('mockHandlerResponse');
         expect(mockSignInUser.signInUserService).toHaveBeenCalledWith({
             cognitoService: { },
+            userUtils: { },
             createAPIResponse: { },
             event: mockEvent
         })
