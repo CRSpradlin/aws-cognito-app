@@ -7,34 +7,50 @@ class userUtils {
     }
 
     createUser = async (username, password, email) => {
-        const profile = this.uuid();
+        const userAttributes = [
+            {Name: 'email', Value: email}
+        ];
+        const response = await this.cognitoService.createUser(username, password, userAttributes);
+
+        const profile = response.UserSub;
 
         await this.dynamoDB.put('UserData', {
             profile: profile,
+            name: username,
             email: email,
             confirmed: false,
             conversations: []
         });
         
-        const userAttributes = [
-            {Name: 'email', Value: email},
-            {Name: 'profile', Value: profile}
-        ];
-
-        const response = await this.cognitoService.createUser(username, password, userAttributes);
-
-        response.Profile = profile;
-        
         return response;
     }
 
-    getUser = async (userProfile) => {
-        const userKey = {
-            profile: userProfile
-        };
-        const user = await this.dynamoDB.get('UserData', userKey);
+    getUser = async (userIdentifier, usernameUsed = false) => {
+        let userKeyName;
+        let indexName;
 
-        return user;
+        if (usernameUsed) {
+            userKeyName = 'name';
+            indexName = 'UserNameIndex'
+        } else {
+            userKeyName = 'profile';
+        }
+
+        const keyConditionExpression = '#userKeyName = :userIdentifier';
+        const expressionAttributeValues = {
+            ':userIdentifier': userIdentifier
+        };
+        const additionalConfig = {
+            ExpressionAttributeNames: {
+                '#userKeyName': userKeyName
+            },
+            Limit: 1,
+            IndexName: indexName
+        };
+
+        const users = await this.dynamoDB.query('UserData', keyConditionExpression, expressionAttributeValues, additionalConfig);
+
+        return users[0];
     }
 
     addUserSession = async (userProfile, connectionId) => {
