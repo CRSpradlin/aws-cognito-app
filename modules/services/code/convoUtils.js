@@ -62,7 +62,14 @@ class convoUtils {
     getConversations = async (userId) => {
         const userObj = await this.userUtils.getUser(userId);
 
-        return userObj.conversations;
+        let conversationDetails = [];
+
+        for (const conversation of userObj.conversations) {
+            const conversationDetail = await this.dynamoDB.get('ConversationData', conversation);
+            conversationDetails.push(conversationDetail);
+        }
+
+        return conversationDetails;
     }
 
     createConvo = async (ownerProfile, members, name = 'Group Chat') => {
