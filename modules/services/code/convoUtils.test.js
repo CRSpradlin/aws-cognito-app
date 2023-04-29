@@ -278,11 +278,16 @@ describe('Test convoUtils', () => {
 
     test('Test getConversations call', async () => {
         mockUserUtils.getUser = jest.fn().mockResolvedValue({conversations: ['1', '2', '3']});
+        mockDynamoDB.get = jest.fn().mockResolvedValue({id: 'mockId', members: 'mockMembers'});
 
         const result = await instance.getConversations('1234');
 
         expect(mockUserUtils.getUser).toHaveBeenCalledWith('1234');
-        expect(result).toEqual(['1', '2', '3']);
+        expect(mockDynamoDB.get).toHaveBeenCalledTimes(3);
+        expect(mockDynamoDB.get).toHaveBeenCalledWith('ConversationData', '1');
+        expect(mockDynamoDB.get).toHaveBeenCalledWith('ConversationData', '2');
+        expect(mockDynamoDB.get).toHaveBeenCalledWith('ConversationData', '3');
+        expect(result).toEqual([{id: 'mockId', members: 'mockMembers'}, {id: 'mockId', members: 'mockMembers'}, {id: 'mockId', members: 'mockMembers'}]);
     })
 
     test('Test default export', async () => {
