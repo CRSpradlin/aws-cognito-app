@@ -55,3 +55,10 @@ output "str_getMessages_lambda_invoke_arn" {
 output "str_getMessages_lambda_function_name" {
   value = aws_lambda_function.getMessages.function_name
 }
+
+output "str_getConversations_lambda_invoke_arn" {
+  value = aws_lambda_function.getConversations.invoke_arn
+}
+output "str_getConversations_lambda_function_name" {
+  value = aws_lambda_function.getConversations.function_name
+}
