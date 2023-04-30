@@ -33,6 +33,9 @@ variable "str_sendMessage_lambda_function_name" {}
 variable "str_getMessages_lambda_invoke_arn" {}
 variable "str_getMessages_lambda_function_name" {}
 
+variable "str_getConversations_lambda_invoke_arn" {}
+variable "str_getConversations_lambda_function_name" {}
+
 // Module Independent Variables
 variable "str_socket_stage_name" {
     default = "socket"
