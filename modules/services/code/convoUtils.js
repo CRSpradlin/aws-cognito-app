@@ -65,7 +65,7 @@ class convoUtils {
         let conversationDetails = [];
 
         for (const conversation of userObj.conversations) {
-            const conversationDetail = await this.dynamoDB.get('ConversationData', conversation);
+            const conversationDetail = await this.dynamoDB.get('ConversationData', {id: conversation});
             conversationDetails.push(conversationDetail);
         }
 
@@ -124,7 +124,7 @@ class convoUtils {
     };
 
     getMembersOfConvo = async (conversationId) => {
-        const conversation = await this.dynamoDB.get('ConversationData', {conversationId});
+        const conversation = await this.dynamoDB.get('ConversationData', {id: conversationId});
 
         if (conversation) {
             return conversation.members;
