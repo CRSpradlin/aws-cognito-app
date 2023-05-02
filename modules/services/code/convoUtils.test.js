@@ -259,7 +259,7 @@ describe('Test convoUtils', () => {
         const response = await instance.getMembersOfConvo('mockConversationId');
 
         expect(response).toEqual(mockMembers);
-        expect(instance.dynamoDB.get).toHaveBeenCalledWith('ConversationData', {conversationId: 'mockConversationId'});
+        expect(instance.dynamoDB.get).toHaveBeenCalledWith('ConversationData', {id: 'mockConversationId'});
     });
 
     test('Test getMembersOfConvo call with unknown convo', async () => {
@@ -272,7 +272,7 @@ describe('Test convoUtils', () => {
             expect(error).toEqual(expectedError);
         }
 
-        expect(instance.dynamoDB.get).toHaveBeenCalledWith('ConversationData', {conversationId: 'mockConversationId'});
+        expect(instance.dynamoDB.get).toHaveBeenCalledWith('ConversationData', {id: 'mockConversationId'});
         expect.assertions(2);
     });
 
@@ -284,9 +284,9 @@ describe('Test convoUtils', () => {
 
         expect(mockUserUtils.getUser).toHaveBeenCalledWith('1234');
         expect(mockDynamoDB.get).toHaveBeenCalledTimes(3);
-        expect(mockDynamoDB.get).toHaveBeenCalledWith('ConversationData', '1');
-        expect(mockDynamoDB.get).toHaveBeenCalledWith('ConversationData', '2');
-        expect(mockDynamoDB.get).toHaveBeenCalledWith('ConversationData', '3');
+        expect(mockDynamoDB.get).toHaveBeenCalledWith('ConversationData', {id: '1'});
+        expect(mockDynamoDB.get).toHaveBeenCalledWith('ConversationData', {id: '2'});
+        expect(mockDynamoDB.get).toHaveBeenCalledWith('ConversationData', {id: '3'});
         expect(result).toEqual([{id: 'mockId', members: 'mockMembers'}, {id: 'mockId', members: 'mockMembers'}, {id: 'mockId', members: 'mockMembers'}]);
     })
 
