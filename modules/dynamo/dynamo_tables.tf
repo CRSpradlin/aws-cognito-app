@@ -30,7 +30,6 @@ resource "aws_dynamodb_table" "api_conversation_table" {
   read_capacity  = var.int_dynamo_read_capacity
   write_capacity = var.int_dynamo_write_capacity
   hash_key       = "id"
-  range_key      = "createdDate"
 
   attribute {
     name = "id"
