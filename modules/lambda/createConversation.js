@@ -15,7 +15,7 @@ class createConversation {
         
         try {
             const claims = this.cognitoService.getClaims(this.event);
-            const response = await this.convoUtils.createConvo(claims.profile, reqBody.members);
+            const response = await this.convoUtils.createConvo(claims.sub, reqBody.members);
             return this.createAPIResponse.Ok(response);
         } catch (error) {
             let newError = error;

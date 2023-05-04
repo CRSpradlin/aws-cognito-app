@@ -13,10 +13,7 @@ class getConversations {
     handler = async () => {
         try {
             const claims = this.cognitoService.getClaims(this.event);
-            const user = await this.userUtils.getUser(claims.profile);
-
-            if (!await this.convoUtils.userHasAccessToConvo(user, this.conversationId)) 
-                throw errorRepository.createError(4403, new Error('User is not a member of this conversation'));
+            const user = await this.userUtils.getUser(claims.sub);
 
             const conversations = await this.convoUtils.getConversations(user.profile);
 

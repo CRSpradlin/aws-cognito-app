@@ -16,7 +16,7 @@ class getMessages {
         try {
             // TODO: Add query parameters for Limit and LatestTimeStamp (to query messages before the given time)
             const claims = this.cognitoService.getClaims(this.event);
-            const user = await this.userUtils.getUser(claims.profile);
+            const user = await this.userUtils.getUser(claims.sub);
 
             if (!await this.convoUtils.userHasAccessToConvo(user, this.conversationId)) 
                 throw errorRepository.createError(4403, new Error('User is not a member of this conversation'));

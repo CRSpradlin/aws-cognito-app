@@ -28,7 +28,7 @@ describe('Test createConversation', () => {
             })
         };
         const mockClaimsResponse = {
-            profile: 'profile'
+            sub: 'profile'
         }
 
         instance.cognitoService.getClaims = jest.fn().mockReturnValue(mockClaimsResponse);
