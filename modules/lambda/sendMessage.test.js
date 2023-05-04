@@ -34,7 +34,7 @@ describe('Test sendMessage', () => {
             messageBody: 'messageBody'
         };
         const mockUserClaims = {
-            profile: 'userProfile'
+            sub: 'userProfile'
         };
         const mockUser = {
             profile: 'userProfile'
@@ -53,7 +53,7 @@ describe('Test sendMessage', () => {
 
         const response = await instance.handler();
 
-        expect(mockConvoUtils.sendMessage).toHaveBeenCalledWith(mockUser, 'conversationId', 'messageBody');
+        expect(mockConvoUtils.sendMessage).toHaveBeenCalledWith('userProfile', 'conversationId', 'messageBody');
         expect(mockCreateAPIResponse.Ok).toHaveBeenCalledWith({message: mockMessage});
         expect(response).toEqual('Ok');
     });

@@ -15,13 +15,13 @@ class sendMessage {
         
         try {
             const claims = this.cognitoService.getClaims(this.event);
-            const user = await this.userUtils.getUser(claims.profile);
+            const user = await this.userUtils.getUser(claims.sub);
             const conversationId = this.event.pathParameters.conversationId;
 
             if (!await this.convoUtils.userHasAccessToConvo(user, conversationId))
                 throw errorRepository.createError(4403, new Error('User is not a member of this conversation'));
 
-            const message = await this.convoUtils.sendMessage(user, conversationId, reqBody.messageBody);
+            const message = await this.convoUtils.sendMessage(user.profile, conversationId, reqBody.messageBody);
 
             return this.createAPIResponse.Ok({message});
         } catch (error) {
