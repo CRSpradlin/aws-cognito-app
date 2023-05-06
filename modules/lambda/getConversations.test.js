@@ -75,6 +75,32 @@ describe('Test getConversations', () => {
         expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(expectedError);
     });
 
+    test('Test handler call with expected error', async () => {
+        const expectedError = errorRepository.createError(4403);
+
+        instance.event = 'mockEvent';
+        instance.conversationId = 'mockConvoId';
+        mockCognitoService.getClaims = jest.fn().mockImplementation(() => {
+            throw expectedError;
+        });
+        mockUserUtils.getUser = jest.fn();
+        mockConvoUtils.getConversations = jest.fn();
+        mockCreateAPIResponse.Ok = jest.fn();
+        mockCreateAPIResponse.Error = jest.fn();
+
+        try {
+            await instance.handler();
+        } catch (error) { 
+            expect(error).toEqual(expectedError);
+        }
+        
+
+        expect(mockCognitoService.getClaims).toHaveBeenCalledWith('mockEvent');
+        expect(mockConvoUtils.getConversations).not.toHaveBeenCalled();
+        expect(mockCreateAPIResponse.Ok).not.toHaveBeenCalled();
+        expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(expectedError);
+    });
+
     test('Test lambda handler export', async () => {
         jest.mock('/opt/userUtils', () => { return {default: jest.fn().mockReturnValue({ })} }, {virtual: true});
         jest.mock('/opt/createAPIResponse', () => { return { } }, {virtual: true});
