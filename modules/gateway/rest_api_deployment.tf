@@ -10,6 +10,8 @@ resource "aws_api_gateway_deployment" "rest" {
   }
 
   depends_on = [
+    aws_api_gateway_rest_api.rest,
+    aws_api_gateway_request_validator.rest_request_validator,
     aws_api_gateway_method.method_post_user_register,
     aws_api_gateway_integration.lambda_registerUser_method_post_user_register_integration,
     module.resource_user_register_cors,
