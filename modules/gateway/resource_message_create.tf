@@ -24,6 +24,11 @@ resource "aws_api_gateway_method" "method_post_message_create" {
   request_models = {
     "application/json" = aws_api_gateway_model.method_post_message_create_model.name
   }
+  request_parameters = {
+    "method.request.header.Content-Type" = true
+  }
+
+  request_validator_id = aws_api_gateway_request_validator.rest_request_validator.id
 }
 
 resource "aws_api_gateway_model" "method_post_message_create_model" {
@@ -33,7 +38,10 @@ resource "aws_api_gateway_model" "method_post_message_create_model" {
 
   schema = <<EOF
 {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
+  "required": [ "messageBody" ],
+  "additionalProperties": false,
   "properties": {
     "messageBody": {
       "type": "string"
