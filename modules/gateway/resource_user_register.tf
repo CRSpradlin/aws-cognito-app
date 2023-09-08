@@ -23,18 +23,23 @@ resource "aws_api_gateway_method" "method_post_user_register" {
   request_models = {
     "application/json" = aws_api_gateway_model.method_post_user_register_model.name
   }
+  request_parameters = {
+    "method.request.header.Content-Type" = true
+  }
+
+  request_validator_id = aws_api_gateway_request_validator.rest_request_validator.id
 }
 
-resource "aws_api_gateway_method_response" "method_post_user_register_response" {
-    rest_api_id   = aws_api_gateway_rest_api.rest.id
-    resource_id   = aws_api_gateway_resource.resource_user_register.id
-    http_method   = aws_api_gateway_method.method_post_user_register.http_method
-    status_code   = "200"
-    response_parameters = {
-        "method.response.header.Access-Control-Allow-Origin" = true
-    }
-    depends_on = [aws_api_gateway_method.method_post_user_register]
-}
+# resource "aws_api_gateway_method_response" "method_post_user_register_response" {
+#     rest_api_id   = aws_api_gateway_rest_api.rest.id
+#     resource_id   = aws_api_gateway_resource.resource_user_register.id
+#     http_method   = aws_api_gateway_method.method_post_user_register.http_method
+#     status_code   = "200"
+#     response_parameters = {
+#         "method.response.header.Access-Control-Allow-Origin" = true
+#     }
+#     depends_on = [aws_api_gateway_method.method_post_user_register]
+# }
 
 resource "aws_api_gateway_model" "method_post_user_register_model" {
   rest_api_id  = aws_api_gateway_rest_api.rest.id
@@ -43,7 +48,10 @@ resource "aws_api_gateway_model" "method_post_user_register_model" {
 
   schema = <<EOF
 {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
+  "required": [ "username", "email", "password" ],
+  "additionalProperties": false,
   "properties": {
     "username": { "type": "string" },
     "email": { "type": "string" },
