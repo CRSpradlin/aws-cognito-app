@@ -66,11 +66,29 @@ describe('Test signInUser', () => {
         expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(mockError);
     });
 
-    test('Test handler call with caught 5404 errorRepository error', async () => {
+    test('Test handler call with converted UserNotFoundException to 5404 errorRepository error', async () => {
         process.env.APP_CLIENT_ID = 'mockAppClientId';
         instance.event = {body: JSON.stringify({})};
         const mockError = new Error();
         mockError.code = 'UserNotFoundException';
+        mockCognitoService.getAuthToken = jest.fn().mockImplementation(async () => {
+            throw mockError;
+        });
+        mockCreateAPIResponse.Error = jest.fn().mockReturnValue('mockAPIResponseError');
+
+        const expectedError = errorRepository.createError(5404, mockError);
+
+        const response = await instance.handler();
+
+        expect(response).toEqual('mockAPIResponseError');
+        expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(expectedError);
+    });
+
+    test('Test handler call with converted NotAuthorizedException to 5404 errorRepository error', async () => {
+        process.env.APP_CLIENT_ID = 'mockAppClientId';
+        instance.event = {body: JSON.stringify({})};
+        const mockError = new Error();
+        mockError.code = 'NotAuthorizedException';
         mockCognitoService.getAuthToken = jest.fn().mockImplementation(async () => {
             throw mockError;
         });
