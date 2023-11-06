@@ -35,6 +35,7 @@ class confirmUser {
             switch (error.code) {
                 case errorRepository.REPOSITORY_ERROR_CODE:
                     break;
+                case 'InvalidParameterException':
                 case 'CodeMismatchException':
                     newError = errorRepository.createError(1402, error);
                     break;

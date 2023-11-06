@@ -97,6 +97,23 @@ describe('Test confirmUser', () => {
         expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(expectedError);
     });
 
+    test('Test handler call with caught InvalidParameterException', async () => {
+        process.env.APP_CLIENT_ID = 'mockAppClientId';
+        instance.event = {body: JSON.stringify({})};
+        const mockError = new Error('mockError');
+        mockError.code = 'InvalidParameterException';
+        mockCognitoService.confirmUser = jest.fn().mockImplementation(() => {
+            throw mockError;
+        });
+        mockCreateAPIResponse.Error = jest.fn().mockReturnValue('mockAPIResponseError');
+        const expectedError = errorRepository.createError(1402, mockError);
+
+        const response = await instance.handler();
+
+        expect(response).toEqual('mockAPIResponseError');
+        expect(mockCreateAPIResponse.Error).toHaveBeenCalledWith(expectedError);
+    });
+
     test('Test lambda handler export', async () => {
         jest.mock('/opt/cognitoService', () => { return { } }, {virtual: true});
         jest.mock('/opt/userUtils', () => { return {default: () => {return { }}}}, {virtual: true});
