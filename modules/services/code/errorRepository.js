@@ -66,6 +66,7 @@ self.createError = (errorCode, originalError = undefined) => {
     error.code = self.REPOSITORY_ERROR_CODE;
     error.repoCode = errorDetails.errorCode;
     error.context = originalError;
+    if (originalError) error.contextCode = originalError.code;
     error.defaultStatusCode = errorDetails.defaultStatusCode;
 
     if (originalError instanceof Error && errorCode === 1000) {
