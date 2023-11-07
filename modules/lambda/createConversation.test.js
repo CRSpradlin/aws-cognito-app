@@ -40,7 +40,31 @@ describe('Test createConversation', () => {
 
         expect(response).toEqual('Ok');
         expect(instance.cognitoService.getClaims).toHaveBeenCalledWith(instance.event);
-        expect(instance.convoUtils.createConvo).toHaveBeenCalledWith('profile', 'members');
+        expect(instance.convoUtils.createConvo).toHaveBeenCalledWith('profile', 'members', undefined);
+        expect(instance.createAPIResponse.Error).not.toHaveBeenCalled();
+    });
+
+    test('Test handler call with optional name param', async () => {
+        instance.event = {
+            body: JSON.stringify({
+                members: 'members',
+                name: 'name'
+            })
+        };
+        const mockClaimsResponse = {
+            sub: 'profile'
+        }
+
+        instance.cognitoService.getClaims = jest.fn().mockReturnValue(mockClaimsResponse);
+        instance.convoUtils.createConvo = jest.fn();
+        instance.createAPIResponse.Ok = jest.fn().mockReturnValue('Ok');
+        instance.createAPIResponse.Error = jest.fn();
+
+        const response = await instance.handler();
+
+        expect(response).toEqual('Ok');
+        expect(instance.cognitoService.getClaims).toHaveBeenCalledWith(instance.event);
+        expect(instance.convoUtils.createConvo).toHaveBeenCalledWith('profile', 'members', 'name');
         expect(instance.createAPIResponse.Error).not.toHaveBeenCalled();
     });
 
