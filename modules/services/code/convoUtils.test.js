@@ -160,7 +160,7 @@ describe('Test convoUtils', () => {
             ':sentDate': 1466424490000
         };
         const expectedAdditionalConfig = {
-            Limit: 10,
+            Limit: 50,
             ScanIndexForward: false
         };
 

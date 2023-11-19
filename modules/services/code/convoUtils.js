@@ -45,7 +45,7 @@ class convoUtils {
         return message;
     }
 
-    getMessages = async (conversationId, sentDate = new Date().getTime(), maxCount = 10) => {
+    getMessages = async (conversationId, sentDate = new Date().getTime(), maxCount = 50) => {
         const keyConditionExpression = 'conversationId = :convoId and sentDate < :sentDate';
         const expressionAttributeValues = {
             ':convoId': conversationId,
