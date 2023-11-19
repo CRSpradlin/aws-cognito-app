@@ -27,6 +27,7 @@ class signInUser {
             let newError = error;
             switch (error.code) {
                 case 'NotAuthorizedException':
+                case 'InvalidParameterException':
                 case 'UserNotFoundException':
                     newError = errorRepository.createError(5404, error);
                     break;
