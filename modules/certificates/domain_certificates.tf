@@ -1,7 +1,7 @@
 resource "aws_acm_certificate" "app_domain_certificate" {
     count = var.str_domain == "" ? 0 : 1
 
-    domain_name       = var.str_domain
+    domain_name       = "*.${var.str_domain}"
     validation_method = "DNS"
 }
 

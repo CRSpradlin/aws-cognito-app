@@ -22,3 +22,10 @@ resource "aws_apigatewayv2_deployment" "socket" {
       aws_apigatewayv2_route.socket_api_disconnect_route
   ]
 }
+
+resource "aws_apigatewayv2_api_mapping" "socket_domain_mapping" {
+  count = var.str_domain == "" ? 0 : 1
+  api_id      = aws_apigatewayv2_api.socket.id
+  domain_name = aws_apigatewayv2_domain_name.socket_domain[0].domain_name
+  stage       = aws_apigatewayv2_stage.socket.id
+}
