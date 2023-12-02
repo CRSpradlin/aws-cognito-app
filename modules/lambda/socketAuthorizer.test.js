@@ -50,7 +50,7 @@ describe('Test socketAuthorizer', () => {
                     Value: 'dummyValue'
                 },
                 {
-                    Name: 'profile',
+                    Name: 'sub', //sub is the internal profile key
                     Value: 'mockProfile'
                 }
             ]
