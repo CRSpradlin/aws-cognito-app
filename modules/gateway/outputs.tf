@@ -9,5 +9,9 @@ output "str_gateway_socket_invoke_url" {
 }
 
 output "str_api_cloudfront_hosted_domain_name" {
-  value = var.str_domain == "" ? "No domain specified." : aws_api_gateway_domain_name.api_domain[0].regional_domain_name
+  value = var.str_domain == "" ? "No custom domain specified." : aws_api_gateway_domain_name.api_domain[0].regional_domain_name
+}
+
+output "str_socket_cloudfront_hosted_domain_name" {
+  value = var.str_domain == "" ? "No custom domain specified." : aws_apigatewayv2_domain_name.socket_domain[0].domain_name_configuration[0].target_domain_name
 }
