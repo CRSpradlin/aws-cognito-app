@@ -14,7 +14,7 @@ class socketAuthorizer {
         try {
             if (this.token !== undefined) {
                 const user = await this.cognitoService.getUser(this.token);
-                await this.userUtils.addUserSession(user.UserAttributes.find((item) => item.Name == 'profile').Value, this.connectionId);
+                await this.userUtils.addUserSession(user.UserAttributes.find((item) => item.Name == 'sub').Value, this.connectionId);
             } else {
                 throw errorRepository.createError(4404);
             }
