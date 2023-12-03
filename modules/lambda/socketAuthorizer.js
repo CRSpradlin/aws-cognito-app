@@ -6,7 +6,7 @@ class socketAuthorizer {
         this.cognitoService = cognitoService;
         this.createAPIResponse = createAPIResponse;
         this.userUtils = userUtils;
-        this.token = event.headers.Authorization;
+        this.token = event.headers['Sec-WebSocket-Protocol'];
         this.connectionId = event.requestContext.connectionId;
     }
 
