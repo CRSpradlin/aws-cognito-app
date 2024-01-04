@@ -20,7 +20,8 @@
                 "dynamodb:*",
                 "apigateway:*",
                 "execute-api:*",
-                "ses:*"
+                "ses:*",
+                "states:*"
             ],
             "Resource": "*"
         }
