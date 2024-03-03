@@ -8,3 +8,6 @@ variable "str_services_lambda_layer_arn" {}
 variable "str_modules_lambda_layer_arn" {}
 
 variable "str_iam_basic_lambda_role_arn" {}
+
+variable "str_cognito_user_pool_id" {}
+variable "str_user_confirmation_state_arn" {}
