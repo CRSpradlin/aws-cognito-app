@@ -81,6 +81,9 @@ module "lambda" {
     str_modules_lambda_layer_arn = module.services.str_modules_lambda_layer_arn
 
     str_iam_basic_lambda_role_arn = module.iam.str_iam_basic_lambda_role_arn
+
+    str_cognito_user_pool_id = module.cognito.str_cognito_user_pool_id
+    str_user_confirmation_state_arn = module.states.str_user_confirmation_state_arn
 }
 
 module "services" { 

@@ -6,6 +6,10 @@ output "str_cognito_user_pool_arn" {
   value = aws_cognito_user_pool.app_user_pool.arn
 }
 
+output "str_cognito_user_pool_id" {
+  value = aws_cognito_user_pool.app_user_pool.id
+}
+
 // TODO: Might need to remove
 output "str_cognito_user_pool_endpoint" {
   value = aws_cognito_user_pool.app_user_pool.endpoint
