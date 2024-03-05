@@ -37,7 +37,8 @@ locals {
     "${path.module}/code/createAPIResponse.js",
     "${path.module}/code/errorRepository.js",
     "${path.module}/code/socketUtils.js",
-    "${path.module}/code/sesUtils.js"
+    "${path.module}/code/sesUtils.js",
+    "${path.module}/code/statesUtils.js"
   ]
 }
 
@@ -89,5 +90,10 @@ data "archive_file" "services" {
   source {
     filename = "${basename(local.service_files[7])}"
     content = "${data.template_file.service_files.7.rendered}"
+  }
+
+  source {
+    filename = "${basename(local.service_files[8])}"
+    content = "${data.template_file.service_files.8.rendered}"
   }
 }
