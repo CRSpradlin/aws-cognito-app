@@ -25,6 +25,14 @@ class userUtils {
         return response;
     }
 
+    removeUser = async (profile) => {
+        const userObj = await this.getUser(profile);
+
+        await this.cognitoService.removeUser(userObj.name);
+
+        return await this.dynamoDB.delete('UserData', {profile});
+    }
+
     getUser = async (userIdentifier, usernameUsed = false) => {
         let userKeyName;
         let indexName;

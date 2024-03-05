@@ -16,6 +16,15 @@ self.createUser = async (username, password, userAttributes=undefined) => {
     return response;
 };
 
+self.removeUser = async (username) => {
+    const params = {
+        UserPoolId: process.env.APP_USER_POOL_ID,
+        Username: username 
+    };
+    
+    return await cognitoIdentityServiceProvider.adminDeleteUser(params).promise();
+}
+
 self.confirmUser = async (username, confirmationCode) => {
     const params = {
         ClientId: process.env.APP_CLIENT_ID,
