@@ -1,110 +1,112 @@
 {
-    "Comment": "A Hello World example of the Amazon States Language using Pass states",
-    "StartAt": "Parallel",
-    "States": {
-      "Parallel": {
-        "Type": "Parallel",
-        "Next": "User Is Confirmed",
-        "Branches": [
-          {
-            "StartAt": "Wait for Timeout",
-            "States": {
-              "Wait for Timeout": {
-                "Type": "Wait",
-                "Seconds": 350,
-                "Next": "Timeout Error"
-              },
-              "Timeout Error": {
-                "Type": "Fail",
-                "Error": "Timeout"
-              }
-            }
-          },
-          {
-            "StartAt": "Wait for User Confirmation",
-            "States": {
-              "Wait for User Confirmation": {
-                "Type": "Task",
-                "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
-                "Parameters": {
-                  "FunctionName": "arn:aws:lambda:us-east-1:911809168925:function:testLambda:$LATEST",
-                  "Payload": {
-                    "user.$": "$.user",
-                    "taskToken.$": "$$.Task.Token"
-                  }
-                },
-                "Retry": [
-                  {
-                    "ErrorEquals": [
-                      "Lambda.ServiceException",
-                      "Lambda.AWSLambdaException",
-                      "Lambda.SdkClientException",
-                      "Lambda.TooManyRequestsException"
-                    ],
-                    "IntervalSeconds": 1,
-                    "MaxAttempts": 3,
-                    "BackoffRate": 2
-                  }
-                ],
-                "Next": "End Parallel With Success"
-              },
-              "End Parallel With Success": {
-                "Type": "Fail",
-                "Error": "User Confirmed"
-              }
+  "Comment": "A state machine to handle automatic user removal upon no confirmation.",
+  "StartAt": "Parallel",
+  "States": {
+    "Parallel": {
+      "Type": "Parallel",
+      "Next": "User Is Confirmed",
+      "Branches": [
+        {
+          "StartAt": "Wait for Timeout",
+          "States": {
+            "Wait for Timeout": {
+              "Type": "Wait",
+              "Seconds": 350,
+              "Next": "Timeout Error"
+            },
+            "Timeout Error": {
+              "Type": "Fail",
+              "Error": "Timeout"
             }
           }
-        ],
-        "Catch": [
-          {
-            "ErrorEquals": [
-              "Timeout"
-            ],
-            "Next": "Remove User",
-            "ResultPath": "$.parallelStepResult",
-            "Comment": "Catch All Errors - Remove User"
-          },
-          {
-            "ErrorEquals": [
-              "User Confirmed"
-            ],
-            "Comment": "Catch Confirmations - Finish",
-            "Next": "User Is Confirmed",
-            "ResultPath": "$.parallelStepResult"
-          }
-        ],
-        "ResultPath": "$.parallelStepResult"
-      },
-      "Remove User": {
-        "Type": "Task",
-        "Resource": "arn:aws:states:::lambda:invoke",
-        "OutputPath": "$.Payload",
-        "Parameters": {
-          "Payload.$": "$",
-          "FunctionName": "arn:aws:lambda:us-east-1:911809168925:function:testLambda:$LATEST"
         },
-        "Retry": [
-          {
-            "ErrorEquals": [
-              "Lambda.ServiceException",
-              "Lambda.AWSLambdaException",
-              "Lambda.SdkClientException",
-              "Lambda.TooManyRequestsException"
-            ],
-            "IntervalSeconds": 1,
-            "MaxAttempts": 3,
-            "BackoffRate": 2
+        {
+          "StartAt": "Wait for User Confirmation",
+          "States": {
+            "Wait for User Confirmation": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+              "Parameters": {
+                "FunctionName": "${str_confirmUser_lambda_arn}",
+                "Payload": {
+                  "userProfile.$": "$.userProfile",
+                  "taskToken.$": "$$.Task.Token"
+                }
+              },
+              "Retry": [
+                {
+                  "ErrorEquals": [
+                    "Lambda.ServiceException",
+                    "Lambda.AWSLambdaException",
+                    "Lambda.SdkClientException",
+                    "Lambda.TooManyRequestsException"
+                  ],
+                  "IntervalSeconds": 1,
+                  "MaxAttempts": 3,
+                  "BackoffRate": 2
+                }
+              ],
+              "Next": "End Parallel With Success"
+            },
+            "End Parallel With Success": {
+              "Type": "Fail",
+              "Error": "User Confirmed"
+            }
           }
-        ],
-        "Next": "User Not Confirmed"
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "Timeout"
+          ],
+          "Next": "Remove User",
+          "ResultPath": "$.parallelStepResult",
+          "Comment": "Catch All Errors - Remove User"
+        },
+        {
+          "ErrorEquals": [
+            "User Confirmed"
+          ],
+          "Comment": "Catch Confirmations - Finish",
+          "Next": "User Is Confirmed",
+          "ResultPath": "$.parallelStepResult"
+        }
+      ],
+      "ResultPath": "$.parallelStepResult"
+    },
+    "Remove User": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$.Payload",
+      "Parameters": {
+        "FunctionName": "${str_confirmUser_lambda_arn}",
+        "Payload": {
+          "userProfile.$": "$.userProfile"
+        }
       },
-      "User Is Confirmed": {
-        "Type": "Pass",
-        "End": true
-      },
-      "User Not Confirmed": {
-        "Type": "Pass",
-        "End": true
-      }
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2
+        }
+      ],
+      "Next": "User Not Confirmed"
+    },
+    "User Is Confirmed": {
+      "Type": "Pass",
+      "End": true
+    },
+    "User Not Confirmed": {
+      "Type": "Pass",
+      "End": true
     }
   }
+}
