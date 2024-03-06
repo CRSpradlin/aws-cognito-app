@@ -102,4 +102,6 @@ module "states" {
     source = "./states"
 
     str_iam_basic_states_role_arn = module.iam.str_iam_basic_states_role_arn
+    #arn:aws:lambda:us-east-1:911809168925:function:confirmUser:$LATEST
+    str_confirmUser_lambda_arn = "arn:aws:lambda:${var.str_region}:${var.str_aws_account_id}:function:confirmUser:$LATEST"
 }
