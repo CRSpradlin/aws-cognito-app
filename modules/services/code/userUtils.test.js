@@ -83,6 +83,20 @@ describe('Test userUtils', () => {
         expect(instance.dynamoDB.query).toHaveBeenCalledWith('UserData', mockKeyConditionExpression, mockExpressionAttributeValues, mockAdditionalConfig);
     });
 
+    test('Test removeUser', async () => {
+        const mockProfile = 'profile';
+        instance.getUser = jest.fn().mockResolvedValue({name: 'mockUserName'});
+        instance.cognitoService.removeUser = jest.fn();
+        instance.dynamoDB.delete = jest.fn().mockResolvedValue('mockDynamoResult');
+
+        const response = await instance.removeUser(mockProfile);
+
+        expect(response).toEqual('mockDynamoResult');
+        expect(instance.getUser).toHaveBeenCalledWith('profile');
+        expect(instance.cognitoService.removeUser).toHaveBeenCalledWith('mockUserName');
+        expect(instance.dynamoDB.delete).toHaveBeenCalledWith('UserData', {profile: 'profile'});
+    }); 
+
     test('Test addUserSession', async () => {
         const mockProfile = 'profile';
         const mockConnectionId = 'connectionId';
