@@ -2,7 +2,7 @@
 const AWS = require('aws-sdk');
 const cognitoService = require('./cognitoService');
 
-const mockResponse = 'mockResponse'
+const mockResponse = 'mockResponse';
 
 const mockCognitoIdentityServiceProviderResponse = jest.fn().mockResolvedValue(mockResponse);
 
@@ -26,6 +26,11 @@ jest.mock('aws-sdk', () => {
                     }
                 }),
                 initiateAuth: jest.fn((params) => {
+                    return {
+                        promise: async () => {return mockCognitoIdentityServiceProviderResponse(params)}
+                    };
+                }),
+                adminDeleteUser: jest.fn((params) => {
                     return {
                         promise: async () => {return mockCognitoIdentityServiceProviderResponse(params)}
                     };
@@ -120,5 +125,17 @@ describe('Test cognitoService', () => {
         const response = cognitoService.getClaims(mockReq);
 
         expect(response).toEqual('mockClaims');
-    })
+    });
+
+    test("Test removeUser call", async () => {
+        process.env.APP_USER_POOL_ID = 'mockAppUserPoolId'
+        const response = await cognitoService.removeUser('mockUsername');
+
+        expect(response).toEqual('mockResponse');
+        const expectedParams = {
+            UserPoolId: 'mockAppUserPoolId',
+            Username: 'mockUsername' 
+        };
+        expect(mockCognitoIdentityServiceProviderResponse).toHaveBeenCalledWith(expectedParams);
+    });
 })
