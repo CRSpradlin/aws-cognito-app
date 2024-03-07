@@ -3,6 +3,7 @@ const errorRepository = require('./opt/errorRepository');
 const registerUser = require('./registerUser');
 
 const mockUserUtils = { };
+const mockStatesUtils = { };
 const mockCreateAPIResponse = { };
 
 let instance;
@@ -12,6 +13,7 @@ describe('Test registerUser', () => {
     beforeEach(() => {
         const deps = {
             userUtils: mockUserUtils,
+            statesUtils: mockStatesUtils,
             createAPIResponse: mockCreateAPIResponse,
             event: event
         }
@@ -20,6 +22,7 @@ describe('Test registerUser', () => {
     })
 
     test('Test handler call', async () => {
+        process.env.APP_USER_CONFRIM_STATE_ARN = 'userConfirmStateArn';
         instance.event = {
             body: JSON.stringify({
                 email: 'mockEmail',
@@ -27,13 +30,18 @@ describe('Test registerUser', () => {
                 password: 'mockPassword'
             })
         };
-        mockUserUtils.createUser = jest.fn().mockResolvedValue('mockCognitoResponse');
+        const mockCreateResponse = {
+            UserSub: 'mockUserProfile'
+        }
+        mockUserUtils.createUser = jest.fn().mockResolvedValue(mockCreateResponse);
+        mockStatesUtils.startExecution = jest.fn().mockResolvedValue('mockStatesExecutionResponse');
         mockCreateAPIResponse.Ok = jest.fn().mockReturnValue('mockAPIResponse');
 
         const response = await instance.handler();
 
         expect(response).toEqual('mockAPIResponse');
         expect(mockUserUtils.createUser).toHaveBeenCalledWith('mockUsername', 'mockPassword', 'mockEmail');
+        expect(mockStatesUtils.startExecution).toHaveBeenCalledWith('userConfirmStateArn', {userProfile: 'mockUserProfile'});
     });
 
     test('Test handler call with UsernameExistsException caught error', async () => {
@@ -103,6 +111,7 @@ describe('Test registerUser', () => {
 
     test('Test lambda handler export', async () => {
         jest.mock('/opt/userUtils', () => { return {default: jest.fn().mockReturnValue({ })} }, {virtual: true});
+        jest.mock('/opt/statesUtils', () => { return { } }, {virtual: true});
         jest.mock('/opt/createAPIResponse', () => { return { } }, {virtual: true});
         const mockEvent = 'mockEvent';
 
@@ -118,6 +127,7 @@ describe('Test registerUser', () => {
         expect(response).toEqual('mockHandlerResponse');
         expect(mockRegisterUser.registerUserService).toHaveBeenCalledWith({
             userUtils: { },
+            statesUtils: { },
             createAPIResponse: { },
             event: mockEvent
         })
