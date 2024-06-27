@@ -4,7 +4,7 @@ resource "aws_lambda_layer_version" "modules" {
 
   source_code_hash = data.archive_file.modules.output_base64sha256
 
-  compatible_runtimes = ["nodejs14.x"]
+  compatible_runtimes = ["nodejs20.x"]
 }
 
 data "archive_file" "modules" {
@@ -19,7 +19,7 @@ resource "aws_lambda_layer_version" "services" {
 
   source_code_hash = data.archive_file.services.output_base64sha256
 
-  compatible_runtimes = ["nodejs14.x"]
+  compatible_runtimes = ["nodejs20.x"]
 }
 
 # data "archive_file" "services" {
