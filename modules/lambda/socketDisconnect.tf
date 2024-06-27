@@ -11,7 +11,7 @@ resource "aws_lambda_function" "socketDisconnect" {
     var.str_modules_lambda_layer_arn 
   ]
 
-  runtime = "nodejs14.x"
+  runtime = "nodejs20.x"
   timeout = 300
 
   environment {
