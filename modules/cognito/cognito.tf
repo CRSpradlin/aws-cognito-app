@@ -12,6 +12,19 @@ resource "aws_cognito_user_pool" "app_user_pool" {
     }
   }
 
+  schema {
+    attribute_data_type      = "String"
+    developer_only_attribute = false
+    mutable                  = true
+    name                     = "birthdate"
+    required                 = false
+
+    string_attribute_constraints {
+      max_length = "10"
+      min_length = "4"
+    }
+  }
+
   auto_verified_attributes = ["email"]
 }
 
