@@ -38,7 +38,7 @@ locals {
     "${path.module}/code/errorRepository.js",
     "${path.module}/code/socketUtils.js",
     "${path.module}/code/sesUtils.js",
-    "${path.module}/code/statesUtils.js"
+    "${path.module}/code/statesService.js"
   ]
 }
 

@@ -2,11 +2,11 @@ const errorRepository = require('./opt/errorRepository');
 
 class confirmUser {
     
-    constructor(dynamoService, userUtils, cognitoService, statesUtils, createAPIResponse, event) {
+    constructor(dynamoService, userUtils, cognitoService, statesService, createAPIResponse, event) {
         this.dynamoService = dynamoService;
         this.userUtils = userUtils;
         this.cognitoService = cognitoService;
-        this.statesUtils = statesUtils;
+        this.statesService = statesService;
         this.createAPIResponse = createAPIResponse;
         this.event = event;
     }
@@ -30,7 +30,7 @@ class confirmUser {
                 };
                 await this.dynamoService.update('UserData', {profile: reqBody.profile}, 'set #key = :value', additionalConfig);
     
-                await this.statesUtils.sendTaskSuccess(userObj.confirmationToken);
+                await this.statesService.sendTaskSuccess(userObj.confirmationToken);
 
                 return this.createAPIResponse.Ok();
             } catch (error) {
@@ -77,20 +77,20 @@ class confirmUser {
 }
 
 exports.confirmUserService = (deps) => {
-    return new confirmUser(deps.dynamoService, deps.userUtils, deps.cognitoService, deps.statesUtils, deps.createAPIResponse, deps.event);   
+    return new confirmUser(deps.dynamoService, deps.userUtils, deps.cognitoService, deps.statesService, deps.createAPIResponse, deps.event);   
 }
 
 exports.handler = async (event) => {
     const dynamoService = require('/opt/dynamoService');
     const userUtils = require('/opt/userUtils').default();
     const cognitoService = require('/opt/cognitoService');
-    const statesUtils = require('/opt/statesUtils');
+    const statesService = require('/opt/statesService');
     const createAPIResponse = require('/opt/createAPIResponse');
     const deps = {
         dynamoService,
         userUtils,
         cognitoService,
-        statesUtils,
+        statesService,
         createAPIResponse,
         event
     };

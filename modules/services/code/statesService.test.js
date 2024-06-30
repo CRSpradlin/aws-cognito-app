@@ -1,6 +1,6 @@
 
 const AWS = require('aws-sdk');
-const statesUtils = require('./statesUtils');
+const statesService = require('./statesService');
 
 const mockResponse = 'mockResponse';
 
@@ -25,7 +25,7 @@ jest.mock('aws-sdk', () => {
     };
 });
 
-describe('Test statesUtils', () => {
+describe('Test statesService', () => {
     beforeEach(() => {
         AWS // Needed for eslint usage
         jest.clearAllMocks();
@@ -36,7 +36,7 @@ describe('Test statesUtils', () => {
         const mockToken = 'mockToken';
         const mockPayload = 'mockPayload';
 
-        const response = await statesUtils.sendTaskSuccess(mockToken, mockPayload);
+        const response = await statesService.sendTaskSuccess(mockToken, mockPayload);
         expect(response).toEqual(mockResponse);
         const expectedParams = {
             output: JSON.stringify('mockPayload'), //need to be a string
@@ -48,7 +48,7 @@ describe('Test statesUtils', () => {
     test("Test sendTaskSuccess call without payload", async () => {
         const mockToken = 'mockToken';
 
-        const response = await statesUtils.sendTaskSuccess(mockToken);
+        const response = await statesService.sendTaskSuccess(mockToken);
         expect(response).toEqual(mockResponse);
         const expectedParams = {
             output: JSON.stringify(null), //need to be a string
@@ -61,7 +61,7 @@ describe('Test statesUtils', () => {
         const mockStateMachineArn = 'mockStateMachineArn';
         const mockInput = 'mockInput';
 
-        const response = await statesUtils.startExecution(mockStateMachineArn, mockInput);
+        const response = await statesService.startExecution(mockStateMachineArn, mockInput);
         expect(response).toEqual(mockResponse);
         const expectedParams = {
             input: JSON.stringify('mockInput'), //need to be a string
@@ -73,7 +73,7 @@ describe('Test statesUtils', () => {
     test("Test startExecution call without input", async () => {
         const mockStateMachineArn = 'mockStateMachineArn';
 
-        const response = await statesUtils.startExecution(mockStateMachineArn);
+        const response = await statesService.startExecution(mockStateMachineArn);
         expect(response).toEqual(mockResponse);
         const expectedParams = {
             input: JSON.stringify(null), //need to be a string

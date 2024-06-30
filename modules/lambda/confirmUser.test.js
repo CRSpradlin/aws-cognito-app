@@ -5,7 +5,7 @@ const confirmUser = require('./confirmUser');
 const mockCognitoService = { };
 const mockUserUtils = { };
 const mockDynamoService = { };
-const mockStatesUtils = { };
+const mockstatesService = { };
 const mockCreateAPIResponse = { };
 
 let instance;
@@ -17,7 +17,7 @@ describe('Test confirmUser', () => {
             cognitoService: mockCognitoService,
             userUtils: mockUserUtils,
             dynamoService: mockDynamoService,
-            statesUtils: mockStatesUtils,
+            statesService: mockstatesService,
             createAPIResponse: mockCreateAPIResponse,
             event: event
         }
@@ -35,7 +35,7 @@ describe('Test confirmUser', () => {
         mockCognitoService.confirmUser = jest.fn().mockResolvedValue('mockCognitoResponse');
         mockUserUtils.getUser = jest.fn().mockResolvedValue({name: 'mockUserName', confirmationToken: 'mockConfirmationToken'});
         mockDynamoService.update = jest.fn().mockResolvedValue(true);
-        mockStatesUtils.sendTaskSuccess = jest.fn().mockResolvedValue(true);
+        mockstatesService.sendTaskSuccess = jest.fn().mockResolvedValue(true);
         mockCreateAPIResponse.Ok = jest.fn().mockReturnValue('mockAPIResponse');
 
         const response = await instance.handler();
@@ -50,7 +50,7 @@ describe('Test confirmUser', () => {
                 ':value': true
             }
         });
-        expect(mockStatesUtils.sendTaskSuccess).toHaveBeenCalledWith('mockConfirmationToken');
+        expect(mockstatesService.sendTaskSuccess).toHaveBeenCalledWith('mockConfirmationToken');
     });
 
     test('Test handler call for Step Function request without task token', async () => {
@@ -199,7 +199,7 @@ describe('Test confirmUser', () => {
         jest.mock('/opt/cognitoService', () => { return { } }, {virtual: true});
         jest.mock('/opt/userUtils', () => { return {default: () => {return { }}}}, {virtual: true});
         jest.mock('/opt/dynamoService', () => { return { } }, {virtual: true});
-        jest.mock('/opt/statesUtils', () => { return { } }, {virtual: true});
+        jest.mock('/opt/statesService', () => { return { } }, {virtual: true});
         jest.mock('/opt/createAPIResponse', () => { return { } }, {virtual: true});
         const mockEvent = 'mockEvent';
 
@@ -217,7 +217,7 @@ describe('Test confirmUser', () => {
             cognitoService: { },
             userUtils: { },
             dynamoService: { },
-            statesUtils: { },
+            statesService: { },
             createAPIResponse: { },
             event: mockEvent
         })

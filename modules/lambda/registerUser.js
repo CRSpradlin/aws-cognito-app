@@ -2,9 +2,9 @@ const errorRepository = require('./opt/errorRepository');
 
 class registerUser {
     
-    constructor(userUtils, statesUtils, createAPIResponse, event) {
+    constructor(userUtils, statesService, createAPIResponse, event) {
         this.userUtils = userUtils;
-        this.statesUtils = statesUtils;
+        this.statesService = statesService;
         this.createAPIResponse = createAPIResponse;
         this.event = event;
     }
@@ -19,7 +19,7 @@ class registerUser {
             const stateInput = {
                 userProfile: body.UserSub
             };
-            await this.statesUtils.startExecution(process.env.APP_USER_CONFRIM_STATE_ARN, stateInput);
+            await this.statesService.startExecution(process.env.APP_USER_CONFRIM_STATE_ARN, stateInput);
 
             return this.createAPIResponse.Ok(body);
         } catch (error) {
@@ -42,16 +42,16 @@ class registerUser {
 }
 
 exports.registerUserService = (deps) => {
-    return new registerUser(deps.userUtils, deps.statesUtils, deps.createAPIResponse, deps.event);   
+    return new registerUser(deps.userUtils, deps.statesService, deps.createAPIResponse, deps.event);   
 }
 
 exports.handler = async (event) => {
     const userUtils = require('/opt/userUtils').default();
-    const statesUtils = require('/opt/statesUtils');
+    const statesService = require('/opt/statesService');
     const createAPIResponse = require('/opt/createAPIResponse');
     const deps = {
         userUtils,
-        statesUtils,
+        statesService,
         createAPIResponse,
         event
     };
