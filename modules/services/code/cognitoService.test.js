@@ -1,48 +1,29 @@
 
-const AWS = require('aws-sdk');
 const cognitoService = require('./cognitoService');
 
 const mockResponse = 'mockResponse';
 
 const mockCognitoIdentityServiceProviderResponse = jest.fn().mockResolvedValue(mockResponse);
 
-jest.mock('aws-sdk', () => {
+jest.mock('@aws-sdk/client-cognito-identity-provider', () => {
+
+    class MockCognitoIdentityProvider {
+        constructor() {}
+    
+        signUp = async (params) => {return mockCognitoIdentityServiceProviderResponse(params)}
+        confirmSignUp = async (params) => {return mockCognitoIdentityServiceProviderResponse(params)}
+        getUser = async (params) => {return mockCognitoIdentityServiceProviderResponse(params)}
+        initiateAuth = async (params) => {return mockCognitoIdentityServiceProviderResponse(params)}
+        adminDeleteUser = async (params) => {return mockCognitoIdentityServiceProviderResponse(params)}
+    }
+    
     return {
-        CognitoIdentityServiceProvider: jest.fn(() => {
-            return {
-                signUp: jest.fn((params) => {
-                    return {
-                        promise: async () => {return mockCognitoIdentityServiceProviderResponse(params)}
-                    };
-                }),
-                confirmSignUp: jest.fn((params) => {
-                    return {
-                        promise: async () => {return mockCognitoIdentityServiceProviderResponse(params)}
-                    };
-                }),
-                getUser: jest.fn((params) => {
-                    return {
-                        promise: async () => {return mockCognitoIdentityServiceProviderResponse(params)}
-                    }
-                }),
-                initiateAuth: jest.fn((params) => {
-                    return {
-                        promise: async () => {return mockCognitoIdentityServiceProviderResponse(params)}
-                    };
-                }),
-                adminDeleteUser: jest.fn((params) => {
-                    return {
-                        promise: async () => {return mockCognitoIdentityServiceProviderResponse(params)}
-                    };
-                }),
-            };
-        }),
+        CognitoIdentityProvider: MockCognitoIdentityProvider
     };
 });
 
 describe('Test cognitoService', () => {
     beforeEach(() => {
-        AWS // Needed for eslint usage
         jest.clearAllMocks();
         jest.resetModules();
 

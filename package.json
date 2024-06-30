@@ -26,6 +26,7 @@
     "jest": "^27.2.0"
   },
   "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.606.0",
     "@aws-sdk/client-dynamodb": "^3.606.0",
     "@aws-sdk/lib-dynamodb": "^3.606.0",
     "aws-sdk": "^2.1651.0",

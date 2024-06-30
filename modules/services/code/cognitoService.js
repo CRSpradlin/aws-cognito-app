@@ -1,5 +1,5 @@
-const AWS = require('aws-sdk');
-const cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider();
+const {CognitoIdentityProvider} = require('@aws-sdk/client-cognito-identity-provider');
+const cognitoIdentityServiceProvider = new CognitoIdentityProvider();
 
 const self = exports;
 
@@ -11,7 +11,7 @@ self.createUser = async (username, password, userAttributes=undefined) => {
         UserAttributes: userAttributes
     };
 
-    const response = await cognitoIdentityServiceProvider.signUp(params).promise();
+    const response = await cognitoIdentityServiceProvider.signUp(params);
     
     return response;
 };
@@ -22,7 +22,7 @@ self.removeUser = async (username) => {
         Username: username 
     };
     
-    return await cognitoIdentityServiceProvider.adminDeleteUser(params).promise();
+    return await cognitoIdentityServiceProvider.adminDeleteUser(params);
 }
 
 self.confirmUser = async (username, confirmationCode) => {
@@ -32,7 +32,7 @@ self.confirmUser = async (username, confirmationCode) => {
         Username: username
     };
 
-    const response = await cognitoIdentityServiceProvider.confirmSignUp(params).promise();
+    const response = await cognitoIdentityServiceProvider.confirmSignUp(params);
 
     return response;
 };
@@ -42,7 +42,7 @@ self.getUser = async (token) => {
         AccessToken: token
     }
 
-    const response = await cognitoIdentityServiceProvider.getUser(params).promise();
+    const response = await cognitoIdentityServiceProvider.getUser(params);
 
     return response;
 }
@@ -57,7 +57,7 @@ self.getAuthToken = async (username, password) => {
         }
     };
 
-    const response = await cognitoIdentityServiceProvider.initiateAuth(params).promise();
+    const response = await cognitoIdentityServiceProvider.initiateAuth(params);
 
     return response;
 };
