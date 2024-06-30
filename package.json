@@ -26,7 +26,9 @@
     "jest": "^27.2.0"
   },
   "dependencies": {
-    "aws-sdk": "^2.1356.0",
+    "@aws-sdk/client-dynamodb": "^3.606.0",
+    "@aws-sdk/lib-dynamodb": "^3.606.0",
+    "aws-sdk": "^2.1651.0",
     "uuid": "^8.3.2"
   }
 }

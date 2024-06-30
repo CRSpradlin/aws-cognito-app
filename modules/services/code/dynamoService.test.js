@@ -1,5 +1,4 @@
 
-const AWS = require('aws-sdk');
 const dynamoService = require('./dynamoService');
 
 const mockResponse = 'mockResponse';
@@ -10,46 +9,32 @@ const mockDynamoUpdateResponse = jest.fn().mockResolvedValue(mockResponse);
 const mockDynamoQueryResponse = jest.fn().mockResolvedValue({Items: ['item1', 'item2']});
 const mockDynamoDeleteResponse = jest.fn().mockResolvedValue(mockResponse);
 
-jest.mock('aws-sdk', () => {
+jest.mock('@aws-sdk/client-dynamodb', () => {
+    class mockDynamoConstructor {
+        constructor() {}
+    }
     return {
-        DynamoDB: {
-            DocumentClient: jest.fn(() => {
+        DynamoDB: mockDynamoConstructor
+    }
+});
+
+jest.mock('@aws-sdk/lib-dynamodb', () => {
+    return {
+        DynamoDBDocument: {
+            from: jest.fn(() => {
                 return {
-                    put: jest.fn((params) => {
-                        return {
-                            promise: async () => {return mockDynamoPutResponse(params)}
-                        };
-                    }),
-                    get: jest.fn((params) => {
-                        return {
-                            promise: async () => {return mockDynamoGetResponse(params)}
-                        };
-                    }),
-                    update: jest.fn((params) => {
-                        return {
-                            promise: async () => {return mockDynamoUpdateResponse(params)}
-                        };
-                    }),
-                    query: jest.fn((params) => {
-                        return {
-                            promise: async () => {return mockDynamoQueryResponse(params)}
-                        };
-                    }),
-                    delete: jest.fn((params) => {
-                        return {
-                            promise: async () => {return mockDynamoDeleteResponse(params)}
-                        };
-                    })
+                    put: async (params) => {return mockDynamoPutResponse(params)},
+                    get:  async (params) => {return mockDynamoGetResponse(params)},
+                    update: async (params) => {return mockDynamoUpdateResponse(params)},
+                    query: async (params) => {return mockDynamoQueryResponse(params)},
+                    delete: async (params) => {return mockDynamoDeleteResponse(params)}
                 };
-            }),
+            })
         }
-    };
+    }
 });
 
 describe('Test dynamoService', () => {
-    beforeEach(() => {
-        AWS // Needed for eslint usage
-    })
 
     test('Test get call', async () => {
         const mockTableName = 'tableName';

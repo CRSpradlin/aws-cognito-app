@@ -1,5 +1,7 @@
-const AWS = require('aws-sdk');
-const documentClient = new AWS.DynamoDB.DocumentClient();
+const {DynamoDBDocument} = require("@aws-sdk/lib-dynamodb");
+const {DynamoDB} = require("@aws-sdk/client-dynamodb");
+
+const documentClient = DynamoDBDocument.from(new DynamoDB());
 
 const self = exports;
 
@@ -9,9 +11,9 @@ const self = exports;
 //       HashKey: 'hashkey'
 //     }
 //   };
-  
+
 //   var documentClient = new AWS.DynamoDB.DocumentClient();
-  
+
 //   documentClient.get(params, function(err, data) {
 //     if (err) console.log(err);
 //     else console.log(data);
@@ -24,7 +26,7 @@ self.get = async (tableName, key) => {
         Key: key
     };
 
-    const response = await documentClient.get(params).promise();
+    const response = await documentClient.get(params);
 
     return response.Item;
 }
@@ -40,9 +42,9 @@ self.get = async (tableName, key) => {
 //        NullAttribute: null
 //     }
 //   };
-  
+
 //   var documentClient = new AWS.DynamoDB.DocumentClient();
-  
+
 //   documentClient.put(params, function(err, data) {
 //     if (err) console.log(err);
 //     else console.log(data);
@@ -55,7 +57,7 @@ self.put = async (tableName, item) => {
         Item: item
     }
 
-    const response = await documentClient.put(params).promise();
+    const response = await documentClient.put(params);
 
     return response;
 }
@@ -66,7 +68,7 @@ self.delete = async (tableName, key) => {
         Key: key
     };
 
-    const response = await documentClient.delete(params).promise();
+    const response = await documentClient.delete(params);
 
     return response;
 }
@@ -80,7 +82,7 @@ self.update = async (tableName, key, updateExpression, additionalConfig={}) => {
         ...additionalConfig
     };
 
-    const response = await documentClient.update(params).promise();
+    const response = await documentClient.update(params);
     
     return response;
 }
@@ -93,7 +95,7 @@ self.query = async (tableName, keyConditionExpression, expressionAttributeValues
         ...additionalConfig
     };
 
-    const response = await documentClient.query(params).promise();
+    const response = await documentClient.query(params);
 
     return response.Items;
 }
