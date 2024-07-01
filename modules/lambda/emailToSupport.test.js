@@ -2,7 +2,7 @@
 const emailToSupport = require('./emailToSupport');
 const errorRepository = require('./opt/errorRepository');
 
-const mockSESUtils = { };
+const mocksesService = { };
 
 let instance;
 let event = {
@@ -19,7 +19,7 @@ describe('Test emailToSupport', () => {
 
     beforeEach(() => {
         const deps = {
-            sesUtils: mockSESUtils,
+            sesService: mocksesService,
             event: event
         }
 
@@ -27,18 +27,18 @@ describe('Test emailToSupport', () => {
     });
 
     test('Test handler call', async () => {
-        mockSESUtils.gunzip = jest.fn().mockResolvedValue('data');
-        mockSESUtils.sendHTMLToSupport = jest.fn().mockResolvedValue(true);
+        mocksesService.gunzip = jest.fn().mockResolvedValue('data');
+        mocksesService.sendHTMLToSupport = jest.fn().mockResolvedValue(true);
         
         await instance.handler();
 
-        expect(mockSESUtils.gunzip).toHaveBeenCalledWith(Buffer.from('data', 'base64'));
-        expect(mockSESUtils.sendHTMLToSupport).toHaveBeenCalledWith('<html><body><h1>1000 Error Has Been Logged</h1><br><br><code>data</code></body></html>');
+        expect(mocksesService.gunzip).toHaveBeenCalledWith(Buffer.from('data', 'base64'));
+        expect(mocksesService.sendHTMLToSupport).toHaveBeenCalledWith('<html><body><h1>1000 Error Has Been Logged</h1><br><br><code>data</code></body></html>');
     });
 
     test('Test handler call with caught errorRepository error', async () => {
         const mockError = errorRepository.createError(1403);
-        mockSESUtils.gunzip = jest.fn().mockImplementation(() => {
+        mocksesService.gunzip = jest.fn().mockImplementation(() => {
             throw mockError;
         });
 
@@ -53,7 +53,7 @@ describe('Test emailToSupport', () => {
 
     test('Test handler call with unexpected error', async () => {
         const mockError = new Error('test error');
-        mockSESUtils.gunzip = jest.fn().mockImplementation(() => {
+        mocksesService.gunzip = jest.fn().mockImplementation(() => {
             throw mockError;
         });
 
@@ -69,7 +69,7 @@ describe('Test emailToSupport', () => {
     });
 
     test('Test lambda handler export', async () => {
-        jest.mock('/opt/sesUtils', () => { return { }}, {virtual: true});
+        jest.mock('/opt/sesService', () => { return { }}, {virtual: true});
 
         const mockEvent = 'mockEvent';
 
@@ -84,7 +84,7 @@ describe('Test emailToSupport', () => {
 
         expect(response).toEqual('mockHandlerResponse');
         expect(mockEmailToSupport.emailToSupportService).toHaveBeenCalledWith({
-            sesUtils: { },
+            sesService: { },
             event: mockEvent
         });
     });

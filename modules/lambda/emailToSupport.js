@@ -2,8 +2,8 @@ const errorRepository = require('./opt/errorRepository');
 
 class emailToSupport {
     
-    constructor(sesUtils, event) {
-        this.sesUtils = sesUtils;
+    constructor(sesService, event) {
+        this.sesService = sesService;
         this.event = event;
     }
 
@@ -11,10 +11,10 @@ class emailToSupport {
         try {
             const payload = Buffer.from(this.event.awslogs.data, 'base64');
 
-            let errorLoggedStr = await this.sesUtils.gunzip(payload);
+            let errorLoggedStr = await this.sesService.gunzip(payload);
             const htmlBody = '<html><body><h1>1000 Error Has Been Logged</h1><br><br><code>' + errorLoggedStr + '</code></body></html>';
             
-            await this.sesUtils.sendHTMLToSupport(htmlBody);
+            await this.sesService.sendHTMLToSupport(htmlBody);
         } catch (error) {
             let newError = error;
             switch (error.code) {
@@ -29,13 +29,13 @@ class emailToSupport {
 }
 
 exports.emailToSupportService = (deps) => {
-    return new emailToSupport(deps.sesUtils, deps.event);   
+    return new emailToSupport(deps.sesService, deps.event);   
 }
 
 exports.handler = async (event) => {
-    const sesUtils = require('/opt/sesUtils');
+    const sesService = require('/opt/sesService');
     const deps = {
-        sesUtils,
+        sesService,
         event
     };
 

@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 const zlib = require('zlib');
-const sesUtils = require('./sesUtils');
+const sesService = require('./sesService');
 
 const errorRepository = require('./errorRepository');
 const mockResponse = 'mockResponse';
@@ -32,14 +32,14 @@ jest.mock('zlib', () => {
     }
 });
 
-describe('Test sesUtils', () => {
+describe('Test sesService', () => {
     beforeEach(() => {
         AWS // Needed for eslint usage
         zlib
     });
 
     test('Test gunzip call', async () => {
-        const response = await sesUtils.gunzip(base64DataParam);
+        const response = await sesService.gunzip(base64DataParam);
         expect(response).toEqual('{\n  "mockResponse": "mockResponse"\n}');
     });
 
@@ -47,7 +47,7 @@ describe('Test sesUtils', () => {
         const expectedError = new Error('test error');
         mockCallbackErrorParam = expectedError;
         try {
-            await sesUtils.gunzip(base64DataParam);
+            await sesService.gunzip(base64DataParam);
         } catch (error) {
             expect(error).toEqual(expectedError);
         }
@@ -74,7 +74,7 @@ describe('Test sesUtils', () => {
             Source: process.env.APP_SUPPORT_EMAIL,
           }
 
-        const response = await sesUtils.sendHTMLToSupport('test html');
+        const response = await sesService.sendHTMLToSupport('test html');
 
         expect(mockSendEmailResponse).toHaveBeenCalledWith(expectedParams);
         expect(response).toEqual(mockResponse);
@@ -86,7 +86,7 @@ describe('Test sesUtils', () => {
         const expectedError = errorRepository.createError(1403);
 
         try {
-            await sesUtils.sendHTMLToSupport('test html');
+            await sesService.sendHTMLToSupport('test html');
         } catch (error) {
             expect(error).toEqual(expectedError);
         }
