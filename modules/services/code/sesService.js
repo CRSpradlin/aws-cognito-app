@@ -1,5 +1,7 @@
-var AWS = require("aws-sdk");
-var ses = new AWS.SES({region: "us-east-1"});
+const { SES } = require("@aws-sdk/client-ses");
+var ses = new SES({
+  region: "us-east-1",
+});
 
 const zlib = require('zlib');
 const errorRepository = require('./errorRepository');
@@ -39,5 +41,5 @@ exports.sendHTMLToSupport = async (html) => {
     Source: process.env.APP_SUPPORT_EMAIL,
   };
  
-  return await ses.sendEmail(params).promise()
+  return await ses.sendEmail(params);
 }; 

@@ -1,4 +1,4 @@
-const AWS = require('aws-sdk');
+
 const zlib = require('zlib');
 const sesService = require('./sesService');
 
@@ -7,17 +7,16 @@ const mockResponse = 'mockResponse';
 
 const mockSendEmailResponse = jest.fn().mockResolvedValue(mockResponse);
 
-jest.mock('aws-sdk', () => {
+
+jest.mock('@aws-sdk/client-ses', () => {
+    class mockSES {
+        constructor(){}
+    
+        sendEmail = async (params) => {return mockSendEmailResponse(params)}
+    }
+
     return {
-        SES: jest.fn(() => {
-            return {
-                sendEmail: jest.fn((params) => {
-                    return {
-                        promise: async () => {return mockSendEmailResponse(params)}
-                    }
-                })
-            }
-        })
+        SES: mockSES 
     }
 });
 
@@ -34,7 +33,6 @@ jest.mock('zlib', () => {
 
 describe('Test sesService', () => {
     beforeEach(() => {
-        AWS // Needed for eslint usage
         zlib
     });
 
