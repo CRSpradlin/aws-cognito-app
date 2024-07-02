@@ -48,7 +48,7 @@ describe('Test registerUser', () => {
         process.env.APP_CLIENT_ID = 'mockAppClientId';
         instance.event = {body: JSON.stringify({})};
         const mockError = new Error('mockUsernameExistsException');
-        mockError.code = 'UsernameExistsException';
+        mockError.__type = 'UsernameExistsException';
         mockUserUtils.createUser = jest.fn().mockImplementation(() => {
             throw mockError;
         });
@@ -65,7 +65,7 @@ describe('Test registerUser', () => {
         process.env.APP_CLIENT_ID = 'mockAppClientId';
         instance.event = {body: JSON.stringify({})};
         const mockError = new Error('mockInvalidPasswordException');
-        mockError.code = 'InvalidPasswordException';
+        mockError.__type = 'InvalidPasswordException';
         mockUserUtils.createUser = jest.fn().mockImplementation(() => {
             throw mockError;
         });

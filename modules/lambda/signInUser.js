@@ -25,7 +25,7 @@ class signInUser {
             return this.createAPIResponse.Ok(body);
         } catch (error) {
             let newError = error;
-            switch (error.code) {
+            switch (error.__type) {
                 case 'NotAuthorizedException':
                 case 'InvalidParameterException':
                 case 'UserNotFoundException':

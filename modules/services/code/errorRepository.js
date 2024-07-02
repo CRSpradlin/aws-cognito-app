@@ -63,10 +63,10 @@ self.createError = (errorCode, originalError = undefined) => {
     const errorDetails = ERRORS.find(err => { return err.errorCode === errorCode });
     const error = new Error();
     error.message = errorDetails.message;
-    error.code = self.REPOSITORY_ERROR_CODE;
+    error.__type = self.REPOSITORY_ERROR_CODE;
     error.repoCode = errorDetails.errorCode;
     error.context = originalError;
-    if (originalError) error.contextCode = originalError.code;
+    if (originalError) error.contextCode = originalError.__type;
     error.defaultStatusCode = errorDetails.defaultStatusCode;
 
     if (originalError instanceof Error && errorCode === 1000) {

@@ -165,7 +165,7 @@ describe('Test confirmUser', () => {
         process.env.APP_CLIENT_ID = 'mockAppClientId';
         instance.event = {body: JSON.stringify({})};
         const mockError = new Error('mockError');
-        mockError.code = 'CodeMismatchException';
+        mockError.__type = 'CodeMismatchException';
         mockCognitoService.confirmUser = jest.fn().mockImplementation(() => {
             throw mockError;
         });
@@ -182,7 +182,7 @@ describe('Test confirmUser', () => {
         process.env.APP_CLIENT_ID = 'mockAppClientId';
         instance.event = {body: JSON.stringify({})};
         const mockError = new Error('mockError');
-        mockError.code = 'InvalidParameterException';
+        mockError.__type = 'InvalidParameterException';
         mockCognitoService.confirmUser = jest.fn().mockImplementation(() => {
             throw mockError;
         });

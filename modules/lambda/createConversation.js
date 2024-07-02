@@ -19,7 +19,7 @@ class createConversation {
             return this.createAPIResponse.Ok(response);
         } catch (error) {
             let newError = error;
-            switch (error.code) {
+            switch (error.__type) {
                 case errorRepository.REPOSITORY_ERROR_CODE:
                     break;
                 default:

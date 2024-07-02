@@ -70,7 +70,7 @@ describe('Test signInUser', () => {
         process.env.APP_CLIENT_ID = 'mockAppClientId';
         instance.event = {body: JSON.stringify({})};
         const mockError = new Error();
-        mockError.code = 'UserNotFoundException';
+        mockError.__type = 'UserNotFoundException';
         mockCognitoService.getAuthToken = jest.fn().mockImplementation(async () => {
             throw mockError;
         });
@@ -88,7 +88,7 @@ describe('Test signInUser', () => {
         process.env.APP_CLIENT_ID = 'mockAppClientId';
         instance.event = {body: JSON.stringify({})};
         const mockError = new Error();
-        mockError.code = 'NotAuthorizedException';
+        mockError.__type = 'NotAuthorizedException';
         mockCognitoService.getAuthToken = jest.fn().mockImplementation(async () => {
             throw mockError;
         });
@@ -106,7 +106,7 @@ describe('Test signInUser', () => {
         process.env.APP_CLIENT_ID = 'mockAppClientId';
         instance.event = {body: JSON.stringify({})};
         const mockError = new Error();
-        mockError.code = 'UserNotConfirmedException';
+        mockError.__type = 'UserNotConfirmedException';
         mockCognitoService.getAuthToken = jest.fn().mockImplementation(async () => {
             throw mockError;
         });
