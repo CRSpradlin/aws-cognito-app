@@ -1,33 +1,25 @@
 
-const AWS = require('aws-sdk');
 const statesService = require('./statesService');
 
 const mockResponse = 'mockResponse';
 
 const mockStepFunctionsResponse = jest.fn().mockResolvedValue(mockResponse);
 
-jest.mock('aws-sdk', () => {
+jest.mock('@aws-sdk/client-sfn', () => {
+    class MockStepFunctions {
+        constructor() {}
+
+        sendTaskSuccess = async (params) => {return mockStepFunctionsResponse(params)}
+        startExecution = async (params) => {return mockStepFunctionsResponse(params)}
+    }
+
     return {
-        StepFunctions: jest.fn(() => {
-            return {
-                sendTaskSuccess: jest.fn((params) => {
-                    return {
-                        promise: async () => {return mockStepFunctionsResponse(params)}
-                    };
-                }),
-                startExecution: jest.fn((params) => {
-                    return {
-                        promise: async () => {return mockStepFunctionsResponse(params)}
-                    };
-                }),
-            };
-        }),
+        SFN: MockStepFunctions
     };
 });
 
 describe('Test statesService', () => {
     beforeEach(() => {
-        AWS // Needed for eslint usage
         jest.clearAllMocks();
         jest.resetModules();
     })

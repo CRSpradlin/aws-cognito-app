@@ -13,6 +13,7 @@
     "@aws-sdk/client-cognito-identity-provider": "^3.606.0",
     "@aws-sdk/client-dynamodb": "^3.606.0",
     "@aws-sdk/client-ses": "^3.606.0",
+    "@aws-sdk/client-sfn": "^3.609.0",
     "@aws-sdk/lib-dynamodb": "^3.606.0",
     "aws-sdk": "^2.1651.0",
     "uuid": "^8.3.2"

@@ -1,5 +1,5 @@
-var AWS = require("aws-sdk");
-var states = new AWS.StepFunctions();
+const {SFN} = require("@aws-sdk/client-sfn");
+var states = new SFN();
 
 const self = exports;
 
@@ -10,7 +10,7 @@ self.sendTaskSuccess = async (token, payload = null) => {
         taskToken: token
     };
     
-    return await states.sendTaskSuccess(params).promise();
+    return await states.sendTaskSuccess(params);
 }
 
 self.startExecution = async (stateMachineArn, input = null) => {
@@ -19,5 +19,5 @@ self.startExecution = async (stateMachineArn, input = null) => {
         input: JSON.stringify(input)
     };
 
-    return await states.startExecution(params).promise();
+    return await states.startExecution(params);
 }
