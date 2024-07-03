@@ -4,7 +4,7 @@ const errorRepository = require('./errorRepository');
 const mockUUID = { };
 const mockDynamoDB = { };
 const mockUserUtils = { };
-const mockSocketUtils = { };
+const mockSocketService = { };
 
 let instance;
 
@@ -19,7 +19,7 @@ describe('Test convoUtils', () => {
             uuid: mockUUID,
             dynamoDB: mockDynamoDB,
             userUtils: mockUserUtils,
-            socketUtils: mockSocketUtils
+            socketService: mockSocketService
         };
 
         instance = convoUtils(deps);
@@ -127,7 +127,7 @@ describe('Test convoUtils', () => {
             {connectionId: 'mockConnectionId1'},
             {connectionId: 'mockConnectionId2'}
         ]);
-        instance.socketUtils.sendMessage = jest.fn();
+        instance.socketService.sendMessage = jest.fn();
 
 
 
@@ -142,7 +142,7 @@ describe('Test convoUtils', () => {
         expect(instance.dynamoDB.put).toHaveBeenCalledWith('MessageData', expectedMessage);
         expect(response).toEqual(expectedMessage);
 
-        expect(instance.socketUtils.sendMessage).toHaveBeenCalledTimes(6);
+        expect(instance.socketService.sendMessage).toHaveBeenCalledTimes(6);
     });
 
     test('Test getMessages call', async () => {
@@ -294,7 +294,7 @@ describe('Test convoUtils', () => {
         jest.mock('uuid', () => { return { } }, {virtual: true});
         jest.mock('./dynamoService', () => { return { } }, {virtual: true});
         jest.mock('./userUtils', () => { return { default: () => { return { } }} }, {virtual: true});
-        jest.mock('./socketUtils', () => { return { } }, {virtual: true});
+        jest.mock('./socketService', () => { return { } }, {virtual: true});
 
         const mockConvoUtils = require('./convoUtils');
         mockConvoUtils._convoUtilsService = jest.fn();
@@ -303,7 +303,7 @@ describe('Test convoUtils', () => {
             uuid: { },
             dynamoDB: { },
             userUtils: { },
-            socketUtils: { }
+            socketService: { }
         };
 
         mockConvoUtils.default();

@@ -36,7 +36,7 @@ locals {
     "${path.module}/code/convoUtils.js",
     "${path.module}/code/createAPIResponse.js",
     "${path.module}/code/errorRepository.js",
-    "${path.module}/code/socketUtils.js",
+    "${path.module}/code/socketService.js",
     "${path.module}/code/sesService.js",
     "${path.module}/code/statesService.js"
   ]

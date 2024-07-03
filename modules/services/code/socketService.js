@@ -1,5 +1,5 @@
-const AWS = require('aws-sdk');
-const api = new AWS.ApiGatewayManagementApi({
+const { ApiGatewayManagementApi } = require('@aws-sdk/client-apigatewaymanagementapi');
+const api = new ApiGatewayManagementApi({
     endpoint: process.env.APP_SOCKET_API_ENDPOINT.substring(6)
 });
 
@@ -11,7 +11,7 @@ self.sendMessage = async (message, connectionId) => {
         Data: JSON.stringify({newMessage: message})
     };
 
-    const response = await api.postToConnection(params).promise();
+    const response = await api.postToConnection(params);
 
     return response;
 }

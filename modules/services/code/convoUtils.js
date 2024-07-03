@@ -2,11 +2,11 @@ const errorRepository = require('./errorRepository');
 
 class convoUtils {
 
-    constructor(uuid, dynamoDB, userUtils, socketUtils) {
+    constructor(uuid, dynamoDB, userUtils, socketService) {
         this.uuid = uuid.v4;
         this.dynamoDB = dynamoDB;
         this.userUtils = userUtils;
-        this.socketUtils = socketUtils;
+        this.socketService = socketService;
     }
 
     // TODO: Implement within convo creation to prevent duplicate conversations
@@ -38,7 +38,7 @@ class convoUtils {
             const memberSessions = await this.userUtils.getUserSessions(member);
 
             for (const session of memberSessions) {
-                await this.socketUtils.sendMessage(message, session.connectionId);
+                await this.socketService.sendMessage(message, session.connectionId);
             }
         }
 
@@ -135,20 +135,20 @@ class convoUtils {
 }
 
 exports._convoUtilsService = (deps) => {
-    return new convoUtils(deps.uuid, deps.dynamoDB, deps.userUtils, deps.socketUtils);
+    return new convoUtils(deps.uuid, deps.dynamoDB, deps.userUtils, deps.socketService);
 }
 
 exports.default = () => {
     const uuid = require('uuid');
     const dynamoDB = require('./dynamoService');
     const userUtils = require('./userUtils').default();
-    const socketUtils = require('./socketUtils');
+    const socketService = require('./socketService');
 
     const deps = {
         uuid: uuid,
         dynamoDB: dynamoDB,
         userUtils: userUtils,
-        socketUtils: socketUtils    
+        socketService: socketService    
     };
 
     return exports._convoUtilsService(deps);
