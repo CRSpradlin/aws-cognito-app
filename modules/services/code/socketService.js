@@ -1,6 +1,6 @@
-const { ApiGatewayManagementApi } = require('@aws-sdk/client-apigatewaymanagementapi');
+const {ApiGatewayManagementApi} = require('@aws-sdk/client-apigatewaymanagementapi');
 const api = new ApiGatewayManagementApi({
-    endpoint: process.env.APP_SOCKET_API_ENDPOINT.substring(6)
+    endpoint: 'https://' + process.env.APP_SOCKET_API_ENDPOINT.substring(6)
 });
 
 const self = module.exports;
