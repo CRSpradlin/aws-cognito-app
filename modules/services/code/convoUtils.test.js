@@ -293,7 +293,7 @@ describe('Test convoUtils', () => {
     test('Test default export', async () => {
         jest.mock('uuid', () => { return { } }, {virtual: true});
         jest.mock('./dynamoService', () => { return { } }, {virtual: true});
-        jest.mock('./userUtils', () => { return { default: () => { return { } }} }, {virtual: true});
+        jest.mock('./userUtils', () => { return {default: () => { return { } }} }, {virtual: true});
         jest.mock('./socketService', () => { return { } }, {virtual: true});
 
         const mockConvoUtils = require('./convoUtils');

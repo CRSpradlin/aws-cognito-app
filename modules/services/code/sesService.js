@@ -1,4 +1,4 @@
-const { SES } = require("@aws-sdk/client-ses");
+const {SES} = require("@aws-sdk/client-ses");
 var ses = new SES({
   region: "us-east-1",
 });
