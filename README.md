@@ -10,5 +10,5 @@ Visit the [Wiki](https://github.com/CRSpradlin/aws-cognito-app/wiki) for Up-to-D
 Below is a general diagram of the current infrastructure terraform generates. For more detailed information about the AWS infrastructure components used, please visit the [Infrastructure Wiki Page](https://github.com/CRSpradlin/aws-cognito-app/wiki/Infrastructure).
 > Click on the image to navigate to an interactive version of the architecture diagram. 
 
-[![MessengerAppDiagram](https://github.com/CRSpradlin/aws-cognito-app/wiki/media/images/MessengerAppDiagram.drawio.png)](https://crspradlin.github.io/aws-cognito-app/)
+[![MessengerAppDiagram](https://github.com/CRSpradlin/aws-cognito-app/wiki/media/images/MessengerAppDiagram-Main.drawio.png)](https://crspradlin.github.io/aws-cognito-app/)
 
